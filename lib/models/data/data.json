@@ -1,0 +1,174 @@
+{
+  "crops": [
+
+    {
+      "cropSoil": "Loam",
+      "cropName": "Tomato",
+      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "cropDesc": "Tomatoes are warm-season plants that require full sun and well-drained soil to thrive. They are commonly grown for their delicious fruits that can be eaten fresh or used in various culinary dishes.",
+      "stages": [
+        {
+          "duration": "1st Month",
+          "weeks": [
+            {"week": "Week 1: Seedlings", "waterAmount": "50-100"},
+            {"week": "Week 2: Seedlings", "waterAmount": "150-200"},
+            {"week": "Week 3: Seedlings", "waterAmount": "150-200"},
+            {"week": "Week 4: Seedlings", "waterAmount": "150-200"}
+          ]
+        },
+        {
+          "duration": "2nd Month",
+          "weeks": [
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "200-250"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "250-300"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "300-350"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "300-350"}
+          ]
+        },
+        {
+          "duration": "3rd Month",
+          "weeks": [
+            {"week": "Week 1: Pre-flowering", "waterAmount": "350-400"},
+            {"week": "Week 2: Pre-flowering", "waterAmount": "400-450"},
+            {"week": "Week 3: Flowering", "waterAmount": "450-500"},
+            {"week": "Week 4: Flowering", "waterAmount": "450-500"}
+          ]
+        },
+        {
+          "duration": "Harvest",
+          "weeks": [
+            {"week": "Ripe fruit harvest", "waterAmount": "400-450"}
+          ]
+        }
+      ]
+    },
+
+    {
+      "cropSoil": "Loam",
+      "cropName": "Pepper",
+      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "cropDesc": "Peppers are warm-season plants, similar to tomatoes. They thrive in hot weather and require full sun for optimal growth. Their growing season typically falls in late spring to early autumn, with peak harvest during the summer months. However, greenhouse cultivation allows peppers to be available year-round in some areas.",
+      "stages": [
+        {
+          "duration": "1st Month",
+          "weeks": [
+            {"week": "Week 1: Seedlings", "waterAmount": "50-100"},
+            {"week": "Week 2: Seedlings", "waterAmount": "150-200"},
+            {"week": "Week 3: Seedlings", "waterAmount": "150-200"},
+            {"week": "Week 4: Seedlings", "waterAmount": "150-200"}
+          ]
+        },
+        {
+          "duration": "2nd Month",
+          "weeks": [
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "200-250"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "250-300"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "300-350"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "300-350"}
+          ]
+        },
+        {
+          "duration": "Harvest",
+          "weeks": [
+            {"week": "Ripe fruit harvest", "waterAmount": "400-450"}
+          ]
+        }
+      ]
+    },
+
+    {
+      "cropSoil": "Loam",
+      "cropName": "Sweet Corn",
+      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "cropDesc": "Sweet corn grows best on well-drained soils that have good water-holding characteristics.",
+      "stages": [
+        {
+          "duration": "1st Month",
+          "weeks": [
+            {"week": "Week 1: Seedlings", "waterAmount": "150-200"},
+            {"week": "Week 2: Seedlings", "waterAmount": "200-250"},
+            {"week": "Week 3: Seedlings", "waterAmount": "200-250"},
+            {"week": "Week 4: Seedlings", "waterAmount": "200-250"}
+          ]
+        },
+        {
+          "duration": "2nd Month",
+          "weeks": [
+            {"week": "Week 1: Tasseling", "waterAmount": "300-350"},
+            {"week": "Week 2: Tasseling", "waterAmount": "350-400"},
+            {"week": "Week 3: Tasseling", "waterAmount": "400-450"},
+            {"week": "Week 4: Tasseling", "waterAmount": "400-450"}
+          ]
+        },
+        {
+          "duration": "Harvest",
+          "weeks": [
+            {"week": "Ripe fruit harvest", "waterAmount": "450-500"}
+          ]
+        }
+      ]
+    },
+
+    {
+      "cropSoil": "Loam",
+      "cropName": "Spinach",
+      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "cropDesc": "Spinach requires cool weather and deep, rich, well-limed soil to give quick growth and maximum leaf area.",
+      "stages": [
+        {
+          "duration": "1st Month",
+          "weeks": [
+            {"week": "Week 1: Seedlings", "waterAmount": "50-100"},
+            {"week": "Week 2: Seedlings", "waterAmount": "100-150"},
+            {"week": "Week 3: Seedlings", "waterAmount": "100-150"},
+            {"week": "Week 4: Seedlings", "waterAmount": "100-150"}
+          ]
+        },
+        {
+          "duration": "2nd Month",
+          "weeks": [
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "150-200"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "200-250"}
+          ]
+        },
+        {
+          "duration": "Harvest",
+          "weeks": [
+            {"week": "Ripe fruit harvest", "waterAmount": "250-300"}
+          ]
+        }
+      ]
+    },
+
+    {
+      "cropSoil": "Loam",
+      "cropName": "Strawberry",
+      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "cropDesc": "Strawberries are low-growing herbaceous plants with a fibrous root system and a crown from which arise basal leaves.",
+      "stages": [
+        {
+          "duration": "1st Month",
+          "weeks": [
+            {"week": "Week 1: Growth", "waterAmount": "50-100"},
+            {"week": "Week 2: Growth", "waterAmount": "100-150"},
+            {"week": "Week 3: Growth", "waterAmount": "100-150"},
+            {"week": "Week 4: Growth", "waterAmount": "100-150"}
+          ]
+        },
+        {
+          "duration": "2nd Month",
+          "weeks": [
+            {"week": "Week 1: Flowering", "waterAmount": "150-200"},
+            {"week": "Week 2: Flowering", "waterAmount": "200-250"}
+          ]
+        },
+        {
+          "duration": "Harvest",
+          "weeks": [
+            {"week": "Ripe fruit harvest", "waterAmount": "200-250"}
+          ]
+        }
+      ]
+    }
+  ]
+}
