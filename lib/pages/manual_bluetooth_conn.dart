@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,11 +14,9 @@ class bluetoothConnection extends StatefulWidget {
 class _bluetoothConnectionState extends State<bluetoothConnection> {
   final _bluetooth = FlutterBluetoothSerial.instance;
   bool _bluetoothState = false;
-  bool _isConnecting = false;
   BluetoothConnection? _connection;
   List<BluetoothDevice> _devices = [];
   BluetoothDevice? _deviceConnected;
-  int times = 0;
 
   String? command;
 
@@ -32,14 +31,37 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
   void _getDevices() async {
     var res = await _bluetooth.getBondedDevices();
     setState(() => _devices = res);
+    _connectToHC05();
+  }
+
+  void _connectToHC05() async {
+    try {
+      for (final device in _devices) {
+        if (device.name == "HC-05" && device.address == "58:56:00:00:56:64") {
+          _connection = await BluetoothConnection.toAddress(device.address);
+          _deviceConnected = device;
+          setState(() {});
+          return; // Exit the loop once connected
+        }
+      }
+      // If the loop completes without finding the device
+      throw Exception("HC-05 not found in available devices");
+    } catch (e) {
+      // Handle the exception here
+      print("Failed to connect to HC-05: $e");
+      // You can perform additional error handling here
+    }
   }
 
   void _receiveData() {
-    _connection?.input?.listen((event) {
-      if (String.fromCharCodes(event) == "p") {
-        setState(() => times = times + 1);
-      }
+    _connection?.input?.listen(_onDataReceived).onDone(() {
+      print('Disconnected by remote request');
     });
+  }
+
+  void _onDataReceived(Uint8List data) {
+    // Handle received data from Arduino here
+    print(String.fromCharCodes(data));
   }
 
   void _sendData(String data) {
@@ -132,15 +154,18 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
 
     _bluetooth.state.then((state) {
       setState(() => _bluetoothState = state.isEnabled);
+      _getDevices();
     });
 
     _bluetooth.onStateChanged().listen((state) {
       switch (state) {
         case BluetoothState.STATE_OFF:
           setState(() => _bluetoothState = false);
+          _deviceConnected = null;
           break;
         case BluetoothState.STATE_ON:
           setState(() => _bluetoothState = true);
+          _getDevices();
           break;
         // case BluetoothState.STATE_TURNING_OFF:
         //   break;
@@ -164,24 +189,18 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 25.0),
-              child: bluetoothConfig(),
-            ),
-            devicesInfo(),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Divider(),
-            ),
-            devicesList(),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Divider(),
-            ),
-            manualControls()
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 25.0),
+                child: bluetoothConfig(),
+              ),
+              devicesInfo(),
+              const Divider(),
+              manualControls()
+            ],
+          ),
         ));
   }
 
@@ -206,69 +225,18 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
 
   Widget devicesInfo() {
     return ListTile(
-        title: Text(
-          "Connected to:  ${_deviceConnected?.name ?? "None"}",
-          style: const TextStyle(
-            fontFamily: "Rokkitt",
-            fontSize: 18,
-          ),
+      title: Text(
+        "Connected to:  ${_deviceConnected?.name ?? "None"}",
+        style: const TextStyle(
+          fontFamily: "Rokkitt",
+          fontSize: 18,
         ),
-        trailing: _connection?.isConnected ?? false
-            ? TextButton(
-                onPressed: () async {
-                  await _connection?.finish();
-                  setState(() => _deviceConnected = null);
-                },
-                child: const Text(
-                  "Disconnect",
-                  style: TextStyle(fontFamily: "Rokkitt"),
-                ),
-              )
-            : ElevatedButton(
-                onPressed: _getDevices,
-                child: const Text("View Paired Devices")));
-  }
-
-  Widget devicesList() {
-    return _isConnecting
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : SingleChildScrollView(
-            child: Container(
-            child: Column(
-              children: [
-                ...[
-                  for (final device in _devices)
-                    ListTile(
-                      title: Text(
-                        device.name ?? device.address,
-                        style: const TextStyle(
-                            fontFamily: "Rokkitt", fontWeight: FontWeight.bold),
-                      ),
-                      trailing: ElevatedButton(
-                        child: const Text("Connect"),
-                        onPressed: () async {
-                          setState(() => _isConnecting = true);
-                          _connection = await BluetoothConnection.toAddress(
-                              device.address);
-                          _deviceConnected = device;
-                          _devices = [];
-                          _isConnecting = false;
-                          _receiveData();
-                          setState(() {});
-                        },
-                      ),
-                    )
-                ]
-              ],
-            ),
-          ));
+      ),
+    );
   }
 
   Widget manualControls() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           margin: const EdgeInsets.all(8.0),

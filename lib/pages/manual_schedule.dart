@@ -16,8 +16,6 @@ class _ManualSchedulerState extends State<ManualScheduler> {
 
   final textController = TextEditingController();
 
-  void createSchedule() {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

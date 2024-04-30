@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
@@ -6,17 +9,64 @@ import 'package:smart_iriggation_app/models/schedule.dart';
 class Database extends ChangeNotifier {
   static late Isar isar;
 
-  //Initialize Database
+  //Initialize Database if it does not exist
   static Future<void> initialize() async {
     final dir = await getApplicationCacheDirectory();
     isar = await Isar.open(
         [ScheduleSchema, CropInformationSchema, StagesSchema, WeeksSchema],
         directory: dir.path);
+    final count_crop = await isar.cropInformations.count();
+    final count_stages = await isar.stages.count();
+    final count_weeks = await isar.weeks.count();
+    if (count_crop == 0 && count_weeks == 0 && count_stages == 0) {
+      readJson();
+    }
   }
 
   final List<Schedule> currentSchedule = [];
   final List<CropInformation> CropInfo = [];
   final List<CropInformation> specificCrop = [];
+
+  static List items = [];
+
+  // PRE-POPULATING THE DATABASE WITH CROP DATA
+  static void insertToDatabase(
+      String soilType, String cropName, String pirDir, String cropDesc) async {
+    addNewCrop(soilType, cropName, pirDir, cropDesc);
+  }
+
+  static void insertToStages(String cropName, String stageName) {
+    addNewStage(cropName, stageName);
+  }
+
+  static void insertToWeeks(
+      String cropName, String stageName, String week, String waterAmount) {
+    addNewWeek(cropName, stageName, week, waterAmount);
+  }
+
+  static Future<void> readJson() async {
+    final String response =
+        await rootBundle.loadString("lib/models/data/data.json");
+
+    final data = await json.decode(response);
+    items = data["crops"];
+    for (int i = 0; i < items.length; i++) {
+      insertToDatabase(items[i]["cropSoil"], items[i]["cropName"],
+          items[i]["pictureDir"], items[i]["cropDesc"]);
+
+      for (int j = 0; j < items[i]["stages"].length; j++) {
+        insertToStages(items[i]["cropName"], items[i]["stages"][j]["duration"]);
+
+        for (int k = 0; k < items[i]["stages"][j]["weeks"].length; k++) {
+          insertToWeeks(
+              items[i]["cropName"],
+              items[i]["stages"][j]["duration"],
+              items[i]["stages"][j]["weeks"][k]["week"],
+              items[i]["stages"][j]["weeks"][k]["waterAmount"]);
+        }
+      }
+    }
+  }
 
   //Create a data
   Future<void> addNewSchedule(
@@ -48,22 +98,26 @@ class Database extends ChangeNotifier {
     await getSchedule();
   }
 
-  Future<void> addNewCrop(String soilType, String cropName, String pictureDir,
-      String cropDescription) async {
+  static Future<void> addNewCrop(String soilType, String cropName,
+      String pictureDir, String cropDescription) async {
     final newCrop = CropInformation()
       ..soilType = soilType
       ..cropName = cropName
       ..pictureDir = pictureDir
       ..cropDescription = cropDescription;
 
-    await isar.writeTxn(() => isar.cropInformations.put(newCrop));
+    try {
+      await isar.writeTxnSync(() => isar.cropInformations.putSync(newCrop));
+    } catch (Exception) {
+      print(Exception);
+    }
   }
 
-  Future<void> addNewStage(String cropName, String stageName) async {
+  static Future<void> addNewStage(String cropName, String stageName) async {
     final stage = Stages()
       ..period = stageName
       ..crop = cropName;
-    await isar.writeTxn(() => isar.stages.put(stage));
+    await isar.writeTxnSync(() => isar.stages.putSync(stage));
 
     final crop = await isar.cropInformations
         .where()
@@ -73,19 +127,19 @@ class Database extends ChangeNotifier {
 
     crop?.stages.add(stage);
 
-    await isar.writeTxn(() async {
-      await crop?.stages.save();
+    await isar.writeTxnSync(() async {
+      crop?.stages.saveSync();
     });
   }
 
-  Future<void> addNewWeek(String cropName, String stageName, String weekName,
-      String waterAmount) async {
+  static Future<void> addNewWeek(String cropName, String stageName,
+      String weekName, String waterAmount) async {
     final week = Weeks()
       ..crop = cropName
       ..week = weekName
       ..waterAmount = waterAmount;
 
-    await isar.writeTxn(() => isar.weeks.put(week));
+    await isar.writeTxnSync(() => isar.weeks.putSync(week));
 
     final action = await isar.stages
         .where()
@@ -97,8 +151,8 @@ class Database extends ChangeNotifier {
 
     action?.weeks.add(week);
 
-    await isar.writeTxn(() async {
-      await action?.weeks.save();
+    await isar.writeTxnSync(() async {
+      action?.weeks.saveSync();
     });
   }
 
