@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
 
 class bluetoothConnection extends StatefulWidget {
   const bluetoothConnection({super.key});
@@ -12,11 +13,8 @@ class bluetoothConnection extends StatefulWidget {
 }
 
 class _bluetoothConnectionState extends State<bluetoothConnection> {
-  final _bluetooth = FlutterBluetoothSerial.instance;
-  bool _bluetoothState = false;
-  BluetoothConnection? _connection;
-  List<BluetoothDevice> _devices = [];
-  BluetoothDevice? _deviceConnected;
+  bluetooth_conn btInstance = bluetooth_conn();
+  BluetoothDevice? connectedDevice = deviceConnected;
 
   String? command;
 
@@ -27,48 +25,6 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
   bool isPumpOpen = false;
   bool isWaterValveOpen = false;
   bool isFertilizerValveOpen = false;
-
-  void _getDevices() async {
-    var res = await _bluetooth.getBondedDevices();
-    setState(() => _devices = res);
-    _connectToHC05();
-  }
-
-  void _connectToHC05() async {
-    try {
-      for (final device in _devices) {
-        if (device.name == "HC-05" && device.address == "58:56:00:00:56:64") {
-          _connection = await BluetoothConnection.toAddress(device.address);
-          _deviceConnected = device;
-          setState(() {});
-          return; // Exit the loop once connected
-        }
-      }
-      // If the loop completes without finding the device
-      throw Exception("HC-05 not found in available devices");
-    } catch (e) {
-      // Handle the exception here
-      print("Failed to connect to HC-05: $e");
-      // You can perform additional error handling here
-    }
-  }
-
-  void _receiveData() {
-    _connection?.input?.listen(_onDataReceived).onDone(() {
-      print('Disconnected by remote request');
-    });
-  }
-
-  void _onDataReceived(Uint8List data) {
-    // Handle received data from Arduino here
-    print(String.fromCharCodes(data));
-  }
-
-  void _sendData(String data) {
-    if (_connection?.isConnected ?? false) {
-      _connection?.output.add(ascii.encode(data));
-    }
-  }
 
   int _getArdPin(int nodeNumber) {
     switch (nodeNumber) {
@@ -139,33 +95,27 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
     throw ArgumentError('Invalid node number: $nodeNumber');
   }
 
-  void _requestPermission() async {
-    await Permission.location.request();
-    await Permission.bluetooth.request();
-    await Permission.bluetoothScan.request();
-    await Permission.bluetoothConnect.request();
-  }
-
   @override
   void initState() {
     super.initState();
+    btInstance.requestPermission();
 
-    _requestPermission();
-
-    _bluetooth.state.then((state) {
-      setState(() => _bluetoothState = state.isEnabled);
-      _getDevices();
+    bluetooth.state.then((state) {
+      setState(() => bluetoothState = state.isEnabled);
     });
 
-    _bluetooth.onStateChanged().listen((state) {
+    bluetooth.onStateChanged().listen((state) {
       switch (state) {
         case BluetoothState.STATE_OFF:
-          setState(() => _bluetoothState = false);
-          _deviceConnected = null;
+          setState(() => bluetoothState = false);
+          connectedDevice = null;
           break;
         case BluetoothState.STATE_ON:
-          setState(() => _bluetoothState = true);
-          _getDevices();
+          setState(() => bluetoothState = true);
+          btInstance.getDevices();
+          setState(() {
+            connectedDevice = deviceConnected;
+          });
           break;
         // case BluetoothState.STATE_TURNING_OFF:
         //   break;
@@ -206,16 +156,16 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
 
   Widget bluetoothConfig() {
     return SwitchListTile(
-        value: _bluetoothState,
+        value: bluetoothState,
         onChanged: (bool value) async {
           if (value) {
-            await _bluetooth.requestEnable();
+            await bluetooth.requestEnable();
           } else {
-            await _bluetooth.requestDisable();
+            await bluetooth.requestDisable();
           }
         },
         title: Text(
-          _bluetoothState ? "Turn Off Bluetooth" : "Turn On Bluetooth",
+          bluetoothState ? "Turn Off Bluetooth" : "Turn On Bluetooth",
           style: const TextStyle(
             fontFamily: "Rokkitt",
             fontSize: 18,
@@ -226,7 +176,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
   Widget devicesInfo() {
     return ListTile(
       title: Text(
-        "Connected to:  ${_deviceConnected?.name ?? "None"}",
+        "Connected to: ${connectedDevice?.name ?? "None"}",
         style: const TextStyle(
           fontFamily: "Rokkitt",
           fontSize: 18,
@@ -265,7 +215,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "Manual,${_getArdPin(1)},${_getCommand(1)},";
                   isPumpOpen = value;
-                  _sendData(command!);
+                  btInstance.sendData(command!);
                   print(command);
                 });
               }),
@@ -282,7 +232,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "Manual,${_getArdPin(2)},${_getCommand(2)},";
                   isWaterValveOpen = value;
-                  _sendData(command!);
+                  btInstance.sendData(command!);
                   print(command);
                 });
               }),
@@ -299,7 +249,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "Manual,${_getArdPin(3)},${_getCommand(3)},";
                   isFertilizerValveOpen = value;
-                  _sendData(command!);
+                  btInstance.sendData(command!);
                   print(command);
                 });
               }),
@@ -316,7 +266,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "Manual,${_getArdPin(4)},${_getCommand(4)},";
                   isNode1Open = value;
-                  _sendData(command!);
+                  btInstance.sendData(command!);
                   print(command);
                 });
               }),
@@ -333,7 +283,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "Manual,${_getArdPin(5)},${_getCommand(5)},";
                   isNode2Open = value;
-                  _sendData(command!);
+                  btInstance.sendData(command!);
                   print(command);
                 });
               }),
@@ -350,7 +300,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "Manual,${_getArdPin(6)},${_getCommand(6)},";
                   isNode3Open = value;
-                  _sendData(command!);
+                  btInstance.sendData(command!);
                   print(command);
                 });
               }),
@@ -367,7 +317,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "Manual,${_getArdPin(7)},${_getCommand(7)},";
                   isNode4Open = value;
-                  _sendData(command!);
+                  btInstance.sendData(command!);
                   print(command);
                 });
               }),

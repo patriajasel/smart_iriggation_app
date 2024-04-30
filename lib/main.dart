@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
+import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
 import 'models/database.dart';
 import 'pages/auto_crop_list.dart';
 import 'pages/load_apply_sched_screen.dart';
@@ -9,7 +10,6 @@ import 'pages/manual_schedule.dart';
 import 'pages/splash_screen.dart';
 import 'pages/view_schedules.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_iriggation_app/pages/manual_bluetooth_conn.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,13 +31,14 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  bluetoothConnection bluetooth = const bluetoothConnection();
-
+  bluetooth_conn btInstance = bluetooth_conn();
   List<CropInformation> cropData = [];
 
   @override
   void initState() {
     super.initState();
+    btInstance.requestPermission();
+    btInstance.bluetoothStateListener();
   }
 
   @override
