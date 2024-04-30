@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -9,6 +8,8 @@ bool bluetoothState = false;
 BluetoothConnection? connection;
 List<BluetoothDevice> devices = [];
 BluetoothDevice? deviceConnected;
+
+late String soilType;
 
 class bluetooth_conn {
   void getDevices() async {
@@ -38,13 +39,13 @@ class bluetooth_conn {
 
   void receiveData() {
     connection?.input?.listen(onDataReceived).onDone(() {
-      print('Disconnected by remote request');
+      print('Receiving Data');
     });
   }
 
   void onDataReceived(Uint8List data) {
     // Handle received data from Arduino here
-    print(String.fromCharCodes(data));
+    soilType = String.fromCharCodes(data);
   }
 
   void sendData(String data) {

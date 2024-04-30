@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
 
 class loadingScreen extends StatefulWidget {
   const loadingScreen({super.key});
@@ -12,11 +13,15 @@ class loadingScreen extends StatefulWidget {
 
 class _loadingScreenState extends State<loadingScreen>
     with SingleTickerProviderStateMixin {
+  bluetooth_conn btInstance = bluetooth_conn();
+
   @override
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 15), () {
+    btInstance.receiveData();
+
+    Timer(const Duration(seconds: 20), () {
       Navigator.pushNamed(context, '/cropList');
     });
   }

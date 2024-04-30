@@ -177,27 +177,24 @@
       "cropDesc": "Corn grows best on well-drained soils that have good water-holding characteristics.",
       "stages": [
         {
-          "name": "Seedlings",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "150-200"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Seedlings", "waterAmount": "150-200"},
+            {"week": "Week 2: Seedlings", "waterAmount": "200-250"},
+            {"week": "Week 3: Seedlings", "waterAmount": "200-250"},
+            {"week": "Week 4: Seedlings", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Tasseling",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "300-350"},
-            {"week": "Week 2", "waterAmount": "350-400"},
-            {"week": "Week 3", "waterAmount": "400-450"},
-            {"week": "Week 4", "waterAmount": "400-450"}
+            {"week": "Week 1: Tasseling", "waterAmount": "300-350"},
+            {"week": "Week 2: Tasseling", "waterAmount": "350-400"},
+            {"week": "Week 3: Pollination", "waterAmount": "400-450"},
+            {"week": "Week 4: Pollination", "waterAmount": "400-450"}
           ]
         },
         {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Ripe fruit harvest", "waterAmount": "450-500"}
@@ -213,27 +210,24 @@
       "cropDesc": "Field corn thrives in hot weather, making it a warm-season crop. Planting typically occurs in late spring or early summer, with harvesting following 90-120 days later depending on the variety. This means field corn is typically harvested in late summer to early fall, from around September to November in many regions.",
       "stages": [
         {
-          "name": "Seedlings",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "50-100"},
-            {"week": "Week 2", "waterAmount": "100-150"},
-            {"week": "Week 3", "waterAmount": "100-150"},
-            {"week": "Week 4", "waterAmount": "100-150"}
+            {"week": "Week 1: Seedlings", "waterAmount": "50-100"},
+            {"week": "Week 2: Seedlings", "waterAmount": "100-150"},
+            {"week": "Week 3: Seedlings", "waterAmount": "100-150"},
+            {"week": "Week 4: Seedlings", "waterAmount": "100-150"}
           ]
         },
         {
-          "name": "Vegetative Growth",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "150-200"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "150-200"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "200-250"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "200-250"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Ripe fruit harvest", "waterAmount": "250-300"}
@@ -249,30 +243,27 @@
       "cropDesc": "Beans are a warm-season crop that thrives in hot weather. Planting typically occurs in late spring or early summer, with harvesting following in late summer to early fall (from August to October in many regions). However, some bean varieties, like peas, can be planted in cooler weather.",
       "stages": [
         {
-          "name": "Seedlings",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "50-100"},
-            {"week": "Week 2", "waterAmount": "100-150"},
-            {"week": "Week 3", "waterAmount": "100-150"},
-            {"week": "Week 4", "waterAmount": "100-150"}
+            {"week": "Week 1: Seedlings", "waterAmount": "50-100"},
+            {"week": "Week 2: Seedlings", "waterAmount": "100-150"},
+            {"week": "Week 3: Seedlings", "waterAmount": "100-150"},
+            {"week": "Week 4: Seedlings", "waterAmount": "100-150"}
           ]
         },
         {
-          "name": "Vegetative Growth",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "150-200"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "150-200"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "200-250"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "200-250"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
-            {"week": "Ripe fruit harvest", "waterAmount": "250-300"}
+            {"week": "Ripe bean harvest", "waterAmount": "250-300"}
           ]
         }
       ]
@@ -285,80 +276,64 @@
       "cropDesc": "Wheat is a cool-season crop that prefers cooler temperatures for optimal growth.  Planting typically occurs in the fall for winter wheat varieties that mature in the following spring or summer. Spring wheat varieties are planted in early spring and harvested in the summer.",
       "stages": [
         {
-          "name": "Vegetative Growth",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "500-600"},
-            {"week": "Week 2", "waterAmount": "500-600"},
-            {"week": "Week 3", "waterAmount": "500-600"},
-            {"week": "Week 4", "waterAmount": "500-600"}
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "500-600"}
           ]
         },
         {
-          "name": "Vegetative Growth",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "500-600"},
-            {"week": "Week 2", "waterAmount": "500-600"},
-            {"week": "Week 3", "waterAmount": "500-600"},
-            {"week": "Week 4", "waterAmount": "500-600"}
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "500-600"}
           ]
         },
         {
-          "name": "Vegetative Growth",
           "duration": "3rd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "500-600"},
-            {"week": "Week 2", "waterAmount": "500-600"},
-            {"week": "Week 3", "waterAmount": "500-600"},
-            {"week": "Week 4", "waterAmount": "500-600"}
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "500-600"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "500-600"}
           ]
         },
         {
-          "name": "Vegetative Growth",
           "duration": "4th Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "600-700"},
-            {"week": "Week 2", "waterAmount": "600-700"},
-            {"week": "Week 3", "waterAmount": "600-700"},
-            {"week": "Week 4", "waterAmount": "600-700"}
+            {"week": "Week 1: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 2: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 3: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 4: Heading & Grain Fill", "waterAmount": "600-700"}
           ]
         },
         {
-          "name": "Vegetative Growth",
-          "duration": "4th Month",
-          "weeks": [
-            {"week": "Week 1", "waterAmount": "600-700"},
-            {"week": "Week 2", "waterAmount": "600-700"},
-            {"week": "Week 3", "waterAmount": "600-700"},
-            {"week": "Week 4", "waterAmount": "600-700"}
-          ]
-        },
-        {
-          "name": "Vegetative Growth",
           "duration": "5th Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "600-700"},
-            {"week": "Week 2", "waterAmount": "600-700"},
-            {"week": "Week 3", "waterAmount": "600-700"},
-            {"week": "Week 4", "waterAmount": "600-700"}
+            {"week": "Week 1: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 2: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 3: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 4: Heading & Grain Fill", "waterAmount": "600-700"}
           ]
         },
         {
           "name": "Vegetative Growth",
           "duration": "6th Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "600-700"},
-            {"week": "Week 2", "waterAmount": "600-700"},
-            {"week": "Week 3", "waterAmount": "600-700"},
-            {"week": "Week 4", "waterAmount": "600-700"}
+            {"week": "Week 1: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 2: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 3: Heading & Grain Fill", "waterAmount": "600-700"},
+            {"week": "Week 4: Heading & Grain Fill", "waterAmount": "600-700"}
           ]
         },
         {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
-            {"week": "Ripe fruit harvest", "waterAmount": "700-800"}
+            {"week": "Mature wheat for harvest", "waterAmount": "700-800"}
           ]
         }
       ]
@@ -371,30 +346,28 @@
       "cropDesc": "Soybeans are a warm-season crop that thrives in hot weather.  Planting typically occurs in late spring or early summer, with harvesting following in late summer to early fall (from August to October in many regions).",
       "stages": [
         {
-          "name": "Seedlings",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "50-100"},
-            {"week": "Week 2", "waterAmount": "100-150"},
-            {"week": "Week 3", "waterAmount": "100-150"},
-            {"week": "Week 4", "waterAmount": "100-150"}
+            {"week": "Week 1: Seedlings", "waterAmount": "50-100"},
+            {"week": "Week 2: Seedlings", "waterAmount": "100-150"},
+            {"week": "Week 3: Seedlings", "waterAmount": "100-150"},
+            {"week": "Week 4: Seedlings", "waterAmount": "100-150"}
           ]
         },
         {
-          "name": "Vegetative Growth",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "150-200"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Vegetative Growth", "waterAmount": "150-200"},
+            {"week": "Week 2: Vegetative Growth", "waterAmount": "200-250"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "200-250"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "200-250"}
           ]
         },
         {
           "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
-            {"week": "Ripe fruit harvest", "waterAmount": "250-300"}
+            {"week": "Ripe soybean harvest", "waterAmount": "250-300"}
           ]
         }
       ]
@@ -407,23 +380,15 @@
       "cropDesc": "Carrots are cool-season vegetables that prefer cooler temperatures. Planting typically occurs in early spring or fall, depending on the variety. Depending on your climate, planting carrots can occur in either early spring or fall.",
       "stages": [
         {
-          "name": "Root Establishment",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "50-100"},
-            {"week": "Week 2", "waterAmount": "50-100"}
+            {"week": "Week 1: Root Establishment", "waterAmount": "50-100"},
+            {"week": "Week 2: Root Establishment", "waterAmount": "50-100"},
+            {"week": "Week 3: Root Growth", "waterAmount": "100-150"},
+            {"week": "Week 4: Root Growth", "waterAmount": "100-150"}
           ]
         },
         {
-          "name": "Root Growth",
-          "duration": "1nd Month",
-          "weeks": [
-            {"week": "Week 3", "waterAmount": "100-150"},
-            {"week": "Week 4", "waterAmount": "100-150"}
-          ]
-        },
-        {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Harvest mature carrots", "waterAmount": "150-200"}
@@ -442,18 +407,13 @@
           "name": "Vine Establishment",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "100-150"},
-            {"week": "Week 2", "waterAmount": "100-150"}
+            {"week": "Week 1: Vine Establishment", "waterAmount": "100-150"},
+            {"week": "Week 2: Vine Establishment", "waterAmount": "100-150"},
+            {"week": "Week 3: Flowering & Fruit Set", "waterAmount": "150-200"},
+            {"week": "Week 4: Flowering & Fruit Set", "waterAmount": "150-200"}
           ]
         },
-        {
-          "name": "Flowering & Fruit Set",
-          "duration": "1st Month",
-          "weeks": [
-            {"week": "Week 3", "waterAmount": "150-200"},
-            {"week": "Week 4", "waterAmount": "150-200"}
-          ]
-        },
+
         {
           "name": "Harvest",
           "duration": "Harvest",
@@ -471,27 +431,24 @@
       "cropDesc": "Watermelons are warm-season fruits that thrive in hot weather. Planting typically occurs in late spring or early summer, with harvesting following 70-80 days later. This translates to watermelons gracing your table from mid-summer to early fall, typically around July to September in many regions.",
       "stages": [
         {
-          "name": "Vine Establishment",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "200-250"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Vine Establishment", "waterAmount": "200-250"},
+            {"week": "Week 2: Vine Establishment", "waterAmount": "200-250"},
+            {"week": "Week 3: Vine Establishment", "waterAmount": "200-250"},
+            {"week": "Week 4: Vine Establishment", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Fruit Development",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "200-300"},
-            {"week": "Week 2", "waterAmount": "200-300"},
-            {"week": "Week 3", "waterAmount": "200-300"},
-            {"week": "Week 4", "waterAmount": "200-300"}
+            {"week": "Week 1: Fruit Development", "waterAmount": "200-300"},
+            {"week": "Week 2: Fruit Development", "waterAmount": "200-300"},
+            {"week": "Week 3: Fruit Development", "waterAmount": "200-300"},
+            {"week": "Week 4: Fruit Development", "waterAmount": "200-300"}
           ]
         },
         {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Harvest ripe watermelons", "waterAmount": "300-350"}
@@ -507,23 +464,15 @@
       "cropDesc": "Radishes are cool-season vegetables that prefer cooler temperatures. Depending on the variety, they can be grown in spring, fall, or even winter in mild climates. ",
       "stages": [
         {
-          "name": "Root Bulb Formation  ",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "50-100"},
-            {"week": "Week 2", "waterAmount": "50-100"}
+            {"week": "Week 1: Root Bulb Formation", "waterAmount": "50-100"},
+            {"week": "Week 2: Root Bulb Formation", "waterAmount": "50-100"},
+            {"week": "Week 3: Root Bulb Formation", "waterAmount": "100-150"},
+            {"week": "Week 4: Root Bulb Formation", "waterAmount": "100-150"}
           ]
-        },
+        },       
         {
-          "name": "Root Development",
-          "duration": "1st Month",
-          "weeks": [
-            {"week": "Week 3", "waterAmount": "100-150"},
-            {"week": "Week 4", "waterAmount": "100-150"}
-          ]
-        },
-        {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Harvest mature radish", "waterAmount": "150-200"}
@@ -539,27 +488,24 @@
       "cropDesc": "Melons are warm-season fruits that thrive in hot weather. Planting typically occurs in late spring or early summer, with harvesting following 70-80 days later, depending on the variety. This translates to melons gracing your table from mid-summer to early fall, typically around July to September in many regions.",
       "stages": [
         {
-          "name": "Vine Establishment",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "200-250"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Vine Establishment", "waterAmount": "200-250"},
+            {"week": "Week 2: Vine Establishment", "waterAmount": "200-250"},
+            {"week": "Week 3: Vine Establishment", "waterAmount": "200-250"},
+            {"week": "Week 4: Vine Establishment", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Fruit Development",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "250-300"},
-            {"week": "Week 2", "waterAmount": "250-300"},
-            {"week": "Week 3", "waterAmount": "250-300"},
-            {"week": "Week 4", "waterAmount": "250-300"}
+            {"week": "Week 1: Fruit Development", "waterAmount": "250-300"},
+            {"week": "Week 2: Fruit Development", "waterAmount": "250-300"},
+            {"week": "Week 3: Fruit Development", "waterAmount": "250-300"},
+            {"week": "Week 4: Fruit Development", "waterAmount": "250-300"}
           ]
         },
         {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Harvest ripe melons", "waterAmount": "300-350"}
@@ -575,23 +521,15 @@
       "cropDesc": "Lettuce thrives in cooler temperatures. Depending on the variety, it can be grown in spring and fall. Planting typically occurs in early spring or fall.",
       "stages": [
         {
-          "name": "Seedlings",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "50-100"},
-            {"week": "Week 2", "waterAmount": "50-100"}
+            {"week": "Week 1: Seedlings", "waterAmount": "50-100"},
+            {"week": "Week 2: Seedlings", "waterAmount": "50-100"},
+            {"week": "Week 3: Vegetative Growth", "waterAmount": "150-200"},
+            {"week": "Week 4: Vegetative Growth", "waterAmount": "150-200"}
           ]
         },
         {
-          "name": "Vegetative Growth",
-          "duration": "1st Month",
-          "weeks": [
-            {"week": "Week 3", "waterAmount": "150-200"},
-            {"week": "Week 4", "waterAmount": "150-200"}
-          ]
-        },
-        {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Mature harvest", "waterAmount": "200-250"}
@@ -607,47 +545,42 @@
       "cropDesc": "Potatoes are a cool-season crop that prefers moderate temperatures. Planting typically occurs in late winter or early spring in colder climates and in the fall for warmer regions. Depending on your climate, planting potatoes can occur in either early spring or fall.",
       "stages": [
         {
-          "name": "Vegetative Growth",
             "duration": "1st Month",
             "weeks": [
-              {"week": "Week 1", "waterAmount": "200-250"},
-              {"week": "Week 2", "waterAmount": "200-250"},
-              {"week": "Week 3", "waterAmount": "200-250"},
-              {"week": "Week 4", "waterAmount": "200-250"}
+              {"week": "Week 1: Vegetative Growth", "waterAmount": "200-250"},
+              {"week": "Week 2: Vegetative Growth", "waterAmount": "200-250"},
+              {"week": "Week 3: Vegetative Growth", "waterAmount": "200-250"},
+              {"week": "Week 4: Vegetative Growth", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Vegetative Growth",
             "duration": "2nd Month",
             "weeks": [
-              {"week": "Week 1", "waterAmount": "200-250"},
-              {"week": "Week 2", "waterAmount": "200-250"},
-              {"week": "Week 3", "waterAmount": "200-250"},
-              {"week": "Week 4", "waterAmount": "200-250"}
+              {"week": "Week 1: Vegetative Growth", "waterAmount": "200-250"},
+              {"week": "Week 2: Vegetative Growth", "waterAmount": "200-250"},
+              {"week": "Week 3: Vegetative Growth", "waterAmount": "200-250"},
+              {"week": "Week 4: Vegetative Growth", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Tuber Formation",
             "duration": "3rd Month",
             "weeks": [
-              {"week": "Week 1", "waterAmount": "300-350"},
-              {"week": "Week 2", "waterAmount": "300-350"},
-              {"week": "Week 3", "waterAmount": "300-350"},
-              {"week": "Week 4", "waterAmount": "300-350"}
+              {"week": "Week 1: Tuber Formation", "waterAmount": "300-350"},
+              {"week": "Week 2: Tuber Formation", "waterAmount": "300-350"},
+              {"week": "Week 3: Tuber Formation", "waterAmount": "300-350"},
+              {"week": "Week 4: Tuber Formation", "waterAmount": "300-350"}
           ]
         },
         {
-          "name": "Tuber Formation",
             "duration": "4th Month",
             "weeks": [
-              {"week": "Week 1", "waterAmount": "300-350"},
-              {"week": "Week 2", "waterAmount": "300-350"},
-              {"week": "Week 3", "waterAmount": "300-350"},
-              {"week": "Week 4", "waterAmount": "300-350"}
+              {"week": "Week 1: Tuber Formation", "waterAmount": "300-350"},
+              {"week": "Week 2: Tuber Formation", "waterAmount": "300-350"},
+              {"week": "Week 3: Tuber Formation", "waterAmount": "300-350"},
+              {"week": "Week 4: Tuber Formation", "waterAmount": "300-350"}
           ]
         },
         {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Harvest mature potatoes", "waterAmount": "400-450"}
@@ -663,37 +596,33 @@
       "cropDesc": "Cabbage is a cool-season crop that thrives in cooler temperatures. Planting typically occurs in early spring or fall, depending on the variety. Depending on your climate, planting cabbage can occur in either early spring or fall.",
       "stages": [
         {
-          "name": "Head Formation",
             "duration": "1st Month",
             "weeks": [
-              {"week": "Week 1", "waterAmount": "200-250"},
-              {"week": "Week 2", "waterAmount": "200-250"},
-              {"week": "Week 3", "waterAmount": "200-250"},
-              {"week": "Week 4", "waterAmount": "200-250"}
+              {"week": "Week 1: Head Formation", "waterAmount": "200-250"},
+              {"week": "Week 2: Head Formation", "waterAmount": "200-250"},
+              {"week": "Week 3:Head Formation", "waterAmount": "200-250"},
+              {"week": "Week 4: Head Formation", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Head Formation",
             "duration": "2nd Month",
             "weeks": [
-              {"week": "Week 1", "waterAmount": "200-250"},
-              {"week": "Week 2", "waterAmount": "200-250"},
-              {"week": "Week 3", "waterAmount": "200-250"},
-              {"week": "Week 4", "waterAmount": "200-250"}
+              {"week": "Week 1: Head Formation", "waterAmount": "200-250"},
+              {"week": "Week 2: Head Formation", "waterAmount": "200-250"},
+              {"week": "Week 3: Head Formation", "waterAmount": "200-250"},
+              {"week": "Week 4: Head Formation", "waterAmount": "200-250"}
           ]
         },
         {
-          "name": "Cabbage Development",
             "duration": "3rd Month",
             "weeks": [
-              {"week": "Week 1", "waterAmount": "250-300"},
-              {"week": "Week 2", "waterAmount": "250-300"},
-              {"week": "Week 3", "waterAmount": "250-300"},
-              {"week": "Week 4", "waterAmount": "250-300"}
+              {"week": "Week 1: Cabbage Development", "waterAmount": "250-300"},
+              {"week": "Week 2: Cabbage Development", "waterAmount": "250-300"},
+              {"week": "Week 3: Cabbage Development", "waterAmount": "250-300"},
+              {"week": "Week 4: Cabbage Development", "waterAmount": "250-300"}
           ]
         },
         {
-          "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
             {"week": "Harvest mature cabbage", "waterAmount": "300-350"}
@@ -709,67 +638,60 @@
     "cropDesc": "Garlic is a cool-season crop that prefers moderate temperatures. Planting typically occurs in fall or early spring, depending on your climate. Depending on your climate, planting garlic can occur in either fall or early spring.",
     "stages": [
       {
-        "name": "Bulb Formation  ",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "150-200"},
-            {"week": "Week 2", "waterAmount": "150-200"},
-            {"week": "Week 3", "waterAmount": "150-200"},
-            {"week": "Week 4", "waterAmount": "150-200"}
+            {"week": "Week 1: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 2: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 3: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 4: Bulb Formation", "waterAmount": "150-200"}
         ]
       },
       {
-        "name": "Bulb Formation  ",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "150-200"},
-            {"week": "Week 2", "waterAmount": "150-200"},
-            {"week": "Week 3", "waterAmount": "150-200"},
-            {"week": "Week 4", "waterAmount": "150-200"}
+            {"week": "Week 1: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 2: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 3: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 4: Bulb Formation", "waterAmount": "150-200"}
         ]
       },
       {
-        "name": "Bulb Formation  ",
           "duration": "3rd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "150-200"},
-            {"week": "Week 2", "waterAmount": "150-200"},
-            {"week": "Week 3", "waterAmount": "150-200"},
-            {"week": "Week 4", "waterAmount": "150-200"}
+            {"week": "Week 1: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 2: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 3: Bulb Formation", "waterAmount": "150-200"},
+            {"week": "Week 4: Bulb Formation", "waterAmount": "150-200"}
         ]
       },
       {
-        "name": "Bulb Development",
           "duration": "4th Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "200-250"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 2: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 3: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 4: Bulb Development", "waterAmount": "200-250"}
         ]
       },
       {
-        "name": "Bulb Development",
           "duration": "5th Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "200-250"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 2: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 3: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 4: Bulb Development", "waterAmount": "200-250"}
         ]
       },
       {
-        "name": "Bulb Development",
           "duration": "6th Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "200-250"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 2: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 3: Bulb Development", "waterAmount": "200-250"},
+            {"week": "Week 4: Bulb Development", "waterAmount": "200-250"}
         ]
       },
       {
-        "name": "Harvest",
         "duration": "Harvest",
         "weeks": [
           {"week": "Harvest mature garlic", "waterAmount": "250-300"}
@@ -785,47 +707,42 @@
     "cropDesc": "Onions are a cool-season crop that thrives in cooler temperatures. Planting typically occurs in early spring or fall, depending on the variety. Depending on your climate, planting onions can occur in either early spring or fall.",
     "stages": [
       {
-        "name": "Bulb Formation",
           "duration": "1st Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "200-250"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Bulb Formation", "waterAmount": "200-250"},
+            {"week": "Week 2: Bulb Formation", "waterAmount": "200-250"},
+            {"week": "Week 3: Bulb Formation", "waterAmount": "200-250"},
+            {"week": "Week 4: Bulb Formation", "waterAmount": "200-250"}
         ]
       },
       {
-        "name": "Bulb Formation",
           "duration": "2nd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "200-250"},
-            {"week": "Week 2", "waterAmount": "200-250"},
-            {"week": "Week 3", "waterAmount": "200-250"},
-            {"week": "Week 4", "waterAmount": "200-250"}
+            {"week": "Week 1: Bulb Formation", "waterAmount": "200-250"},
+            {"week": "Week 2: Bulb Formation", "waterAmount": "200-250"},
+            {"week": "Week 3: Bulb Formation", "waterAmount": "200-250"},
+            {"week": "Week 4: Bulb Formation", "waterAmount": "200-250"}
         ]
       },
       {
-        "name": "Bulb Development",
           "duration": "3rd Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "300-350"},
-            {"week": "Week 2", "waterAmount": "300-350"},
-            {"week": "Week 3", "waterAmount": "300-350"},
-            {"week": "Week 4", "waterAmount": "300-350"}
+            {"week": "Week 1: Bulb Development", "waterAmount": "300-350"},
+            {"week": "Week 2: Bulb Development", "waterAmount": "300-350"},
+            {"week": "Week 3: Bulb Development", "waterAmount": "300-350"},
+            {"week": "Week 4: Bulb Development", "waterAmount": "300-350"}
         ]
       },
       {
-        "name": "Bulb Development",
           "duration": "4th Month",
           "weeks": [
-            {"week": "Week 1", "waterAmount": "300-350"},
-            {"week": "Week 2", "waterAmount": "300-350"},
-            {"week": "Week 3", "waterAmount": "300-350"},
-            {"week": "Week 4", "waterAmount": "300-350"}
+            {"week": "Week 1: Bulb Development", "waterAmount": "300-350"},
+            {"week": "Week 2: Bulb Development", "waterAmount": "300-350"},
+            {"week": "Week 3: Bulb Development", "waterAmount": "300-350"},
+            {"week": "Week 4: Bulb Development", "waterAmount": "30 0-350"}
           ]
         },
       {
-        "name": "Harvest",
           "duration": "Harvest",
           "weeks": [
           {"week": "Harvest mature potatoes", "waterAmount": "300-350"}

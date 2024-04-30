@@ -156,9 +156,12 @@ class Database extends ChangeNotifier {
     });
   }
 
-  Future<void> getCrops() async {
-    List<CropInformation> fetchedCrops =
-        await isar.cropInformations.where().findAll();
+  Future<void> getCropsBasedSoil(String soilType) async {
+    List<CropInformation> fetchedCrops = await isar.cropInformations
+        .where()
+        .filter()
+        .soilTypeEqualTo(soilType)
+        .findAll();
     CropInfo.clear();
     CropInfo.addAll(fetchedCrops);
     notifyListeners();

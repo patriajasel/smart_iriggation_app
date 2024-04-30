@@ -1,8 +1,5 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
 
 class bluetoothConnection extends StatefulWidget {

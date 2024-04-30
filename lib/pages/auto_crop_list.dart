@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
 import 'package:smart_iriggation_app/pages/auto_schedule_info.dart';
+import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
 
 class cropListView extends StatefulWidget {
   const cropListView({super.key});
@@ -21,7 +22,7 @@ class _cropListViewState extends State<cropListView>
   }
 
   void readCropList() {
-    context.read<Database>().getCrops();
+    context.read<Database>().getCropsBasedSoil(soilType);
   }
 
   @override
@@ -39,11 +40,11 @@ class _cropListViewState extends State<cropListView>
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 20.0),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
                 child: Text(
-                  "LOAM",
-                  style: TextStyle(
+                  soilType,
+                  style: const TextStyle(
                     fontFamily: "Rakkas",
                     fontSize: 80,
                     color: Colors.white,
