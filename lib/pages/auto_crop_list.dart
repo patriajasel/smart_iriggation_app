@@ -22,7 +22,7 @@ class _cropListViewState extends State<cropListView>
   }
 
   void readCropList() {
-    context.read<Database>().getCropsBasedSoil(soilType);
+    context.read<Database>().getCropsBasedSoil(soilType!);
   }
 
   @override
@@ -43,7 +43,7 @@ class _cropListViewState extends State<cropListView>
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Text(
-                  soilType,
+                  soilType!,
                   style: const TextStyle(
                     fontFamily: "Rakkas",
                     fontSize: 80,

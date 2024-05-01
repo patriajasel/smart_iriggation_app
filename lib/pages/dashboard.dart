@@ -53,7 +53,7 @@ class MyDashboard extends StatelessWidget {
         backgroundColor: Colors.white,
         onPressed: () {
           Navigator.pushNamed(context, '/soilIdentify');
-          btInstance.sendData("Auto");
+          btInstance.sendData("Auto,Soil,");
         },
         tooltip: 'Irrigate',
         elevation: 0,

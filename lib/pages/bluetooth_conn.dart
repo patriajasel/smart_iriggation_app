@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -9,12 +10,17 @@ BluetoothConnection? connection;
 List<BluetoothDevice> devices = [];
 BluetoothDevice? deviceConnected;
 
-late String soilType;
+String? soilType;
 
 class bluetooth_conn {
   void getDevices() async {
-    var res = await bluetooth.getBondedDevices();
-    devices = res;
+    try {
+      var res = await bluetooth.getBondedDevices();
+      devices = res;
+    } on PlatformException catch (e) {
+      print("IDK");
+    } catch (e) {}
+
     connectToHC05();
   }
 
