@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 class nodeSelector extends StatefulWidget {
   const nodeSelector({super.key});
@@ -8,8 +10,6 @@ class nodeSelector extends StatefulWidget {
 }
 
 class _nodeSelectorState extends State<nodeSelector> {
-  String? _selectedItem;
-
   final List<String> _items = [
     'Node 1: Tomato',
     'Node 2: Eggplant',
@@ -17,38 +17,48 @@ class _nodeSelectorState extends State<nodeSelector> {
     'Node 4: Potato',
   ];
 
+  String _selectedItem = 'Node 1: Tomato';
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.only(top: 20.0),
-        child: DropdownButton<String>(
-          icon: const Icon(Icons.arrow_drop_down), // Arrow icon on the right
-          iconSize: 20.0,
-          isExpanded: true, // Set width to maximum
-          hint: const Padding(
-            padding: EdgeInsets.all(8.0), // Adding padding to the hint
-            child: Text('Select a Node',
-                style: TextStyle(fontSize: 14.0)), // Reduced font size
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15.0),
+      child: Center(
+        child: DropdownButtonFormField(
+          decoration: InputDecoration(
+            labelText: 'Select a Node',
+            labelStyle: const TextStyle(
+                fontFamily: "Rokkitt", fontSize: 24.0, color: Colors.white),
+            enabledBorder: OutlineInputBorder(
+              borderSide:
+                  const BorderSide(color: Colors.white), // Set border color
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide:
+                  const BorderSide(color: Colors.white), // Set border color
+              borderRadius: BorderRadius.circular(10.0),
+            ),
           ),
           value: _selectedItem,
-          onChanged: (String? newValue) {
+          items: _items.map((String item) {
+            return DropdownMenuItem(
+                value: item,
+                child: Text(
+                  item,
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontFamily: "Rokkitt",
+                      fontSize: 18.0),
+                ));
+          }).toList(),
+          onChanged: (String? value) {
             setState(() {
-              _selectedItem = newValue;
+              _selectedItem = value!;
             });
           },
-          items: _items.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Padding(
-                padding:
-                    const EdgeInsets.all(8.0), // Adding padding to the text
-                child: Text(value,
-                    style:
-                        const TextStyle(fontSize: 14.0)), // Reduced font size
-              ),
-            );
-          }).toList(),
+          icon: const Icon(Icons.arrow_drop_down),
+          iconEnabledColor: Colors.white,
         ),
       ),
     );

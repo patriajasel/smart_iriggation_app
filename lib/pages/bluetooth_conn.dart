@@ -17,8 +17,8 @@ class bluetooth_conn {
     try {
       var res = await bluetooth.getBondedDevices();
       devices = res;
-    } on PlatformException catch (e) {
-      print("IDK");
+    } on PlatformException {
+      print("Permission needed are not accepted");
     } catch (e) {}
 
     connectToHC05();
