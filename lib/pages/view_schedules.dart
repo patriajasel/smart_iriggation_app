@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
@@ -32,8 +33,10 @@ class _ViewScheduleState extends State<ViewSchedule> {
   @override
   Widget build(BuildContext context) {
     final schedulesDatabase = context.watch<Database>();
+    final nodesDatabase = context.watch<Database>();
 
     List<Schedule> listSchedules = schedulesDatabase.currentSchedule;
+    List<Nodes> plantType = nodesDatabase.specificNode;
 
     return Scaffold(
       appBar: AppBar(
@@ -49,10 +52,13 @@ class _ViewScheduleState extends State<ViewSchedule> {
       body: ListView.builder(
         itemCount: listSchedules.length, // Number of cards
         itemBuilder: (BuildContext context, int index) {
-          final dbTime = listSchedules[index].time;
-          final dbDay = listSchedules[index].day;
+          final dbIndex = listSchedules[index].id;
+          final dbTime = listSchedules[index].timeDate;
           final dbAmount = listSchedules[index].waterAmount;
           final dbNode = listSchedules[index].nodeNum;
+
+          String formattedTime = DateFormat('h:mm a').format(dbTime);
+          String formattedDate = DateFormat('MMMM d - EEEE').format(dbTime);
 
           return Card(
             margin: const EdgeInsets.all(8.0),
@@ -71,23 +77,38 @@ class _ViewScheduleState extends State<ViewSchedule> {
                 ],
               ),
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Icon(Icons.yard, size: 40.0, color: Colors.green),
-                    Text(
-                      dbTime,
-                      style: const TextStyle(
-                          fontFamily: "Rokkitt",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28.0),
+                    const Icon(Icons.alarm, size: 40.0, color: Colors.green),
+                    Column(
+                      children: [
+                        Text(
+                          formattedTime,
+                          style: const TextStyle(
+                              fontFamily: "Stint",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22.0),
+                        ),
+                        Text(
+                          formattedDate,
+                          style: const TextStyle(
+                              fontFamily: "Stint",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10.0),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 8.0), // Spacing between title and subtitle
+                    const SizedBox(
+                        height: 8.0), // Spacing between title and subtitle
                     Text(
                       'Node #: $dbNode \nPlant type: Tomato \n$dbAmount (mL)',
-                      style: TextStyle(fontSize: 16.0, fontFamily: "Rokkitt"),
+                      style: const TextStyle(
+                        fontSize: 14.0,
+                        fontFamily: "Rokkitt",
+                      ),
                     ),
                   ],
                 ),

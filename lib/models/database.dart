@@ -12,13 +12,21 @@ class Database extends ChangeNotifier {
   //Initialize Database if it does not exist
   static Future<void> initialize() async {
     final dir = await getApplicationCacheDirectory();
-    isar = await Isar.open(
-        [ScheduleSchema, CropInformationSchema, StagesSchema, WeeksSchema],
-        directory: dir.path);
+    isar = await Isar.open([
+      ScheduleSchema,
+      CropInformationSchema,
+      StagesSchema,
+      WeeksSchema,
+      NodesSchema
+    ], directory: dir.path);
     final count_crop = await isar.cropInformations.count();
     final count_stages = await isar.stages.count();
     final count_weeks = await isar.weeks.count();
-    if (count_crop == 0 && count_weeks == 0 && count_stages == 0) {
+    final count_nodes = await isar.nodes.count();
+    if (count_crop == 0 &&
+        count_weeks == 0 &&
+        count_stages == 0 &&
+        count_nodes == 0) {
       readJson();
     }
   }
@@ -28,6 +36,9 @@ class Database extends ChangeNotifier {
   final List<CropInformation> specificCrop = [];
 
   static List items = [];
+
+  final List<Nodes> currentNodes = [];
+  final List<Nodes> specificNode = [];
 
   // PRE-POPULATING THE DATABASE WITH CROP DATA
   static void insertToDatabase(
@@ -66,16 +77,51 @@ class Database extends ChangeNotifier {
         }
       }
     }
+
+    for (int i = 0; i < 4; i++) {
+      addNode((i + 1), 'Empty');
+    }
+  }
+
+  //INSERTING NODE INFORMATION TO DATABASE
+  static Future<void> addNode(int nodeNumber, String plant) async {
+    final newNode = Nodes()
+      ..nodeNumber = nodeNumber
+      ..plant = plant;
+
+    try {
+      isar.writeTxnSync(() => isar.nodes.putSync(newNode));
+    } catch (Exception) {
+      print(Exception);
+    }
+  }
+
+  // GETTING MY NODES
+  Future<void> getNodes() async {
+    List<Nodes> fetchedNodes = await isar.nodes.where().findAll();
+
+    currentNodes.clear();
+    currentNodes.addAll(fetchedNodes);
+    notifyListeners();
+  }
+
+  Future<void> getSpecificNode(int nodeNumber) async {
+    final fetchedNode =
+        await isar.nodes.filter().nodeNumberEqualTo(nodeNumber).findAll();
+
+    specificNode.clear();
+    specificNode.addAll(fetchedNode);
+    notifyListeners();
   }
 
   //Create a data
   Future<void> addNewSchedule(
-      String time, int waterAmount, String day, int nodeNumber) async {
+      DateTime time, int waterAmount, int nodeNumber, bool remind) async {
     final newSched = Schedule()
-      ..time = time
+      ..timeDate = time
       ..waterAmount = waterAmount
-      ..day = day
-      ..nodeNum = nodeNumber;
+      ..nodeNum = nodeNumber
+      ..reminder = remind;
 
     await isar.writeTxn(() => isar.schedules.put(newSched));
 
@@ -107,7 +153,7 @@ class Database extends ChangeNotifier {
       ..cropDescription = cropDescription;
 
     try {
-      await isar.writeTxnSync(() => isar.cropInformations.putSync(newCrop));
+      isar.writeTxnSync(() => isar.cropInformations.putSync(newCrop));
     } catch (Exception) {
       print(Exception);
     }
@@ -117,7 +163,7 @@ class Database extends ChangeNotifier {
     final stage = Stages()
       ..period = stageName
       ..crop = cropName;
-    await isar.writeTxnSync(() => isar.stages.putSync(stage));
+    isar.writeTxnSync(() => isar.stages.putSync(stage));
 
     final crop = await isar.cropInformations
         .where()
@@ -139,7 +185,7 @@ class Database extends ChangeNotifier {
       ..week = weekName
       ..waterAmount = waterAmount;
 
-    await isar.writeTxnSync(() => isar.weeks.putSync(week));
+    isar.writeTxnSync(() => isar.weeks.putSync(week));
 
     final action = await isar.stages
         .where()

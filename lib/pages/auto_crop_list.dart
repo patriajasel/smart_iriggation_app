@@ -31,6 +31,8 @@ class _cropListViewState extends State<cropListView>
 
     List<CropInformation> cropList = cropDatabase.CropInfo;
 
+    print(cropList);
+
     return Container(
       color: Colors.green,
       child: Padding(

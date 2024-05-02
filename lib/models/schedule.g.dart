@@ -17,20 +17,20 @@ const ScheduleSchema = CollectionSchema(
   name: r'Schedule',
   id: 6369058706800408146,
   properties: {
-    r'day': PropertySchema(
-      id: 0,
-      name: r'day',
-      type: IsarType.string,
-    ),
     r'nodeNum': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'nodeNum',
       type: IsarType.long,
     ),
-    r'time': PropertySchema(
+    r'reminder': PropertySchema(
+      id: 1,
+      name: r'reminder',
+      type: IsarType.bool,
+    ),
+    r'timeDate': PropertySchema(
       id: 2,
-      name: r'time',
-      type: IsarType.string,
+      name: r'timeDate',
+      type: IsarType.dateTime,
     ),
     r'waterAmount': PropertySchema(
       id: 3,
@@ -58,8 +58,6 @@ int _scheduleEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.day.length * 3;
-  bytesCount += 3 + object.time.length * 3;
   return bytesCount;
 }
 
@@ -69,9 +67,9 @@ void _scheduleSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.day);
-  writer.writeLong(offsets[1], object.nodeNum);
-  writer.writeString(offsets[2], object.time);
+  writer.writeLong(offsets[0], object.nodeNum);
+  writer.writeBool(offsets[1], object.reminder);
+  writer.writeDateTime(offsets[2], object.timeDate);
   writer.writeLong(offsets[3], object.waterAmount);
 }
 
@@ -82,10 +80,10 @@ Schedule _scheduleDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Schedule();
-  object.day = reader.readString(offsets[0]);
   object.id = id;
-  object.nodeNum = reader.readLong(offsets[1]);
-  object.time = reader.readString(offsets[2]);
+  object.nodeNum = reader.readLong(offsets[0]);
+  object.reminder = reader.readBool(offsets[1]);
+  object.timeDate = reader.readDateTime(offsets[2]);
   object.waterAmount = reader.readLong(offsets[3]);
   return object;
 }
@@ -98,11 +96,11 @@ P _scheduleDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
-    case 1:
       return (reader.readLong(offset)) as P;
+    case 1:
+      return (reader.readBool(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 3:
       return (reader.readLong(offset)) as P;
     default:
@@ -199,136 +197,6 @@ extension ScheduleQueryWhere on QueryBuilder<Schedule, Schedule, QWhereClause> {
 
 extension ScheduleQueryFilter
     on QueryBuilder<Schedule, Schedule, QFilterCondition> {
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'day',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'day',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'day',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'day',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'day',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'day',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'day',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'day',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'day',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> dayIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'day',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<Schedule, Schedule, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -434,132 +302,65 @@ extension ScheduleQueryFilter
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> reminderEqualTo(
+      bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'time',
+        property: r'reminder',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeGreaterThan(
-    String value, {
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeDateEqualTo(
+      DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'timeDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeDateGreaterThan(
+    DateTime value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'time',
+        property: r'timeDate',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeLessThan(
-    String value, {
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeDateLessThan(
+    DateTime value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'time',
+        property: r'timeDate',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeBetween(
-    String lower,
-    String upper, {
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeDateBetween(
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'time',
+        property: r'timeDate',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'time',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'time',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'time',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'time',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'time',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'time',
-        value: '',
       ));
     });
   }
@@ -626,18 +427,6 @@ extension ScheduleQueryLinks
     on QueryBuilder<Schedule, Schedule, QFilterCondition> {}
 
 extension ScheduleQuerySortBy on QueryBuilder<Schedule, Schedule, QSortBy> {
-  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByDay() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'day', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByDayDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'day', Sort.desc);
-    });
-  }
-
   QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByNodeNum() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'nodeNum', Sort.asc);
@@ -650,15 +439,27 @@ extension ScheduleQuerySortBy on QueryBuilder<Schedule, Schedule, QSortBy> {
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByTime() {
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByReminder() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'time', Sort.asc);
+      return query.addSortBy(r'reminder', Sort.asc);
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByTimeDesc() {
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByReminderDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'time', Sort.desc);
+      return query.addSortBy(r'reminder', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByTimeDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByTimeDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeDate', Sort.desc);
     });
   }
 
@@ -677,18 +478,6 @@ extension ScheduleQuerySortBy on QueryBuilder<Schedule, Schedule, QSortBy> {
 
 extension ScheduleQuerySortThenBy
     on QueryBuilder<Schedule, Schedule, QSortThenBy> {
-  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByDay() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'day', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByDayDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'day', Sort.desc);
-    });
-  }
-
   QueryBuilder<Schedule, Schedule, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -713,15 +502,27 @@ extension ScheduleQuerySortThenBy
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByTime() {
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByReminder() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'time', Sort.asc);
+      return query.addSortBy(r'reminder', Sort.asc);
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByTimeDesc() {
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByReminderDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'time', Sort.desc);
+      return query.addSortBy(r'reminder', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByTimeDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByTimeDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeDate', Sort.desc);
     });
   }
 
@@ -740,23 +541,21 @@ extension ScheduleQuerySortThenBy
 
 extension ScheduleQueryWhereDistinct
     on QueryBuilder<Schedule, Schedule, QDistinct> {
-  QueryBuilder<Schedule, Schedule, QDistinct> distinctByDay(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'day', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<Schedule, Schedule, QDistinct> distinctByNodeNum() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'nodeNum');
     });
   }
 
-  QueryBuilder<Schedule, Schedule, QDistinct> distinctByTime(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Schedule, Schedule, QDistinct> distinctByReminder() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'time', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'reminder');
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QDistinct> distinctByTimeDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'timeDate');
     });
   }
 
@@ -775,21 +574,21 @@ extension ScheduleQueryProperty
     });
   }
 
-  QueryBuilder<Schedule, String, QQueryOperations> dayProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'day');
-    });
-  }
-
   QueryBuilder<Schedule, int, QQueryOperations> nodeNumProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'nodeNum');
     });
   }
 
-  QueryBuilder<Schedule, String, QQueryOperations> timeProperty() {
+  QueryBuilder<Schedule, bool, QQueryOperations> reminderProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'time');
+      return query.addPropertyName(r'reminder');
+    });
+  }
+
+  QueryBuilder<Schedule, DateTime, QQueryOperations> timeDateProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'timeDate');
     });
   }
 
@@ -3288,6 +3087,516 @@ extension CropInformationQueryProperty
   QueryBuilder<CropInformation, String, QQueryOperations> soilTypeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'soilType');
+    });
+  }
+}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+extension GetNodesCollection on Isar {
+  IsarCollection<Nodes> get nodes => this.collection();
+}
+
+const NodesSchema = CollectionSchema(
+  name: r'Nodes',
+  id: 5996734671730882318,
+  properties: {
+    r'nodeNumber': PropertySchema(
+      id: 0,
+      name: r'nodeNumber',
+      type: IsarType.long,
+    ),
+    r'plant': PropertySchema(
+      id: 1,
+      name: r'plant',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _nodesEstimateSize,
+  serialize: _nodesSerialize,
+  deserialize: _nodesDeserialize,
+  deserializeProp: _nodesDeserializeProp,
+  idName: r'id',
+  indexes: {},
+  links: {},
+  embeddedSchemas: {},
+  getId: _nodesGetId,
+  getLinks: _nodesGetLinks,
+  attach: _nodesAttach,
+  version: '3.1.0+1',
+);
+
+int _nodesEstimateSize(
+  Nodes object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.plant.length * 3;
+  return bytesCount;
+}
+
+void _nodesSerialize(
+  Nodes object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeLong(offsets[0], object.nodeNumber);
+  writer.writeString(offsets[1], object.plant);
+}
+
+Nodes _nodesDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = Nodes();
+  object.id = id;
+  object.nodeNumber = reader.readLong(offsets[0]);
+  object.plant = reader.readString(offsets[1]);
+  return object;
+}
+
+P _nodesDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readLong(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+Id _nodesGetId(Nodes object) {
+  return object.id;
+}
+
+List<IsarLinkBase<dynamic>> _nodesGetLinks(Nodes object) {
+  return [];
+}
+
+void _nodesAttach(IsarCollection<dynamic> col, Id id, Nodes object) {
+  object.id = id;
+}
+
+extension NodesQueryWhereSort on QueryBuilder<Nodes, Nodes, QWhere> {
+  QueryBuilder<Nodes, Nodes, QAfterWhere> anyId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+}
+
+extension NodesQueryWhere on QueryBuilder<Nodes, Nodes, QWhereClause> {
+  QueryBuilder<Nodes, Nodes, QAfterWhereClause> idEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterWhereClause> idNotEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterWhereClause> idGreaterThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterWhereClause> idBetween(
+    Id lowerId,
+    Id upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension NodesQueryFilter on QueryBuilder<Nodes, Nodes, QFilterCondition> {
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> idEqualTo(Id value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> idGreaterThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> idLessThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> idBetween(
+    Id lower,
+    Id upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> nodeNumberEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nodeNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> nodeNumberGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'nodeNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> nodeNumberLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'nodeNumber',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> nodeNumberBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'nodeNumber',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'plant',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'plant',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'plant',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'plant',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'plant',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'plant',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantContains(String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'plant',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'plant',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'plant',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> plantIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'plant',
+        value: '',
+      ));
+    });
+  }
+}
+
+extension NodesQueryObject on QueryBuilder<Nodes, Nodes, QFilterCondition> {}
+
+extension NodesQueryLinks on QueryBuilder<Nodes, Nodes, QFilterCondition> {}
+
+extension NodesQuerySortBy on QueryBuilder<Nodes, Nodes, QSortBy> {
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> sortByNodeNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nodeNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> sortByNodeNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nodeNumber', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> sortByPlant() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'plant', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> sortByPlantDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'plant', Sort.desc);
+    });
+  }
+}
+
+extension NodesQuerySortThenBy on QueryBuilder<Nodes, Nodes, QSortThenBy> {
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> thenByNodeNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nodeNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> thenByNodeNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nodeNumber', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> thenByPlant() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'plant', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterSortBy> thenByPlantDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'plant', Sort.desc);
+    });
+  }
+}
+
+extension NodesQueryWhereDistinct on QueryBuilder<Nodes, Nodes, QDistinct> {
+  QueryBuilder<Nodes, Nodes, QDistinct> distinctByNodeNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'nodeNumber');
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QDistinct> distinctByPlant(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'plant', caseSensitive: caseSensitive);
+    });
+  }
+}
+
+extension NodesQueryProperty on QueryBuilder<Nodes, Nodes, QQueryProperty> {
+  QueryBuilder<Nodes, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Nodes, int, QQueryOperations> nodeNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'nodeNumber');
+    });
+  }
+
+  QueryBuilder<Nodes, String, QQueryOperations> plantProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'plant');
     });
   }
 }

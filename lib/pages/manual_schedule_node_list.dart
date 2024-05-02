@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_iriggation_app/models/database.dart';
+import 'package:smart_iriggation_app/models/schedule.dart';
 
 class nodeSelector extends StatefulWidget {
   const nodeSelector({super.key});
@@ -10,17 +13,41 @@ class nodeSelector extends StatefulWidget {
 }
 
 class _nodeSelectorState extends State<nodeSelector> {
-  final List<String> _items = [
-    'Node 1: Tomato',
-    'Node 2: Eggplant',
-    'Node 3: Pepper',
-    'Node 4: Potato',
-  ];
+  List<String> arrangedList = [];
 
-  String _selectedItem = 'Node 1: Tomato';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    readNodes();
+  }
+
+  void readNodes() {
+    context.read<Database>().getNodes();
+  }
+
+  void arrangeNodeList(List<Nodes> _nList) {
+    for (int i = 0; i < _nList.length; i++) {
+      String item = "Node #${_nList[i].nodeNumber} : ${_nList[i].plant}";
+      if (!arrangedList.contains(item)) {
+        arrangedList.add(item);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final nodesDatabase = context.watch<Database>();
+    final List<Nodes> _nodes = nodesDatabase.currentNodes;
+
+    arrangeNodeList(_nodes);
+
+    String? _selectedItem;
+
+    if (arrangedList.isNotEmpty) {
+      _selectedItem = arrangedList[0];
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15.0),
       child: Center(
@@ -41,7 +68,7 @@ class _nodeSelectorState extends State<nodeSelector> {
             ),
           ),
           value: _selectedItem,
-          items: _items.map((String item) {
+          items: arrangedList.map((String item) {
             return DropdownMenuItem(
                 value: item,
                 child: Text(
@@ -54,7 +81,9 @@ class _nodeSelectorState extends State<nodeSelector> {
           }).toList(),
           onChanged: (String? value) {
             setState(() {
-              _selectedItem = value!;
+              _selectedItem = value;
+              print(_selectedItem);
+              print(value);
             });
           },
           icon: const Icon(Icons.arrow_drop_down),

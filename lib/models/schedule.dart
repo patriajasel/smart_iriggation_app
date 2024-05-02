@@ -5,10 +5,10 @@ part 'schedule.g.dart';
 @Collection()
 class Schedule {
   Id id = Isar.autoIncrement;
-  late String time;
+  late DateTime timeDate;
   late int waterAmount;
-  late String day;
   late int nodeNum;
+  late bool reminder;
 }
 
 @Collection()
@@ -36,4 +36,11 @@ class CropInformation {
   late String pictureDir;
   late String cropDescription;
   final stages = IsarLinks<Stages>();
+}
+
+@Collection()
+class Nodes {
+  Id id = Isar.autoIncrement;
+  late int nodeNumber;
+  late String plant;
 }
