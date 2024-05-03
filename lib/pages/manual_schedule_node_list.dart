@@ -14,7 +14,6 @@ class nodeSelector extends StatefulWidget {
 
 class _nodeSelectorState extends State<nodeSelector> {
   List<String> arrangedList = [];
-
   @override
   void initState() {
     // TODO: implement initState
@@ -82,8 +81,6 @@ class _nodeSelectorState extends State<nodeSelector> {
           onChanged: (String? value) {
             setState(() {
               _selectedItem = value;
-              print(_selectedItem);
-              print(value);
             });
           },
           icon: const Icon(Icons.arrow_drop_down),

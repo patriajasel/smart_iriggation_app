@@ -106,8 +106,11 @@ class Database extends ChangeNotifier {
   }
 
   Future<void> getSpecificNode(int nodeNumber) async {
-    final fetchedNode =
-        await isar.nodes.filter().nodeNumberEqualTo(nodeNumber).findAll();
+    final fetchedNode = await isar.nodes
+        .where()
+        .filter()
+        .nodeNumberEqualTo(nodeNumber)
+        .findAll();
 
     specificNode.clear();
     specificNode.addAll(fetchedNode);

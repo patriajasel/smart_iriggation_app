@@ -24,11 +24,15 @@ class _ViewScheduleState extends State<ViewSchedule> {
     context.read<Database>().getSchedule();
   }
 
-  void deleteSchedules(BuildContext context, int id) {
+  void deleteSchedules(int id) {
     context.read<Database>().deleteSchedule(id);
+
+    print(id);
   }
 
-  void delete() {}
+  void getPlantType(int nodeNumber) {
+    context.read<Database>().getSpecificNode(nodeNumber);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,6 @@ class _ViewScheduleState extends State<ViewSchedule> {
     final nodesDatabase = context.watch<Database>();
 
     List<Schedule> listSchedules = schedulesDatabase.currentSchedule;
-    List<Nodes> plantType = nodesDatabase.specificNode;
 
     return Scaffold(
       appBar: AppBar(
@@ -57,6 +60,16 @@ class _ViewScheduleState extends State<ViewSchedule> {
           final dbAmount = listSchedules[index].waterAmount;
           final dbNode = listSchedules[index].nodeNum;
 
+          getPlantType(dbNode);
+
+          List<Nodes> plantType = nodesDatabase.specificNode;
+
+          String? plant;
+
+          if (plantType.isNotEmpty) {
+            plant = plantType[0].plant;
+          }
+
           String formattedTime = DateFormat('h:mm a').format(dbTime);
           String formattedDate = DateFormat('MMMM d - EEEE').format(dbTime);
 
@@ -69,7 +82,9 @@ class _ViewScheduleState extends State<ViewSchedule> {
                 children: [
                   SlidableAction(
                     onPressed: (BuildContext context) {
-                      deleteSchedules(context, index);
+                      setState(() {
+                        deleteSchedules(dbIndex);
+                      });
                     },
                     icon: Icons.delete,
                     backgroundColor: Colors.red,
@@ -104,7 +119,7 @@ class _ViewScheduleState extends State<ViewSchedule> {
                     const SizedBox(
                         height: 8.0), // Spacing between title and subtitle
                     Text(
-                      'Node #: $dbNode \nPlant type: Tomato \n$dbAmount (mL)',
+                      'Node #: $dbNode \nPlant type: $plant \n$dbAmount (mL)',
                       style: const TextStyle(
                         fontSize: 14.0,
                         fontFamily: "Rokkitt",
