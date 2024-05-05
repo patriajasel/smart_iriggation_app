@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
+import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 
 class loadingScreen extends StatefulWidget {
   const loadingScreen({super.key});

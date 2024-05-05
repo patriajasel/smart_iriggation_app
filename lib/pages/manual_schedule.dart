@@ -1,12 +1,33 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/models/database.dart';
+import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
+import 'package:workmanager/workmanager.dart';
+import 'manual_bluetooth_conn.dart';
+
+bluetooth_conn btInstance = bluetooth_conn();
+
+void callbackDispatcher() {
+  Workmanager().executeTask((taskName, inputData) {
+    switch (taskName) {
+      case 'sendDataToHC05':
+        btInstance.sendData(
+            "${inputData?['commandType']},${inputData?['node']},${inputData?['command']},");
+        break;
+      default:
+        break;
+    }
+    return Future.value(true);
+  });
+}
 
 class ManualScheduler extends StatefulWidget {
   const ManualScheduler({super.key});
@@ -67,6 +88,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
 
   @override
   Widget build(BuildContext context) {
+    print(connection);
     final nodesDatabase = context.watch<Database>();
     final List<Nodes> _nodes = nodesDatabase.currentNodes;
 
@@ -116,14 +138,16 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                           hour: timeOfDay.hourOfPeriod,
                           minute: timeOfDay.minute);
 
-                      if (currentTime.hour > selectedTime!.hour ||
-                          (currentTime.hour == selectedTime!.hour &&
-                              currentTime.minute > selectedTime!.minute)) {
+                      if (currentTime.hour > timeOfDay.hour ||
+                          (currentTime.hour == timeOfDay.hour &&
+                              currentTime.minute > timeOfDay.minute)) {
                         _dateTime = DateTime.now().add(const Duration(days: 1));
                         formattedDate = formatDate(_dateTime);
                       } else {
                         _dateTime = DateTime.now();
                         formattedDate = formatDate(_dateTime);
+                        print(currentTime);
+                        print(selectedTime);
                       }
 
                       if (timeOfDay.period == DayPeriod.am &&
@@ -364,27 +388,84 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                           width: 10), // Add some space between the buttons
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            context.read<Database>().addNewSchedule(
-                                DateTime(
-                                    _dateTime.year,
-                                    _dateTime.month,
-                                    _dateTime.day,
-                                    selectedTime!.hour,
-                                    selectedTime!.minute),
-                                int.parse(textController.text),
-                                _selectedIndex!,
-                                _remindME);
-                            textController.clear();
+                          onPressed: () async {
+                            DateTime scheduledTime = DateTime(
+                                _dateTime.year,
+                                _dateTime.month,
+                                _dateTime.day,
+                                selectedTime!.hour,
+                                selectedTime!.minute);
 
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: const Text("New schedule added"),
-                              action: SnackBarAction(
-                                  label: "View",
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/checkSched');
-                                  }),
-                            ));
+                            int notifID = int.parse(
+                                "${scheduledTime.month}${scheduledTime.day}${scheduledTime.minute}${scheduledTime.second}");
+                            Duration delay =
+                                scheduledTime.difference(DateTime.now()).abs();
+                            late Map<String, dynamic> commands;
+
+                            setState(() {
+                              context.read<Database>().addNewSchedule(
+                                  notifID,
+                                  scheduledTime,
+                                  int.parse(textController.text),
+                                  _selectedIndex!,
+                                  _remindME);
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: const Text("New schedule added"),
+                                action: SnackBarAction(
+                                    label: "View",
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, '/checkSched');
+                                    }),
+                              ));
+
+                              if (_remindME == true &&
+                                  scheduledTime
+                                          .difference(DateTime.now())
+                                          .inMinutes >
+                                      10) {
+                                notifyMe10Mins(
+                                    int.parse("${notifID}10"),
+                                    "Watering Node #${_selectedIndex!} in 10 minutes. Please make sure that your bluetooth is connected to HC-05",
+                                    scheduledTime
+                                        .subtract(const Duration(minutes: 10)));
+                              }
+
+                              notifyTask(
+                                  notifID,
+                                  "Watering Node #${_selectedIndex!} now",
+                                  scheduledTime);
+
+                              commands = {
+                                'commandType': 'Manual',
+                                'node': getArdPin(_selectedIndex!),
+                                'command': getCommand(_selectedIndex!)
+                              };
+
+                              executeTask("TurnOn${notifID}", "sendDataToHC05",
+                                  delay, commands);
+                            });
+
+                            setState(() {
+                              commands = {
+                                'commandType': 'Manual',
+                                'node': getArdPin(_selectedIndex!),
+                                'command': getCommand(_selectedIndex!)
+                              };
+
+                              executeTask("TurnOff${notifID}", "sendDataToHC05",
+                                  delay + const Duration(seconds: 3), commands);
+
+                              _remindME = false;
+                              _selectedItem = arrangedList[0];
+                              textController.clear();
+                              selectedTime = currentTime;
+                              _dateTime = DateTime.now();
+                              formattedDate = formatDate(_dateTime);
+                              print(connection);
+                            });
                           },
                           child: const Text(
                             'Save',
@@ -421,5 +502,24 @@ class _ManualSchedulerState extends State<ManualScheduler> {
     // Format the date
     String formattedDate = DateFormat('MMMM d, yyyy - EEEE').format(dateTime);
     return formattedDate;
+  }
+
+  Future<void> notifyMe10Mins(
+      int taskID, String body, DateTime schedTime) async {
+    Notify().scheduledNotification(taskID, body, schedTime);
+  }
+
+  Future<void> notifyTask(int taskID, String body, DateTime schedTime) async {
+    Notify().scheduledNotification(taskID, body, schedTime);
+
+    print(connection);
+  }
+
+  Future<void> executeTask(String taskID, String taskName, Duration delay,
+      Map<String, dynamic> inputData) async {
+    Workmanager().registerOneOffTask(taskID, taskName,
+        initialDelay: delay, inputData: inputData);
+
+    print(connection);
   }
 }

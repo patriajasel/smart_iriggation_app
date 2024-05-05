@@ -1,6 +1,83 @@
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
+import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
+
+bool isNode1Open = false;
+bool isNode2Open = false;
+bool isNode3Open = false;
+bool isNode4Open = false;
+bool isPumpOpen = false;
+bool isWaterValveOpen = false;
+bool isFertilizerValveOpen = false;
+
+int getArdPin(int nodeNumber) {
+  switch (nodeNumber) {
+    case 1:
+      return 22;
+    case 2:
+      return 24;
+    case 3:
+      return 26;
+    case 4:
+      return 28;
+    case 5:
+      return 30;
+    case 6:
+      return 32;
+    case 7:
+      return 34;
+    default:
+      return 0;
+  }
+}
+
+String getCommand(int nodeNumber) {
+  if (nodeNumber == 1) {
+    if (isPumpOpen == false) {
+      return "on";
+    } else {
+      return "off";
+    }
+  } else if (nodeNumber == 2) {
+    if (isWaterValveOpen == false) {
+      return "on";
+    } else {
+      return "off";
+    }
+  } else if (nodeNumber == 3) {
+    if (isFertilizerValveOpen == false) {
+      return "on";
+    } else {
+      return "off";
+    }
+  } else if (nodeNumber == 4) {
+    if (isNode1Open == false) {
+      return "on";
+    } else {
+      return "off";
+    }
+  } else if (nodeNumber == 5) {
+    if (isNode2Open == false) {
+      return "on";
+    } else {
+      return "off";
+    }
+  } else if (nodeNumber == 6) {
+    if (isNode3Open == false) {
+      return "on";
+    } else {
+      return "off";
+    }
+  } else if (nodeNumber == 7) {
+    if (isNode4Open == false) {
+      return "on";
+    } else {
+      return "off";
+    }
+  }
+  // Default return statement in case none of the conditions are met
+  throw ArgumentError('Invalid node number: $nodeNumber');
+}
 
 class bluetoothConnection extends StatefulWidget {
   const bluetoothConnection({super.key});
@@ -14,83 +91,6 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
   BluetoothDevice? connectedDevice = deviceConnected;
 
   String? command;
-
-  bool isNode1Open = false;
-  bool isNode2Open = false;
-  bool isNode3Open = false;
-  bool isNode4Open = false;
-  bool isPumpOpen = false;
-  bool isWaterValveOpen = false;
-  bool isFertilizerValveOpen = false;
-
-  int _getArdPin(int nodeNumber) {
-    switch (nodeNumber) {
-      case 1:
-        return 22;
-      case 2:
-        return 24;
-      case 3:
-        return 26;
-      case 4:
-        return 28;
-      case 5:
-        return 30;
-      case 6:
-        return 32;
-      case 7:
-        return 34;
-      default:
-        return 0;
-    }
-  }
-
-  String _getCommand(int nodeNumber) {
-    if (nodeNumber == 1) {
-      if (isPumpOpen == false) {
-        return "on";
-      } else {
-        return "off";
-      }
-    } else if (nodeNumber == 2) {
-      if (isWaterValveOpen == false) {
-        return "on";
-      } else {
-        return "off";
-      }
-    } else if (nodeNumber == 3) {
-      if (isFertilizerValveOpen == false) {
-        return "on";
-      } else {
-        return "off";
-      }
-    } else if (nodeNumber == 4) {
-      if (isNode1Open == false) {
-        return "on";
-      } else {
-        return "off";
-      }
-    } else if (nodeNumber == 5) {
-      if (isNode2Open == false) {
-        return "on";
-      } else {
-        return "off";
-      }
-    } else if (nodeNumber == 6) {
-      if (isNode3Open == false) {
-        return "on";
-      } else {
-        return "off";
-      }
-    } else if (nodeNumber == 7) {
-      if (isNode4Open == false) {
-        return "on";
-      } else {
-        return "off";
-      }
-    }
-    // Default return statement in case none of the conditions are met
-    throw ArgumentError('Invalid node number: $nodeNumber');
-  }
 
   @override
   void initState() {
@@ -210,10 +210,10 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               value: isPumpOpen,
               onChanged: (bool value) {
                 setState(() {
-                  command = "Manual,${_getArdPin(1)},${_getCommand(1)},";
+                  command = "Manual,${getArdPin(1)},${getCommand(1)},";
                   isPumpOpen = value;
                   btInstance.sendData(command!);
-                  print(command);
+                  command = null;
                 });
               }),
         ),
@@ -227,10 +227,10 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               value: isWaterValveOpen,
               onChanged: (bool value) {
                 setState(() {
-                  command = "Manual,${_getArdPin(2)},${_getCommand(2)},";
+                  command = "Manual,${getArdPin(2)},${getCommand(2)},";
                   isWaterValveOpen = value;
                   btInstance.sendData(command!);
-                  print(command);
+                  command = null;
                 });
               }),
         ),
@@ -244,10 +244,10 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               value: isFertilizerValveOpen,
               onChanged: (bool value) {
                 setState(() {
-                  command = "Manual,${_getArdPin(3)},${_getCommand(3)},";
+                  command = "Manual,${getArdPin(3)},${getCommand(3)},";
                   isFertilizerValveOpen = value;
                   btInstance.sendData(command!);
-                  print(command);
+                  command = null;
                 });
               }),
         ),
@@ -261,10 +261,10 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               value: isNode1Open,
               onChanged: (bool value) {
                 setState(() {
-                  command = "Manual,${_getArdPin(4)},${_getCommand(4)},";
+                  command = "Manual,${getArdPin(4)},${getCommand(4)},";
                   isNode1Open = value;
                   btInstance.sendData(command!);
-                  print(command);
+                  command = null;
                 });
               }),
         ),
@@ -278,10 +278,10 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               value: isNode2Open,
               onChanged: (bool value) {
                 setState(() {
-                  command = "Manual,${_getArdPin(5)},${_getCommand(5)},";
+                  command = "Manual,${getArdPin(5)},${getCommand(5)},";
                   isNode2Open = value;
                   btInstance.sendData(command!);
-                  print(command);
+                  command = null;
                 });
               }),
         ),
@@ -295,10 +295,10 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               value: isNode3Open,
               onChanged: (bool value) {
                 setState(() {
-                  command = "Manual,${_getArdPin(6)},${_getCommand(6)},";
+                  command = "Manual,${getArdPin(6)},${getCommand(6)},";
                   isNode3Open = value;
                   btInstance.sendData(command!);
-                  print(command);
+                  command = null;
                 });
               }),
         ),
@@ -312,7 +312,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               value: isNode4Open,
               onChanged: (bool value) {
                 setState(() {
-                  command = "Manual,${_getArdPin(7)},${_getCommand(7)},";
+                  command = "Manual,${getArdPin(7)},${getCommand(7)},";
                   isNode4Open = value;
                   btInstance.sendData(command!);
                   print(command);

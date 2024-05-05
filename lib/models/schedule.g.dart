@@ -27,13 +27,18 @@ const ScheduleSchema = CollectionSchema(
       name: r'reminder',
       type: IsarType.bool,
     ),
-    r'timeDate': PropertySchema(
+    r'scheduleID': PropertySchema(
       id: 2,
+      name: r'scheduleID',
+      type: IsarType.long,
+    ),
+    r'timeDate': PropertySchema(
+      id: 3,
       name: r'timeDate',
       type: IsarType.dateTime,
     ),
     r'waterAmount': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'waterAmount',
       type: IsarType.long,
     )
@@ -69,8 +74,9 @@ void _scheduleSerialize(
 ) {
   writer.writeLong(offsets[0], object.nodeNum);
   writer.writeBool(offsets[1], object.reminder);
-  writer.writeDateTime(offsets[2], object.timeDate);
-  writer.writeLong(offsets[3], object.waterAmount);
+  writer.writeLong(offsets[2], object.scheduleID);
+  writer.writeDateTime(offsets[3], object.timeDate);
+  writer.writeLong(offsets[4], object.waterAmount);
 }
 
 Schedule _scheduleDeserialize(
@@ -83,8 +89,9 @@ Schedule _scheduleDeserialize(
   object.id = id;
   object.nodeNum = reader.readLong(offsets[0]);
   object.reminder = reader.readBool(offsets[1]);
-  object.timeDate = reader.readDateTime(offsets[2]);
-  object.waterAmount = reader.readLong(offsets[3]);
+  object.scheduleID = reader.readLong(offsets[2]);
+  object.timeDate = reader.readDateTime(offsets[3]);
+  object.waterAmount = reader.readLong(offsets[4]);
   return object;
 }
 
@@ -100,8 +107,10 @@ P _scheduleDeserializeProp<P>(
     case 1:
       return (reader.readBool(offset)) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 3:
+      return (reader.readDateTime(offset)) as P;
+    case 4:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -312,6 +321,59 @@ extension ScheduleQueryFilter
     });
   }
 
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> scheduleIDEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'scheduleID',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> scheduleIDGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'scheduleID',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> scheduleIDLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'scheduleID',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> scheduleIDBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'scheduleID',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterFilterCondition> timeDateEqualTo(
       DateTime value) {
     return QueryBuilder.apply(this, (query) {
@@ -451,6 +513,18 @@ extension ScheduleQuerySortBy on QueryBuilder<Schedule, Schedule, QSortBy> {
     });
   }
 
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByScheduleID() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scheduleID', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByScheduleIDDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scheduleID', Sort.desc);
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByTimeDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timeDate', Sort.asc);
@@ -514,6 +588,18 @@ extension ScheduleQuerySortThenBy
     });
   }
 
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByScheduleID() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scheduleID', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByScheduleIDDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scheduleID', Sort.desc);
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByTimeDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timeDate', Sort.asc);
@@ -553,6 +639,12 @@ extension ScheduleQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Schedule, Schedule, QDistinct> distinctByScheduleID() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'scheduleID');
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QDistinct> distinctByTimeDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'timeDate');
@@ -583,6 +675,12 @@ extension ScheduleQueryProperty
   QueryBuilder<Schedule, bool, QQueryOperations> reminderProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'reminder');
+    });
+  }
+
+  QueryBuilder<Schedule, int, QQueryOperations> scheduleIDProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'scheduleID');
     });
   }
 

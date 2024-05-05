@@ -5,6 +5,7 @@ part 'schedule.g.dart';
 @Collection()
 class Schedule {
   Id id = Isar.autoIncrement;
+  late int scheduleID;
   late DateTime timeDate;
   late int waterAmount;
   late int nodeNum;

@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
+import 'package:smart_iriggation_app/models/notifications.dart';
+import 'package:workmanager/workmanager.dart';
 import 'models/database.dart';
 import 'pages/auto_crop_list.dart';
 import 'pages/load_apply_sched_screen.dart';
@@ -9,14 +14,20 @@ import 'pages/manual_schedule.dart';
 import 'pages/splash_screen.dart';
 import 'pages/view_schedules.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 bluetooth_conn btInstance = bluetooth_conn();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  Notify().initNotification();
+
+  await Workmanager().initialize(
+    callbackDispatcher,
+  );
 
   btInstance.requestPermission();
-  btInstance.bluetoothStateListener();
 
   await Database.initialize();
 
@@ -36,6 +47,12 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
+  @override
+  void initState() {
+    super.initState();
+    btInstance.bluetoothStateListener();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

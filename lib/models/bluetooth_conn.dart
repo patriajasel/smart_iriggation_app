@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 final bluetooth = FlutterBluetoothSerial.instance;
 bool bluetoothState = false;
-BluetoothConnection? connection;
 List<BluetoothDevice> devices = [];
 BluetoothDevice? deviceConnected;
+BluetoothConnection? connection;
 
 String? soilType;
 
@@ -24,11 +23,12 @@ class bluetooth_conn {
     connectToHC05();
   }
 
-  void connectToHC05() async {
+  static void connectToHC05() async {
     try {
       for (final device in devices) {
         if (device.name == "HC-05" && device.address == "58:56:00:00:56:64") {
           connection = await BluetoothConnection.toAddress(device.address);
+          print(connection);
           deviceConnected = device;
           return; // Exit the loop once connected
         }
@@ -58,6 +58,8 @@ class bluetooth_conn {
     if (connection?.isConnected ?? false) {
       connection?.output.add(ascii.encode(data));
     }
+
+    print(connection);
   }
 
   void requestPermission() async {
@@ -65,6 +67,7 @@ class bluetooth_conn {
     await Permission.bluetooth.request();
     await Permission.bluetoothScan.request();
     await Permission.bluetoothConnect.request();
+    print("Requesting permission");
   }
 
   void bluetoothStateListener() {

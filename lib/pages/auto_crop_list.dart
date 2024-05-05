@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
 import 'package:smart_iriggation_app/pages/auto_schedule_info.dart';
-import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
+import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 
 class cropListView extends StatefulWidget {
   const cropListView({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_iriggation_app/pages/bluetooth_conn.dart';
+import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'dash_bot_nav.dart';
 import 'dash_node_monitor.dart';
 import 'dash_tank_monitor.dart';
@@ -10,6 +10,7 @@ class MyDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bluetooth_conn btInstance = bluetooth_conn();
+    print(connection);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

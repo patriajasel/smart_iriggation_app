@@ -3,7 +3,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_iriggation_app/models/database.dart';
+import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
+import 'package:workmanager/workmanager.dart';
 
 class ViewSchedule extends StatefulWidget {
   const ViewSchedule({super.key});
@@ -56,6 +58,7 @@ class _ViewScheduleState extends State<ViewSchedule> {
         itemCount: listSchedules.length, // Number of cards
         itemBuilder: (BuildContext context, int index) {
           final dbIndex = listSchedules[index].id;
+          final dbSchedID = listSchedules[index].scheduleID;
           final dbTime = listSchedules[index].timeDate;
           final dbAmount = listSchedules[index].waterAmount;
           final dbNode = listSchedules[index].nodeNum;
@@ -84,6 +87,10 @@ class _ViewScheduleState extends State<ViewSchedule> {
                     onPressed: (BuildContext context) {
                       setState(() {
                         deleteSchedules(dbIndex);
+                        Notify().cancelSchedule(dbSchedID);
+                        Notify().cancelSchedule(int.parse("${dbSchedID}10"));
+                        Workmanager().cancelByUniqueName("TurnOn$dbSchedID");
+                        Workmanager().cancelByUniqueName("TurnOff$dbSchedID");
                       });
                     },
                     icon: Icons.delete,
