@@ -10,7 +10,6 @@ class MyDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bluetooth_conn btInstance = bluetooth_conn();
-    print(connection);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

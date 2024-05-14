@@ -88,7 +88,7 @@ class bluetoothConnection extends StatefulWidget {
 
 class _bluetoothConnectionState extends State<bluetoothConnection> {
   bluetooth_conn btInstance = bluetooth_conn();
-  BluetoothDevice? connectedDevice = deviceConnected;
+  BluetoothDevice? connectedDevice;
 
   String? command;
 

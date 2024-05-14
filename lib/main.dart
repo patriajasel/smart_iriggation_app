@@ -1,7 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:workmanager/workmanager.dart';
@@ -23,11 +21,20 @@ void main() async {
   tz.initializeTimeZones();
   Notify().initNotification();
 
+  await Permission.notification.isDenied.then((value) {
+    if (value) {
+      Permission.notification.request();
+    }
+  });
+
+  //await initializeService();
+
   await Workmanager().initialize(
     callbackDispatcher,
   );
 
   btInstance.requestPermission();
+  btInstance.bluetoothStateListener();
 
   await Database.initialize();
 
@@ -46,11 +53,11 @@ class Main extends StatefulWidget {
   State<Main> createState() => _MainState();
 }
 
-class _MainState extends State<Main> {
+class _MainState extends State<Main> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    btInstance.bluetoothStateListener();
+    //WidgetsBinding.instance.addObserver(this);
   }
 
   @override

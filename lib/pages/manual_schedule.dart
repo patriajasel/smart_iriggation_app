@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -21,6 +21,12 @@ void callbackDispatcher() {
       case 'sendDataToHC05':
         btInstance.sendData(
             "${inputData?['commandType']},${inputData?['node']},${inputData?['command']},");
+        break;
+      case 'Open Foreground':
+        final service = FlutterBackgroundService();
+
+        service.startService();
+        FlutterBackgroundService().invoke("setAsForeGround");
         break;
       default:
         break;
@@ -88,7 +94,6 @@ class _ManualSchedulerState extends State<ManualScheduler> {
 
   @override
   Widget build(BuildContext context) {
-    print(connection);
     final nodesDatabase = context.watch<Database>();
     final List<Nodes> _nodes = nodesDatabase.currentNodes;
 
@@ -464,7 +469,6 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                               selectedTime = currentTime;
                               _dateTime = DateTime.now();
                               formattedDate = formatDate(_dateTime);
-                              print(connection);
                             });
                           },
                           child: const Text(
@@ -511,15 +515,11 @@ class _ManualSchedulerState extends State<ManualScheduler> {
 
   Future<void> notifyTask(int taskID, String body, DateTime schedTime) async {
     Notify().scheduledNotification(taskID, body, schedTime);
-
-    print(connection);
   }
 
   Future<void> executeTask(String taskID, String taskName, Duration delay,
       Map<String, dynamic> inputData) async {
     Workmanager().registerOneOffTask(taskID, taskName,
         initialDelay: delay, inputData: inputData);
-
-    print(connection);
   }
 }
