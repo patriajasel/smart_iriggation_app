@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
-import 'package:workmanager/workmanager.dart';
 
 class ViewSchedule extends StatefulWidget {
   const ViewSchedule({super.key});
@@ -89,8 +88,6 @@ class _ViewScheduleState extends State<ViewSchedule> {
                         deleteSchedules(dbIndex);
                         Notify().cancelSchedule(dbSchedID);
                         Notify().cancelSchedule(int.parse("${dbSchedID}10"));
-                        Workmanager().cancelByUniqueName("TurnOn$dbSchedID");
-                        Workmanager().cancelByUniqueName("TurnOff$dbSchedID");
                       });
                     },
                     icon: Icons.delete,

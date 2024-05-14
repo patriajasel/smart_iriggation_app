@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -10,30 +9,9 @@ import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
-import 'package:workmanager/workmanager.dart';
 import 'manual_bluetooth_conn.dart';
 
 bluetooth_conn btInstance = bluetooth_conn();
-
-void callbackDispatcher() {
-  Workmanager().executeTask((taskName, inputData) {
-    switch (taskName) {
-      case 'sendDataToHC05':
-        btInstance.sendData(
-            "${inputData?['commandType']},${inputData?['node']},${inputData?['command']},");
-        break;
-      case 'Open Foreground':
-        final service = FlutterBackgroundService();
-
-        service.startService();
-        FlutterBackgroundService().invoke("setAsForeGround");
-        break;
-      default:
-        break;
-    }
-    return Future.value(true);
-  });
-}
 
 class ManualScheduler extends StatefulWidget {
   const ManualScheduler({super.key});
@@ -518,8 +496,5 @@ class _ManualSchedulerState extends State<ManualScheduler> {
   }
 
   Future<void> executeTask(String taskID, String taskName, Duration delay,
-      Map<String, dynamic> inputData) async {
-    Workmanager().registerOneOffTask(taskID, taskName,
-        initialDelay: delay, inputData: inputData);
-  }
+      Map<String, dynamic> inputData) async {}
 }

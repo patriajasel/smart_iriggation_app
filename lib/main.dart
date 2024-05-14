@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
+import 'package:smart_iriggation_app/models/foreground.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
-import 'package:workmanager/workmanager.dart';
 import 'models/database.dart';
 import 'pages/auto_crop_list.dart';
 import 'pages/load_apply_sched_screen.dart';
@@ -27,11 +28,7 @@ void main() async {
     }
   });
 
-  //await initializeService();
-
-  await Workmanager().initialize(
-    callbackDispatcher,
-  );
+  await initializeService();
 
   btInstance.requestPermission();
   btInstance.bluetoothStateListener();
@@ -57,7 +54,33 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    //WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    final service = FlutterBackgroundService();
+
+    service.startService();
+
+    if (state == AppLifecycleState.paused) {
+      service.invoke('setAsForeground');
+      print("App is in background");
+    } else if (state == AppLifecycleState.resumed) {
+      service.invoke('setAsBackground');
+      print("App is in foreground");
+    } else if (state == AppLifecycleState.detached) {
+      service.invoke('stopService');
+      print("App is detached (closed)");
+    }
   }
 
   @override
