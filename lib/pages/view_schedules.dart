@@ -21,14 +21,17 @@ class _ViewScheduleState extends State<ViewSchedule> {
     readSchedules();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void readSchedules() {
     context.read<Database>().getSchedule();
   }
 
   void deleteSchedules(int id) {
     context.read<Database>().deleteSchedule(id);
-
-    print(id);
   }
 
   void getPlantType(int nodeNumber) {
@@ -87,7 +90,6 @@ class _ViewScheduleState extends State<ViewSchedule> {
                       setState(() {
                         deleteSchedules(dbIndex);
                         Notify().cancelSchedule(dbSchedID);
-                        Notify().cancelSchedule(int.parse("${dbSchedID}10"));
                       });
                     },
                     icon: Icons.delete,

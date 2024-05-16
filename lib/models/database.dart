@@ -34,6 +34,7 @@ class Database extends ChangeNotifier {
   final List<Schedule> currentSchedule = [];
   final List<CropInformation> CropInfo = [];
   final List<CropInformation> specificCrop = [];
+  final List<Schedule> firstSchedule = [];
 
   static List items = [];
 
@@ -118,14 +119,13 @@ class Database extends ChangeNotifier {
   }
 
   //Create a data
-  Future<void> addNewSchedule(int schedID, DateTime time, int waterAmount,
-      int nodeNumber, bool remind) async {
+  Future<void> addNewSchedule(
+      int schedID, DateTime time, int waterAmount, int nodeNumber) async {
     final newSched = Schedule()
       ..scheduleID = schedID
       ..timeDate = time
       ..waterAmount = waterAmount
-      ..nodeNum = nodeNumber
-      ..reminder = remind;
+      ..nodeNum = nodeNumber;
 
     await isar.writeTxn(() => isar.schedules.put(newSched));
 
@@ -139,6 +139,17 @@ class Database extends ChangeNotifier {
         await isar.schedules.where().sortByTimeDate().findAll();
     currentSchedule.clear();
     currentSchedule.addAll(fetchedSchedules);
+    notifyListeners();
+  }
+
+  //Getting nearest Schedule
+  Future<void> getFirstSchedule() async {
+    Schedule? fetchedSchedules =
+        await isar.schedules.where().sortByTimeDate().findFirst();
+    firstSchedule.clear();
+    if (fetchedSchedules != null) {
+      firstSchedule.add(fetchedSchedules);
+    }
     notifyListeners();
   }
 

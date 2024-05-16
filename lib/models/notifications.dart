@@ -40,6 +40,6 @@ class Notify {
 
   Future cancelSchedule(int schedID) async {
     await notificationsPlugin.cancel(schedID);
-    await notificationsPlugin.cancel(int.parse("${schedID}10"));
+    await notificationsPlugin.cancel(int.parse('${schedID}10'));
   }
 }

@@ -51,6 +51,7 @@ dependencies:
   timezone: ^0.9.3
   flutter_background_service: ^5.0.5
   flutter_background_service_android: ^6.2.2
+  schedulers: ^1.0.1
 
 dev_dependencies:
   flutter_test:

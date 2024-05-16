@@ -9,7 +9,6 @@ class Schedule {
   late DateTime timeDate;
   late int waterAmount;
   late int nodeNum;
-  late bool reminder;
 }
 
 @Collection()

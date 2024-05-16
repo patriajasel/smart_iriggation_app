@@ -9,7 +9,6 @@ import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
-import 'manual_bluetooth_conn.dart';
 
 bluetooth_conn btInstance = bluetooth_conn();
 
@@ -27,7 +26,6 @@ class _ManualSchedulerState extends State<ManualScheduler> {
   DateTime _dateTime = DateTime.now();
   late String formattedDate = formatDate(_dateTime);
 
-  bool _remindME = false;
   int? _selectedIndex;
 
   final textController = TextEditingController();
@@ -308,31 +306,6 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                             EdgeInsets.only(top: 15.0, right: 8.0, left: 8.0),
                         child: Divider(color: Colors.white, thickness: 1.0),
                       ),
-
-                      // REMIND ME
-                      Theme(
-                        data: ThemeData(useMaterial3: false),
-                        child: SwitchListTile(
-                            activeColor: Colors.blueAccent.shade700,
-                            inactiveThumbColor: Colors.white70,
-                            inactiveTrackColor: Colors.white,
-                            activeTrackColor: Colors.white,
-                            secondary: const Icon(Icons.notifications,
-                                color: Colors.white),
-                            title: const Text(
-                              "Remind Me",
-                              style: TextStyle(
-                                  fontFamily: "Rokkitt",
-                                  fontSize: 18,
-                                  color: Colors.white),
-                            ),
-                            value: _remindME,
-                            onChanged: (bool value) {
-                              setState(() {
-                                _remindME = value;
-                              });
-                            }),
-                      ),
                     ],
                   ),
                 ),
@@ -372,81 +345,55 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            DateTime scheduledTime = DateTime(
+                            setState(() {
+                              //CONVERTING TIMEOFDAY TO DATETIME
+                              DateTime scheduledTime = DateTime(
                                 _dateTime.year,
                                 _dateTime.month,
                                 _dateTime.day,
                                 selectedTime!.hour,
-                                selectedTime!.minute);
+                                selectedTime!.minute,
+                              );
 
-                            int notifID = int.parse(
-                                "${scheduledTime.month}${scheduledTime.day}${scheduledTime.minute}${scheduledTime.second}");
-                            Duration delay =
-                                scheduledTime.difference(DateTime.now()).abs();
-                            late Map<String, dynamic> commands;
+                              //CREATING THE SCHEDULE ID
+                              int schedID = int.parse(
+                                  "${scheduledTime.year}${scheduledTime.hour}${scheduledTime.minute}");
 
-                            setState(() {
-                              context.read<Database>().addNewSchedule(
-                                  notifID,
+                              //ADDING SCHEDULE IN THE ISAR DATABASE
+                              nodesDatabase.addNewSchedule(
+                                  schedID,
                                   scheduledTime,
                                   int.parse(textController.text),
-                                  _selectedIndex!,
-                                  _remindME);
+                                  _selectedIndex!);
 
+                              //SHOWING SNACK BAR
+                              const snackbar = SnackBar(
+                                  content: Text('New Schedule Added'),
+                                  duration: Duration(seconds: 3));
                               ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: const Text("New schedule added"),
-                                action: SnackBarAction(
-                                    label: "View",
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, '/checkSched');
-                                    }),
-                              ));
+                                  .showSnackBar(snackbar);
 
-                              if (_remindME == true &&
-                                  scheduledTime
-                                          .difference(DateTime.now())
-                                          .inMinutes >
-                                      10) {
+                              //ASSIGNING NOTIFICATION
+                              Duration difference =
+                                  DateTime.now().difference(scheduledTime);
+                              int differenceInMinutes =
+                                  difference.inMinutes.abs();
+
+                              if (differenceInMinutes > 10) {
                                 notifyMe10Mins(
-                                    int.parse("${notifID}10"),
-                                    "Watering Node #${_selectedIndex!} in 10 minutes. Please make sure that your bluetooth is connected to HC-05",
+                                    int.parse("${schedID}10"),
+                                    "Watering Node #: $_selectedIndex in 10 mins. Please open the app to connect to to Bluetooth Device.",
                                     scheduledTime
                                         .subtract(const Duration(minutes: 10)));
                               }
 
                               notifyTask(
-                                  notifID,
-                                  "Watering Node #${_selectedIndex!} now",
+                                  schedID,
+                                  "Watering Node #: $_selectedIndex.",
                                   scheduledTime);
 
-                              commands = {
-                                'commandType': 'Manual',
-                                'node': getArdPin(_selectedIndex!),
-                                'command': getCommand(_selectedIndex!)
-                              };
-
-                              executeTask("TurnOn${notifID}", "sendDataToHC05",
-                                  delay, commands);
-                            });
-
-                            setState(() {
-                              commands = {
-                                'commandType': 'Manual',
-                                'node': getArdPin(_selectedIndex!),
-                                'command': getCommand(_selectedIndex!)
-                              };
-
-                              executeTask("TurnOff${notifID}", "sendDataToHC05",
-                                  delay + const Duration(seconds: 3), commands);
-
-                              _remindME = false;
-                              _selectedItem = arrangedList[0];
-                              textController.clear();
                               selectedTime = currentTime;
-                              _dateTime = DateTime.now();
-                              formattedDate = formatDate(_dateTime);
+                              textController.clear();
                             });
                           },
                           child: const Text(
@@ -494,7 +441,4 @@ class _ManualSchedulerState extends State<ManualScheduler> {
   Future<void> notifyTask(int taskID, String body, DateTime schedTime) async {
     Notify().scheduledNotification(taskID, body, schedTime);
   }
-
-  Future<void> executeTask(String taskID, String taskName, Duration delay,
-      Map<String, dynamic> inputData) async {}
 }

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
+import 'package:smart_iriggation_app/models/create_schedule_task.dart';
 import 'package:smart_iriggation_app/models/foreground.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
 import 'models/database.dart';
@@ -53,6 +56,10 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> with WidgetsBindingObserver {
   @override
   void initState() {
+    Timer.periodic(const Duration(minutes: 1), (timer) {
+      getFirstSchedule();
+      print("First Schedule fetched successfully");
+    });
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -83,8 +90,23 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     }
   }
 
+  void getFirstSchedule() {
+    if (mounted) {
+      setState(() {
+        context.read<Database>().getFirstSchedule();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final firstSched = context.watch<Database>();
+    final deleteSched = context.read<Database>();
+
+    if (firstSched.firstSchedule.isNotEmpty) {
+      getTheSchedule(firstSched, deleteSched);
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
