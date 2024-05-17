@@ -56,7 +56,7 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> with WidgetsBindingObserver {
   @override
   void initState() {
-    Timer.periodic(const Duration(minutes: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 10), (timer) {
       getFirstSchedule();
       print("First Schedule fetched successfully");
     });

@@ -98,11 +98,22 @@ class _ManualSchedulerState extends State<ManualScheduler> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // DISPLAYING CURRENT TIME AND SELECTED TIME
-            Text(
-              selectedTime != null
-                  ? "${selectedTime!.hourOfPeriod < 10 ? '0${selectedTime!.hourOfPeriod}' : selectedTime!.hourOfPeriod} : ${selectedTime!.minute < 10 ? '0${selectedTime!.minute}' : selectedTime!.minute}  ${selectedTime!.period.toString() == "DayPeriod.am" ? 'AM' : 'PM'}"
-                  : "${currentTime.hourOfPeriod < 10 ? '0${currentTime.hourOfPeriod}' : currentTime.hourOfPeriod} : ${currentTime.minute < 10 ? '0${currentTime.minute}' : currentTime.minute}  ${currentTime.period.toString() == "DayPeriod.am" ? 'AM' : 'PM'}",
-              style: const TextStyle(fontFamily: "Stint", fontSize: 50.0),
+            Card(
+              color: Colors.blue.shade500,
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Text(
+                  selectedTime != null
+                      ? "${selectedTime!.hourOfPeriod < 10 ? '0${selectedTime!.hourOfPeriod}' : selectedTime!.hourOfPeriod} : ${selectedTime!.minute < 10 ? '0${selectedTime!.minute}' : selectedTime!.minute}  ${selectedTime!.period.toString() == "DayPeriod.am" ? 'AM' : 'PM'}"
+                      : "${currentTime.hourOfPeriod < 10 ? '0${currentTime.hourOfPeriod}' : currentTime.hourOfPeriod} : ${currentTime.minute < 10 ? '0${currentTime.minute}' : currentTime.minute}  ${currentTime.period.toString() == "DayPeriod.am" ? 'AM' : 'PM'}",
+                  style: const TextStyle(
+                      fontFamily: "Stint",
+                      fontSize: 50.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
 
             // SHOWING TIME PICKER TO PICK TIME
@@ -152,162 +163,146 @@ class _ManualSchedulerState extends State<ManualScheduler> {
               ),
             ),
 
+            const Padding(
+              padding: EdgeInsets.only(top: 8.0, right: 8.0, left: 8.0),
+              child: Divider(color: Colors.black, thickness: 1.0),
+            ),
+
             // DATE PICKER
             Expanded(
               child: Container(
-                margin: const EdgeInsets.only(top: 20.0),
+                margin: const EdgeInsets.only(top: 10.0),
                 constraints: const BoxConstraints(maxWidth: double.infinity),
-                child: Card(
-                  // Add your card content here
-                  color: Colors.blue.shade400,
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          formattedDate,
-                          style: const TextStyle(
-                              fontFamily: "Rokkitt",
-                              fontSize: 16.0,
-                              color: Colors.white),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 5.0,
-                              ),
-                              child: VerticalDivider(
-                                color: Colors.white,
-                                thickness: 1.0,
-                                width: 10.0,
-                              ),
-                            ),
-                            TextButton.icon(
-                              onPressed: _showDatePicker,
-                              icon: const Icon(
-                                Icons.calendar_month,
-                                color: Colors.white,
-                              ),
-                              label: const Text(
-                                  ''), // You can put an empty Text widget or null here
-                            ),
-                          ],
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text(
+                        formattedDate,
+                        style: const TextStyle(
+                          fontFamily: "Rokkitt",
+                          fontSize: 16.0,
+                          //color: Colors.white
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Divider(color: Colors.white, thickness: 1.0),
+                      trailing: TextButton.icon(
+                        onPressed: _showDatePicker,
+                        icon: const Icon(
+                          Icons.calendar_month,
+                          color: Colors.blue,
+                        ),
+                        label: const Text(
+                            ''), // You can put an empty Text widget or null here
                       ),
+                    ),
 
-                      // SELECTING THE NODE
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 15.0),
-                        child: Center(
-                          child: DropdownButtonFormField(
+                    // SELECTING THE NODE
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 15.0),
+                      child: Center(
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Select a Node',
+                            labelStyle: const TextStyle(
+                              fontFamily: "Rokkitt",
+                              fontSize: 24.0,
+                              //color: Colors.white
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  //color: Colors.white
+                                  ), // Set border color
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  //  color: Colors.white
+                                  ), // Set border color
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          value: _selectedItem,
+                          items: arrangedList.map((String item) {
+                            return DropdownMenuItem(
+                                value: item,
+                                child: Text(
+                                  item,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Rokkitt",
+                                      fontSize: 18.0),
+                                ));
+                          }).toList(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedItem = value;
+                              _selectedIndex =
+                                  arrangedList.indexOf(_selectedItem!) + 1;
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_drop_down),
+                          //iconEnabledColor: Colors.white,
+                        ),
+                      ),
+                    ),
+
+                    // TEXTFIELD FOR MEASUREMENTS
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Water amount (mL)",
+                              style: TextStyle(
+                                fontFamily: "Rokkitt",
+                                fontSize: 18.0,
+                                //color: Colors.white
+                              ),
+                            ),
+                          ),
+                          TextField(
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            controller: textController,
+                            style: const TextStyle(
+                                // color: Colors.white, fontFamily: "Rokkitt"
+                                ),
                             decoration: InputDecoration(
-                              labelText: 'Select a Node',
-                              labelStyle: const TextStyle(
+                              hintText: 'Input water amount...',
+                              hintStyle: const TextStyle(
+                                  //color: Colors.white70,
                                   fontFamily: "Rokkitt",
-                                  fontSize: 24.0,
-                                  color: Colors.white),
+                                  fontSize: 16.0),
+                              suffixIcon: IconButton(
+                                //color: Colors.white,
+                                onPressed: () {
+                                  textController.clear();
+                                },
+                                icon: const Icon(Icons.clear),
+                              ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    color: Colors.white), // Set border color
+                                    //  color: Colors.white
+                                    ), // Set border color
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    color: Colors.white), // Set border color
+                                    // color: Colors.white
+                                    ), // Set border color
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            value: _selectedItem,
-                            items: arrangedList.map((String item) {
-                              return DropdownMenuItem(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: "Rokkitt",
-                                        fontSize: 18.0),
-                                  ));
-                            }).toList(),
-                            onChanged: (String? value) {
-                              setState(() {
-                                _selectedItem = value;
-                                _selectedIndex =
-                                    arrangedList.indexOf(_selectedItem!) + 1;
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconEnabledColor: Colors.white,
-                          ),
-                        ),
+                          )
+                        ],
                       ),
-
-                      // TEXTFIELD FOR MEASUREMENTS
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Water amount (mL)",
-                                style: TextStyle(
-                                    fontFamily: "Rokkitt",
-                                    fontSize: 18.0,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            TextField(
-                              keyboardType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              controller: textController,
-                              style: const TextStyle(
-                                  color: Colors.white, fontFamily: "Rokkitt"),
-                              decoration: InputDecoration(
-                                hintText: 'Input water amount...',
-                                hintStyle: const TextStyle(
-                                    color: Colors.white70,
-                                    fontFamily: "Rokkitt",
-                                    fontSize: 16.0),
-                                suffixIcon: IconButton(
-                                  color: Colors.white,
-                                  onPressed: () {
-                                    textController.clear();
-                                  },
-                                  icon: const Icon(Icons.clear),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.white), // Set border color
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.white), // Set border color
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-
-                      const Padding(
-                        padding:
-                            EdgeInsets.only(top: 15.0, right: 8.0, left: 8.0),
-                        child: Divider(color: Colors.white, thickness: 1.0),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -315,7 +310,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
             // SAVE AND CANCEL BUTTONS
             Container(
               margin: const EdgeInsets.symmetric(
-                  vertical: 20.0), // Add margin to the top
+                  vertical: 20.0, horizontal: 15.0), // Add margin to the top
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
