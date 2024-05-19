@@ -1,0 +1,7 @@
+1. Optimize scheduling of adding the nearest schedule (use Scheduler)
+2. Make a list for the dropdown of water amounts
+3. Change Isar database and add type for schedules and add new sorting in the database file
+4. Create the algorithm for monitoring water and fertilizer level in arduino
+5. initialize flutter logic for monitoring water and fertilizer level
+6. Edit the design of crop information to make a choice on what node they are picking
+7. Create a new page for the Node monitoring which shows the Manual and Automatic Schedules.

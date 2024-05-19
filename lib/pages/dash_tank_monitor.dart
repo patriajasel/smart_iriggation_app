@@ -17,13 +17,13 @@ class tankMonitor extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(10.0),
                 child: Text(
                   'Tank Monitoring',
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
+                      fontSize: 25.0,
                       fontFamily: "Rokkitt"),
                 ),
               ),
@@ -39,8 +39,8 @@ class tankMonitor extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       color: Colors.white70,
-                      height: 200,
-                      width: 270,
+                      height: 300,
+                      width: 360,
                       child: const MyBarChart(),
                     ),
                   ),
@@ -75,18 +75,24 @@ class MyBarChart extends StatelessWidget {
 BarTouchData get barTouchData => BarTouchData(
     enabled: false,
     touchTooltipData: BarTouchTooltipData(
+        getTooltipColor: (BarChartGroupData group) => Colors.transparent,
         tooltipPadding: EdgeInsets.zero,
         tooltipMargin: 8,
         getTooltipItem: (BarChartGroupData group, int groupIndex,
             BarChartRodData rod, int rodIndex) {
           return BarTooltipItem(
-              rod.toY.toString(), const TextStyle(fontWeight: FontWeight.bold));
+            "${rod.toY.toString()}%",
+            const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15.0,
+            ),
+          );
         }));
 
 Widget getTitles(double value, TitleMeta meta) {
   const style = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 14,
+    fontSize: 15,
   );
   String text;
   switch (value.toInt()) {
@@ -146,12 +152,24 @@ LinearGradient get _barsGradiant => const LinearGradient(
 List<BarChartGroupData> get barGroups => [
       BarChartGroupData(
         x: 0,
-        barRods: [BarChartRodData(toY: 100, gradient: _barsGradiant)],
+        barRods: [
+          BarChartRodData(
+              toY: 100.0,
+              gradient: _barsGradiant,
+              width: 20,
+              borderRadius: BorderRadius.circular(4))
+        ],
         showingTooltipIndicators: [0],
       ),
       BarChartGroupData(
         x: 1,
-        barRods: [BarChartRodData(toY: 30.5, gradient: _barsGradiant)],
+        barRods: [
+          BarChartRodData(
+              toY: 30.5,
+              gradient: _barsGradiant,
+              width: 20,
+              borderRadius: BorderRadius.circular(4))
+        ],
         showingTooltipIndicators: [0],
       ),
     ];

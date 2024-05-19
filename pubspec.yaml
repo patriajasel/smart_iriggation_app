@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_animate: ^4.5.0
   lottie: ^3.1.0
-  fl_chart: ^0.67.0
+  fl_chart: ^0.68.0
   flutter_bluetooth_serial: ^0.4.0
   permission_handler: ^11.3.1
   day_picker: ^2.2.0
