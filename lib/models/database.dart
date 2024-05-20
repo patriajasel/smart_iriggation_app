@@ -120,12 +120,13 @@ class Database extends ChangeNotifier {
 
   //Create a data
   Future<void> addNewSchedule(
-      int schedID, DateTime time, int waterAmount, int nodeNumber) async {
+      int schedID, DateTime time, int waterAmount, int nodeNumber, String commandType) async {
     final newSched = Schedule()
       ..scheduleID = schedID
       ..timeDate = time
       ..waterAmount = waterAmount
-      ..nodeNum = nodeNumber;
+      ..nodeNum = nodeNumber
+      ..commandType = commandType;
 
     await isar.writeTxn(() => isar.schedules.put(newSched));
 

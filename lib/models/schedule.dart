@@ -9,6 +9,7 @@ class Schedule {
   late DateTime timeDate;
   late int waterAmount;
   late int nodeNum;
+  late String commandType;
 }
 
 @Collection()

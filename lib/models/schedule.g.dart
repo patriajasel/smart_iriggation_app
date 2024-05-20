@@ -17,23 +17,28 @@ const ScheduleSchema = CollectionSchema(
   name: r'Schedule',
   id: 6369058706800408146,
   properties: {
-    r'nodeNum': PropertySchema(
+    r'commandType': PropertySchema(
       id: 0,
+      name: r'commandType',
+      type: IsarType.string,
+    ),
+    r'nodeNum': PropertySchema(
+      id: 1,
       name: r'nodeNum',
       type: IsarType.long,
     ),
     r'scheduleID': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'scheduleID',
       type: IsarType.long,
     ),
     r'timeDate': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'timeDate',
       type: IsarType.dateTime,
     ),
     r'waterAmount': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'waterAmount',
       type: IsarType.long,
     )
@@ -58,6 +63,7 @@ int _scheduleEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.commandType.length * 3;
   return bytesCount;
 }
 
@@ -67,10 +73,11 @@ void _scheduleSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.nodeNum);
-  writer.writeLong(offsets[1], object.scheduleID);
-  writer.writeDateTime(offsets[2], object.timeDate);
-  writer.writeLong(offsets[3], object.waterAmount);
+  writer.writeString(offsets[0], object.commandType);
+  writer.writeLong(offsets[1], object.nodeNum);
+  writer.writeLong(offsets[2], object.scheduleID);
+  writer.writeDateTime(offsets[3], object.timeDate);
+  writer.writeLong(offsets[4], object.waterAmount);
 }
 
 Schedule _scheduleDeserialize(
@@ -80,11 +87,12 @@ Schedule _scheduleDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Schedule();
+  object.commandType = reader.readString(offsets[0]);
   object.id = id;
-  object.nodeNum = reader.readLong(offsets[0]);
-  object.scheduleID = reader.readLong(offsets[1]);
-  object.timeDate = reader.readDateTime(offsets[2]);
-  object.waterAmount = reader.readLong(offsets[3]);
+  object.nodeNum = reader.readLong(offsets[1]);
+  object.scheduleID = reader.readLong(offsets[2]);
+  object.timeDate = reader.readDateTime(offsets[3]);
+  object.waterAmount = reader.readLong(offsets[4]);
   return object;
 }
 
@@ -96,12 +104,14 @@ P _scheduleDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 3:
+      return (reader.readDateTime(offset)) as P;
+    case 4:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -197,6 +207,138 @@ extension ScheduleQueryWhere on QueryBuilder<Schedule, Schedule, QWhereClause> {
 
 extension ScheduleQueryFilter
     on QueryBuilder<Schedule, Schedule, QFilterCondition> {
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> commandTypeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'commandType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition>
+      commandTypeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'commandType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> commandTypeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'commandType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> commandTypeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'commandType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> commandTypeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'commandType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> commandTypeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'commandType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> commandTypeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'commandType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> commandTypeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'commandType',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> commandTypeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'commandType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition>
+      commandTypeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'commandType',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -470,6 +612,18 @@ extension ScheduleQueryLinks
     on QueryBuilder<Schedule, Schedule, QFilterCondition> {}
 
 extension ScheduleQuerySortBy on QueryBuilder<Schedule, Schedule, QSortBy> {
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByCommandType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'commandType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByCommandTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'commandType', Sort.desc);
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByNodeNum() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'nodeNum', Sort.asc);
@@ -521,6 +675,18 @@ extension ScheduleQuerySortBy on QueryBuilder<Schedule, Schedule, QSortBy> {
 
 extension ScheduleQuerySortThenBy
     on QueryBuilder<Schedule, Schedule, QSortThenBy> {
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByCommandType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'commandType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByCommandTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'commandType', Sort.desc);
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -584,6 +750,13 @@ extension ScheduleQuerySortThenBy
 
 extension ScheduleQueryWhereDistinct
     on QueryBuilder<Schedule, Schedule, QDistinct> {
+  QueryBuilder<Schedule, Schedule, QDistinct> distinctByCommandType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'commandType', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QDistinct> distinctByNodeNum() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'nodeNum');
@@ -614,6 +787,12 @@ extension ScheduleQueryProperty
   QueryBuilder<Schedule, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Schedule, String, QQueryOperations> commandTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'commandType');
     });
   }
 

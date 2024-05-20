@@ -32,6 +32,9 @@ class _ManualSchedulerState extends State<ManualScheduler> {
 
   List<String> arrangedList = [];
 
+  final String commandType = "Scheduled";
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -109,7 +112,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                       : "${currentTime.hourOfPeriod < 10 ? '0${currentTime.hourOfPeriod}' : currentTime.hourOfPeriod} : ${currentTime.minute < 10 ? '0${currentTime.minute}' : currentTime.minute}  ${currentTime.period.toString() == "DayPeriod.am" ? 'AM' : 'PM'}",
                   style: const TextStyle(
                       fontFamily: "Stint",
-                      fontSize: 50.0,
+                      fontSize: 45.0,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),
@@ -359,7 +362,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                                   schedID,
                                   scheduledTime,
                                   int.parse(textController.text),
-                                  _selectedIndex!);
+                                  _selectedIndex!, commandType);
 
                               //SHOWING SNACK BAR
                               const snackbar = SnackBar(

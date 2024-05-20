@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-String? soilType;
+String? dataReceived;
 
 final bluetooth = FlutterBluetoothSerial.instance;
 bool bluetoothState = false;
@@ -50,7 +50,7 @@ class bluetooth_conn {
 
   void onDataReceived(Uint8List data) {
     // Handle received data from Arduino here
-    soilType = String.fromCharCodes(data);
+    dataReceived = String.fromCharCodes(data);
   }
 
   void sendData(String data) {
@@ -59,6 +59,7 @@ class bluetooth_conn {
     }
 
     print(connection);
+    print(data);
   }
 
   void requestPermission() async {

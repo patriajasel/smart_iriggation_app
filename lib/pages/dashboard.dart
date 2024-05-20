@@ -1,11 +1,31 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'dash_bot_nav.dart';
 import 'dash_node_monitor.dart';
 import 'dash_tank_monitor.dart';
 
-class MyDashboard extends StatelessWidget {
+bluetooth_conn btInstance = bluetooth_conn();
+
+class MyDashboard extends StatefulWidget {
   const MyDashboard({super.key});
+
+  @override
+  State<MyDashboard> createState() => _MyDashboardState();
+}
+
+class _MyDashboardState extends State<MyDashboard> {
+
+  @override
+  void initState() {
+    Timer.periodic(const Duration(minutes: 10), (timer) { getWaterAndFertilizerLevel();});
+    super.initState();
+  }
+
+  void getWaterAndFertilizerLevel(){
+    btInstance.receiveData();
+  }
 
   @override
   Widget build(BuildContext context) {
