@@ -32,18 +32,14 @@ int getArdPin(int nodeNumber) {
 String getCommand(int nodeNumber) {
   if (nodeNumber == 1) {
     if (isPumpOpen == false) {
-      print(isPumpOpen);
       return "on";
     } else {
-      print(isPumpOpen);
       return "off";
     }
   } else if (nodeNumber == 2) {
     if (isWaterValveOpen == false) {
-      print(isWaterValveOpen);
       return "on";
     } else {
-      print(isWaterValveOpen);
       return "off";
     }
   } else if (nodeNumber == 3) {
@@ -54,10 +50,8 @@ String getCommand(int nodeNumber) {
     }
   } else if (nodeNumber == 4) {
     if (isNode1Open == false) {
-      print(isNode1Open);
       return "on";
     } else {
-      print(isNode1Open);
       return "off";
     }
   } else if (nodeNumber == 5) {

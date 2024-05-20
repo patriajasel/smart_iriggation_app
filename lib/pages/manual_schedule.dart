@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
+import 'package:smart_iriggation_app/models/data/water_amount.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
@@ -28,12 +29,9 @@ class _ManualSchedulerState extends State<ManualScheduler> {
 
   int? _selectedIndex;
 
-  final textController = TextEditingController();
-
   List<String> arrangedList = [];
 
   final String commandType = "Scheduled";
-
 
   @override
   void initState() {
@@ -79,6 +77,8 @@ class _ManualSchedulerState extends State<ManualScheduler> {
     arrangeNodeList(_nodes);
 
     String? _selectedItem;
+    final WaterAmountProvider provider = WaterAmountProvider();
+    int? selectedKey;
 
     if (arrangedList.isNotEmpty) {
       _selectedItem = arrangedList[0];
@@ -251,58 +251,50 @@ class _ManualSchedulerState extends State<ManualScheduler> {
 
                     // TEXTFIELD FOR MEASUREMENTS
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Water amount (mL)",
-                              style: TextStyle(
-                                fontFamily: "Rokkitt",
-                                fontSize: 18.0,
-                                //color: Colors.white
-                              ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 15.0),
+                      child: Center(
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Select the amount of water (mL)',
+                            labelStyle: const TextStyle(
+                              fontFamily: "Rokkitt",
+                              fontSize: 24.0,
+                              //color: Colors.white
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  //color: Colors.white
+                                  ), // Set border color
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  //  color: Colors.white
+                                  ), // Set border color
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
-                          TextField(
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
-                            controller: textController,
-                            style: const TextStyle(
-                                // color: Colors.white, fontFamily: "Rokkitt"
-                                ),
-                            decoration: InputDecoration(
-                              hintText: 'Input water amount...',
-                              hintStyle: const TextStyle(
-                                  //color: Colors.white70,
-                                  fontFamily: "Rokkitt",
-                                  fontSize: 16.0),
-                              suffixIcon: IconButton(
-                                //color: Colors.white,
-                                onPressed: () {
-                                  textController.clear();
-                                },
-                                icon: const Icon(Icons.clear),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    //  color: Colors.white
-                                    ), // Set border color
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    // color: Colors.white
-                                    ), // Set border color
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                          )
-                        ],
+                          value: 50,
+                          items: provider.waterAmount.keys.map((int item) {
+                            return DropdownMenuItem(
+                                value: item,
+                                child: Text(
+                                  "${item} (mL)",
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Rokkitt",
+                                      fontSize: 18.0),
+                                ));
+                          }).toList(),
+                          onChanged: (int? value) {
+                            setState(() {
+                              selectedKey = value;
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_drop_down),
+                          //iconEnabledColor: Colors.white,
+                        ),
                       ),
                     ),
                   ],
@@ -324,7 +316,6 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              textController.clear();
                               selectedTime = TimeOfDay.now();
                               _dateTime = DateTime.now();
                               formattedDate = formatDate(_dateTime);
@@ -361,8 +352,9 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                               nodesDatabase.addNewSchedule(
                                   schedID,
                                   scheduledTime,
-                                  int.parse(textController.text),
-                                  _selectedIndex!, commandType);
+                                  selectedKey!,
+                                  _selectedIndex!,
+                                  commandType);
 
                               //SHOWING SNACK BAR
                               const snackbar = SnackBar(
@@ -391,7 +383,6 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                                   scheduledTime);
 
                               selectedTime = currentTime;
-                              textController.clear();
                             });
                           },
                           child: const Text(

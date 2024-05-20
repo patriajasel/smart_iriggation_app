@@ -239,7 +239,6 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                   command = "$commandType,${getArdPin(7)},${getCommand(7)},";
                   isNode4Open = value;
                   btInstance.sendData(command!);
-                  print(command);
                 });
               }),
         )
