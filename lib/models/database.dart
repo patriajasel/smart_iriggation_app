@@ -119,8 +119,8 @@ class Database extends ChangeNotifier {
   }
 
   //Create a data
-  Future<void> addNewSchedule(
-      int schedID, DateTime time, int waterAmount, int nodeNumber, String commandType) async {
+  Future<void> addNewSchedule(int schedID, DateTime time, int waterAmount,
+      int nodeNumber, String commandType) async {
     final newSched = Schedule()
       ..scheduleID = schedID
       ..timeDate = time
@@ -136,8 +136,11 @@ class Database extends ChangeNotifier {
 
   //Read from database
   Future<void> getSchedule() async {
-    List<Schedule> fetchedSchedules =
-        await isar.schedules.where().sortByTimeDate().findAll();
+    List<Schedule> fetchedSchedules = await isar.schedules
+        .filter()
+        .commandTypeEqualTo("Scheduled")
+        .sortByTimeDate()
+        .findAll();
     currentSchedule.clear();
     currentSchedule.addAll(fetchedSchedules);
     notifyListeners();
