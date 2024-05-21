@@ -16,14 +16,15 @@ class MyDashboard extends StatefulWidget {
 }
 
 class _MyDashboardState extends State<MyDashboard> {
-
   @override
   void initState() {
-    Timer.periodic(const Duration(minutes: 10), (timer) { getWaterAndFertilizerLevel();});
+    Timer.periodic(const Duration(minutes: 10), (timer) {
+      getWaterAndFertilizerLevel();
+    });
     super.initState();
   }
 
-  void getWaterAndFertilizerLevel(){
+  void getWaterAndFertilizerLevel() {
     btInstance.receiveData();
   }
 

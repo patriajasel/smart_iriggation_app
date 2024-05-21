@@ -13,6 +13,7 @@ class bottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [
+          //SET SCHEDULE
           InkWell(
             onTap: () {
               // Handle 'Set Schedule' tap
@@ -38,6 +39,30 @@ class bottomNavBar extends StatelessWidget {
               ),
             ),
           ),
+
+          //AUTOMATIC IRRIGATION
+
+          InkWell(
+            onTap: () {},
+            child: const Padding(
+              padding: EdgeInsets.only(left: 35.0, top: 25.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Identify Soil",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "Rokkitt",
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          //VIEW SCHEDULE
+
           InkWell(
             onTap: () {
               // Handle 'Check Schedule' tap

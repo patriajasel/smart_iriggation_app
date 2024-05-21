@@ -22,7 +22,7 @@ class _cropListViewState extends State<cropListView>
   }
 
   void readCropList() {
-    context.read<Database>().getCropsBasedSoil(dataReceived!);
+    context.read<Database>().getCropsBasedSoil(/*dataReceived!*/ "Loam");
   }
 
   @override
@@ -30,8 +30,6 @@ class _cropListViewState extends State<cropListView>
     final cropDatabase = context.watch<Database>();
 
     List<CropInformation> cropList = cropDatabase.CropInfo;
-
-    print(cropList);
 
     return Container(
       color: Colors.green,
@@ -45,7 +43,8 @@ class _cropListViewState extends State<cropListView>
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Text(
-                  dataReceived!,
+                  //dataReceived!,
+                  "Loam",
                   style: const TextStyle(
                     fontFamily: "Rakkas",
                     fontSize: 80,
@@ -110,62 +109,48 @@ class _cropListViewState extends State<cropListView>
                   itemCount: cropList.length, // Example: 5 cards
                   itemBuilder: (BuildContext context, int index) {
                     final cropName = cropList[index].cropName;
-                    return SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(1, 0), // Start from right side
-                        end: Offset.zero, // Slide to center
-                      ).animate(CurvedAnimation(
-                        parent: AnimationController(
-                          vsync: this,
-                          duration:
-                              const Duration(seconds: 1), // Animation duration
-                        )..forward(),
-                        curve: Curves.easeInOut,
-                      )),
-                      child: Card(
-                        elevation: 5,
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side:
-                              const BorderSide(color: Colors.cyan, width: 2.0),
-                        ),
-                        child: ListTile(
-                          leading: const Icon(Icons.local_florist),
-                          title: Text(
-                            cropName,
-                            style: const TextStyle(
-                              fontFamily: "Rokkitt",
-                              shadows: [
-                                Shadow(
-                                  color: Colors.grey,
-                                  blurRadius: 2,
-                                  offset: Offset(1, 1),
-                                ),
-                              ],
-                            ),
+                    return Card(
+                      elevation: 5,
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: const BorderSide(color: Colors.cyan, width: 2.0),
+                      ),
+                      child: ListTile(
+                        leading: const Icon(Icons.local_florist),
+                        title: Text(
+                          cropName,
+                          style: const TextStyle(
+                            fontFamily: "Rokkitt",
+                            shadows: [
+                              Shadow(
+                                color: Colors.grey,
+                                blurRadius: 2,
+                                offset: Offset(1, 1),
+                              ),
+                            ],
                           ),
-                          subtitle: const Text(
-                            'Click to view the schedule',
-                            style: TextStyle(
-                              fontFamily: "PatuaOne",
-                            ),
-                          ),
-                          onTap: () {
-                            context.read<Database>().getSpecificCrop(cropName);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => schedInformation(
-                                          croName: cropList[index].cropName,
-                                          cropDescription:
-                                              cropList[index].cropDescription,
-                                          directory: cropList[index].pictureDir,
-                                          stages: cropList[index].stages,
-                                        )));
-                          },
                         ),
+                        subtitle: const Text(
+                          'Click to view the schedule',
+                          style: TextStyle(
+                            fontFamily: "PatuaOne",
+                          ),
+                        ),
+                        onTap: () {
+                          context.read<Database>().getSpecificCrop(cropName);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => schedInformation(
+                                        croName: cropList[index].cropName,
+                                        cropDescription:
+                                            cropList[index].cropDescription,
+                                        directory: cropList[index].pictureDir,
+                                        stages: cropList[index].stages,
+                                      )));
+                        },
                       ),
                     );
                   },

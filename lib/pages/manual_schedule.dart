@@ -33,14 +33,19 @@ class _ManualSchedulerState extends State<ManualScheduler> {
 
   final String commandType = "Scheduled";
 
+  int? _selectedAmount;
+
   @override
   void initState() {
     // TODO: implement initState
     _timer =
         Timer.periodic(const Duration(seconds: 1), (Timer t) => _updateTime());
 
-    super.initState();
     readNodes();
+    final WaterAmountProvider provider = WaterAmountProvider();
+    _selectedAmount = provider.waterAmount.keys.first;
+
+    super.initState();
   }
 
   void _updateTime() {
@@ -77,12 +82,12 @@ class _ManualSchedulerState extends State<ManualScheduler> {
     arrangeNodeList(_nodes);
 
     String? _selectedItem;
-    final WaterAmountProvider provider = WaterAmountProvider();
-    int? selectedKey;
 
     if (arrangedList.isNotEmpty) {
       _selectedItem = arrangedList[0];
     }
+
+    final WaterAmountProvider provider = WaterAmountProvider();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -249,7 +254,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                       ),
                     ),
 
-                    // TEXTFIELD FOR MEASUREMENTS
+                    // DROPDOWN FOR MEASUREMENTS
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8.0, vertical: 15.0),
@@ -275,7 +280,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
-                          value: 50,
+                          value: _selectedAmount,
                           items: provider.waterAmount.keys.map((int item) {
                             return DropdownMenuItem(
                                 value: item,
@@ -289,7 +294,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                           }).toList(),
                           onChanged: (int? value) {
                             setState(() {
-                              selectedKey = value;
+                              _selectedAmount = value;
                             });
                           },
                           icon: const Icon(Icons.arrow_drop_down),
@@ -348,11 +353,13 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                               int schedID = int.parse(
                                   "${scheduledTime.year}${scheduledTime.hour}${scheduledTime.minute}");
 
+                              print(_selectedAmount);
+
                               //ADDING SCHEDULE IN THE ISAR DATABASE
                               nodesDatabase.addNewSchedule(
                                   schedID,
                                   scheduledTime,
-                                  selectedKey!,
+                                  _selectedAmount!,
                                   _selectedIndex!,
                                   commandType);
 
