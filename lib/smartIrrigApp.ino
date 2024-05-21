@@ -71,31 +71,44 @@ void loop() {
 
 void executeCommand(String command[]){
   if(command[0] == "Manual"){
-    if(command[2] == "on"){
-      digitalWrite(command[1].toInt(), LOW);
-      serialConnectionCommand = "";
-      wordCount = 0;
-    }
-    else if(command[2] == "off"){
-      digitalWrite(command[1].toInt(), HIGH);
-      serialConnectionCommand = "";
-      wordCount = 0;
-      
-    }
+    manualCommands(command[1].toInt(), command[2]);
+
   } else if(command[0] == "Auto"){
      if(command[1] == "Soil") {
       getSoilType();
      }
+  } else if(command[0] == "Scheduled"){
+
   }
 }
 
-void getSoilType() {
+void manualCommands(int nodeNumber, String command){
+  
+  if(command[2] == "on"){
+    digitalWrite(command[1], LOW);
+    serialConnectionCommand = "";
+    wordCount = 0;
+  }
+  else if(command[2] == "off"){
+    digitalWrite(command[1].toInt(), HIGH);
+    serialConnectionCommand = "";
+    wordCount = 0;    
+  }
+}
 
+void scheduledCommands (){
+
+}
+
+void monitoring(){}
+
+void getSoilType() {
   // Variable to track soil identification status
   static bool soilIdentified = false;
+  static unsigned long startTime = millis();
+  const unsigned long scanDuration = 15000; // 15 seconds
 
-  if(soilIdentified != true) {
-
+  if (!soilIdentified && millis() - startTime <= scanDuration) {
     byte queryData[]{0x01, 0x03, 0x00, 0x00, 0x00, 0x07, 0x04, 0x08};
     byte receivedData[19];
     digitalWrite(DE, HIGH);
@@ -109,7 +122,7 @@ void getSoilType() {
 
     String soilType = "Unidentified";
 
-    if (!soilIdentified && mySerial.available() >= sizeof(receivedData) && soilType == "Unidentified") {  // Check if there are enough bytes available to read
+    if (mySerial.available() >= sizeof(receivedData)) {  // Check if there are enough bytes available to read
       mySerial.readBytes(receivedData, sizeof(receivedData));  // Read the received data into the receivedData array
       // Parse and print the received data in decimal format
       unsigned int soilPH = (receivedData[9] << 8) | receivedData[10];
@@ -133,10 +146,18 @@ void getSoilType() {
       } else {
         soilType = "Unidentified";
       }
+
+      if (soilType != "Unidentified" && soilIdentified) {
+        Serial.print(soilType);
+      }
     }
-  
-    if(soilType != "Unidentified" && soilIdentified != false) {
-      Serial.print(soilType);
+  } else if (millis() - startTime > scanDuration) {
+    // If 15 seconds have passed and soil type is still unidentified
+    if (!soilIdentified) {
+      Serial.print("Unidentified");
     }
+    // Reset for next scan cycle
+    soilIdentified = false;
+    startTime = millis(); // Restart the timer for the next scan
   }
 }

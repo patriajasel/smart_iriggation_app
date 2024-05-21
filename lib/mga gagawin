@@ -1,6 +1,6 @@
-1. Optimize the logic for handling command in the arduino and flutter app
+1. Optimize the logic for handling command in the arduino and flutter app(incomplete and not tested)
 2. 
-3. Change Isar database and add type for schedules and add new sorting in the database file (done but not tested)
+3. 
 4. Create the algorithm for monitoring water and fertilizer level in arduino 
 5. initialize flutter logic for monitoring water and fertilizer level (incomplete)
 6. Edit the design of crop information to make a choice on what node they are picking
