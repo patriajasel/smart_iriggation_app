@@ -74,7 +74,7 @@ class _MyDashboardState extends State<MyDashboard> {
         backgroundColor: Colors.white,
         onPressed: () {
           Navigator.pushNamed(context, '/soilIdentify');
-          btInstance.sendData("Auto,Soil,");
+          btInstance.sendData("Auto,Soil,", context);
         },
         tooltip: 'Irrigate',
         elevation: 0,

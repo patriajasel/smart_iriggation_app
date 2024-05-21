@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
-import 'dashboard.dart';
 
 class applySchedule extends StatefulWidget {
   const applySchedule({super.key});
@@ -18,8 +17,9 @@ class _applyScheduleState extends State<applySchedule>
     super.initState();
 
     Timer(const Duration(seconds: 10), () {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const MyDashboard()));
+      Navigator.popUntil(context, (route) {
+        return route.isFirst;
+      });
     });
   }
 

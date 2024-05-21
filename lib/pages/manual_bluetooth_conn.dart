@@ -136,7 +136,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "$commandType,${getArdPin(1)},${getCommand(1)},";
                   isPumpOpen = value;
-                  btInstance.sendData(command!);
+                  btInstance.sendData(command!, context);
                   command = null;
                 });
               }),
@@ -153,7 +153,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "$commandType,${getArdPin(2)},${getCommand(2)},";
                   isWaterValveOpen = value;
-                  btInstance.sendData(command!);
+                  btInstance.sendData(command!, context);
                   command = null;
                 });
               }),
@@ -170,7 +170,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "$commandType,${getArdPin(3)},${getCommand(3)},";
                   isFertilizerValveOpen = value;
-                  btInstance.sendData(command!);
+                  btInstance.sendData(command!, context);
                   command = null;
                 });
               }),
@@ -187,7 +187,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "$commandType,${getArdPin(4)},${getCommand(4)},";
                   isNode1Open = value;
-                  btInstance.sendData(command!);
+                  btInstance.sendData(command!, context);
                   command = null;
                 });
               }),
@@ -204,7 +204,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "$commandType,${getArdPin(5)},${getCommand(5)},";
                   isNode2Open = value;
-                  btInstance.sendData(command!);
+                  btInstance.sendData(command!, context);
                   command = null;
                 });
               }),
@@ -221,7 +221,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "$commandType,${getArdPin(6)},${getCommand(6)},";
                   isNode3Open = value;
-                  btInstance.sendData(command!);
+                  btInstance.sendData(command!, context);
                   command = null;
                 });
               }),
@@ -238,7 +238,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
                 setState(() {
                   command = "$commandType,${getArdPin(7)},${getCommand(7)},";
                   isNode4Open = value;
-                  btInstance.sendData(command!);
+                  btInstance.sendData(command!, context);
                 });
               }),
         )

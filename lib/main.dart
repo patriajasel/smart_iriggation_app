@@ -104,7 +104,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     final deleteSched = context.read<Database>();
 
     if (firstSched.firstSchedule.isNotEmpty) {
-      getTheSchedule(firstSched, deleteSched);
+      getTheSchedule(firstSched, deleteSched, context);
     }
 
     return MaterialApp(

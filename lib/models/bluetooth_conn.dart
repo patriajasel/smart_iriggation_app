@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -53,13 +54,17 @@ class bluetooth_conn {
     dataReceived = String.fromCharCodes(data);
   }
 
-  void sendData(String data) {
+  void sendData(String data, BuildContext context) {
     if (connection?.isConnected ?? false) {
       connection?.output.add(ascii.encode(data));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You are currently not connected to Bluetooth HC-05'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
-
-    print(connection);
-    print(data);
   }
 
   void requestPermission() async {

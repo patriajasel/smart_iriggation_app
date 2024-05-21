@@ -62,8 +62,10 @@ String getCommand(int nodeNumber) {
     }
   } else if (nodeNumber == 6) {
     if (isNode3Open == false) {
+      print(isNode3Open);
       return "on";
     } else {
+      print(isNode3Open);
       return "off";
     }
   } else if (nodeNumber == 7) {

@@ -7,6 +7,7 @@ String currentWord; // String to store individual words
 int wordCount = 0; // Counter for the number of words
 String commandArray[4]; // Assuming a maximum of 10 words, adjust this as needed
 
+//VALVES AND PUMPS
 int valve1 = 28;
 int valve2 = 30;
 int valve3 = 32;
@@ -15,8 +16,24 @@ int Pump = 22;
 int WaterValve = 24;
 int FertilizerValve = 26;
 
+//NPK SOILD IDENTIFIER
 int DE = 7;
 int RE = 8;
+
+//WATER AND FERTILIZER LEVEL ULTRASONIC
+const int WTP = 5;
+const int WEP = 4;
+const int FTP = 3;
+const int FEP = 2;
+
+//VARIABLES NEEDED FOR DISTANCE CALCULATIONS AND CONVERTING TO PERCENTAGE
+int wpingtime;
+int fpingtime;
+float wd;
+float fd;
+int wlevel;
+int flevel;
+float depth = 41;
 
 String soilType;
 
@@ -43,6 +60,11 @@ void setup() {
   digitalWrite(Pump, HIGH);
   digitalWrite(WaterValve, HIGH);
   digitalWrite(FertilizerValve, HIGH);
+
+  pinMode(WTP, OUTPUT);
+  pinMode(WEP, INPUT);
+  pinMode(FTP, OUTPUT);
+  pinMode(FEP, INPUT);
 
 }
   
@@ -78,29 +100,75 @@ void executeCommand(String command[]){
       getSoilType();
      }
   } else if(command[0] == "Scheduled"){
-
+    scheduledCommands(command[1], command[3]);
+  } else if(command[0] == "Monitoring"){
+    Serial.print(wlevel);
+    Serial.print(",");
+    Serial.print(flevel);
+    Serial.print(",");
   }
+  
 }
 
 void manualCommands(int nodeNumber, String command){
   
-  if(command[2] == "on"){
-    digitalWrite(command[1], LOW);
+  if(command == "on"){
+    digitalWrite(nodeNumber, LOW);
     serialConnectionCommand = "";
     wordCount = 0;
   }
-  else if(command[2] == "off"){
-    digitalWrite(command[1].toInt(), HIGH);
+  else if(command == "off"){
+    digitalWrite(nodeNumber, HIGH);
     serialConnectionCommand = "";
     wordCount = 0;    
   }
 }
 
-void scheduledCommands (){
+void scheduledCommands (String pinNumbers, String command){
+
+  int totalPins = pinNumbers.length() / 2;
+
+  int pins[totalPins];
+
+  for (int i = 0; i < totalPins; i++) {
+    String pin = pinNumbers.substring(i * 2, i * 2 + 2);
+
+    pins[i] = pin.toInt();
+  }
+
+  for (int i = 0; i < totalPins; i++){
+    if(pins == "on"){
+    digitalWrite(pins[i], LOW);
+    serialConnectionCommand = "";
+    wordCount = 0;
+    }
+    else if(command == "off"){
+      digitalWrite(pins[i], HIGH);
+      serialConnectionCommand = "";
+      wordCount = 0;    
+    }
+  }
 
 }
 
-void monitoring(){}
+void monitoring(){
+  digitalWrite(WTP, LOW);
+  digitalWrite(FTP, LOW);
+  delayMicroseconds(10);
+  digitalWrite(WTP, HIGH);
+  digitalWrite(FTP, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(WTP, LOW);
+  digitalWrite(FTP, LOW);
+  wpingtime = pulseIn(WEP, HIGH);
+  fpingtime = pulseIn(FEP, HIGH);
+
+  wd = (8. / 400.) * wpingtime; 
+  fd = (8. / 400.) * fpingtime;// Equation after calibration
+  wlevel = (1 - wd / depth) * 100.0;
+  flevel = (1 - fd / depth) * 100.0;
+  delay(1000);
+}
 
 void getSoilType() {
   // Variable to track soil identification status

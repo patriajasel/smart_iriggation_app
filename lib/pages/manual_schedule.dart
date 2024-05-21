@@ -364,9 +364,16 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                                   commandType);
 
                               //SHOWING SNACK BAR
-                              const snackbar = SnackBar(
-                                  content: Text('New Schedule Added'),
-                                  duration: Duration(seconds: 3));
+                              final snackbar = SnackBar(
+                                content: Text('New Schedule Added'),
+                                duration: Duration(seconds: 3),
+                                action: SnackBarAction(
+                                    label: "View",
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, '/checkSched');
+                                    }),
+                              );
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackbar);
 

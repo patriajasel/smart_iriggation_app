@@ -1,7 +1,7 @@
 1. Optimize the logic for handling command in the arduino and flutter app(incomplete and not tested)
-2. 
-3. 
-4. Create the algorithm for monitoring water and fertilizer level in arduino 
-5. initialize flutter logic for monitoring water and fertilizer level (incomplete)
-6. Edit the design of crop information to make a choice on what node they are picking
+2. Hindi pa ayos yun scheduling logic hindi pa chinecheck kung ilang nodes ba ang bukas (mahirap gawin w8 lang)
+3. Test yung Soil Identifier
+4. 
+5. initialize flutter logic for monitoring water and fertilizer level (complete pero not tested)
+6. 
 7. Create a new page for the Node monitoring which shows the Manual and Automatic Schedules.

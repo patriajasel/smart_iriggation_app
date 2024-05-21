@@ -12,6 +12,14 @@ void setup() {
 }
 
 void loop() {
+  getMonitorLevels();
+
+  if (Serial.available() > 0) { 
+    Serial.print(level);
+  }
+}
+
+void getMonitorLevels(){
   digitalWrite(trigpin, LOW);
   delayMicroseconds(10);
   digitalWrite(trigpin, HIGH);
