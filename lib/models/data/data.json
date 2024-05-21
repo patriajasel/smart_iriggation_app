@@ -4,7 +4,7 @@
     {
       "cropSoil": "Loam",
       "cropName": "Tomato",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Tomato.png",
       "cropDesc": "Tomatoes are warm-season plants that require full sun and well-drained soil to thrive. They are commonly grown for their delicious fruits that can be eaten fresh or used in various culinary dishes.",
       "stages": [
         {
@@ -46,7 +46,7 @@
     {
       "cropSoil": "Loam",
       "cropName": "Pepper",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Pepper.png",
       "cropDesc": "Peppers are warm-season plants, similar to tomatoes. They thrive in hot weather and require full sun for optimal growth. Their growing season typically falls in late spring to early autumn, with peak harvest during the summer months. However, greenhouse cultivation allows peppers to be available year-round in some areas.",
       "stages": [
         {
@@ -79,7 +79,7 @@
     {
       "cropSoil": "Loam",
       "cropName": "Sweet Corn",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/SweetCorn.png",
       "cropDesc": "Sweet corn grows best on well-drained soils that have good water-holding characteristics.",
       "stages": [
         {
@@ -112,7 +112,7 @@
     {
       "cropSoil": "Loam",
       "cropName": "Spinach",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Spinach.png",
       "cropDesc": "Spinach requires cool weather and deep, rich, well-limed soil to give quick growth and maximum leaf area.",
       "stages": [
         {
@@ -143,7 +143,7 @@
     {
       "cropSoil": "Loam",
       "cropName": "Strawberry",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Strawberry.png",
       "cropDesc": "Strawberries are low-growing herbaceous plants with a fibrous root system and a crown from which arise basal leaves.",
       "stages": [
         {
@@ -173,7 +173,7 @@
     {
       "cropSoil": "Silt",
       "cropName": "Corn",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Corn.png",
       "cropDesc": "Corn grows best on well-drained soils that have good water-holding characteristics.",
       "stages": [
         {
@@ -206,7 +206,7 @@
     {
       "cropSoil": "Silt",
       "cropName": "Squash",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Squash.png",
       "cropDesc": "Field corn thrives in hot weather, making it a warm-season crop. Planting typically occurs in late spring or early summer, with harvesting following 90-120 days later depending on the variety. This means field corn is typically harvested in late summer to early fall, from around September to November in many regions.",
       "stages": [
         {
@@ -239,7 +239,7 @@
     {
       "cropSoil": "Silt",
       "cropName": "Beans",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Beans.png",
       "cropDesc": "Beans are a warm-season crop that thrives in hot weather. Planting typically occurs in late spring or early summer, with harvesting following in late summer to early fall (from August to October in many regions). However, some bean varieties, like peas, can be planted in cooler weather.",
       "stages": [
         {
@@ -272,7 +272,7 @@
     {
       "cropSoil": "Silt",
       "cropName": "Wheat",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Wheat.png",
       "cropDesc": "Wheat is a cool-season crop that prefers cooler temperatures for optimal growth.  Planting typically occurs in the fall for winter wheat varieties that mature in the following spring or summer. Spring wheat varieties are planted in early spring and harvested in the summer.",
       "stages": [
         {
@@ -342,7 +342,7 @@
     {
       "cropSoil": "Silt",
       "cropName": "Soy Beans",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/SoyBeans.png",
       "cropDesc": "Soybeans are a warm-season crop that thrives in hot weather.  Planting typically occurs in late spring or early summer, with harvesting following in late summer to early fall (from August to October in many regions).",
       "stages": [
         {
@@ -376,7 +376,7 @@
     {
       "cropSoil": "Sand",
       "cropName": "Carrots",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Carrots.png",
       "cropDesc": "Carrots are cool-season vegetables that prefer cooler temperatures. Planting typically occurs in early spring or fall, depending on the variety. Depending on your climate, planting carrots can occur in either early spring or fall.",
       "stages": [
         {
@@ -400,7 +400,7 @@
     {
       "cropSoil": "Sand",
       "cropName": "Cucumber",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Cucumber.png",
       "cropDesc": "Cucumbers are warm-season vegetables that thrive in hot weather. Planting typically occurs in late spring or early summer, with harvesting following 50-60 days later. This means you can expect fresh cucumbers on your table from mid-summer to early fall (around July to September in many regions.",
       "stages": [
         {
@@ -427,7 +427,7 @@
     {
       "cropSoil": "Sand",
       "cropName": "Watermelon",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Watermelon.png",
       "cropDesc": "Watermelons are warm-season fruits that thrive in hot weather. Planting typically occurs in late spring or early summer, with harvesting following 70-80 days later. This translates to watermelons gracing your table from mid-summer to early fall, typically around July to September in many regions.",
       "stages": [
         {
@@ -460,7 +460,7 @@
     {
       "cropSoil": "Sand",
       "cropName": "Radish",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Radish.png",
       "cropDesc": "Radishes are cool-season vegetables that prefer cooler temperatures. Depending on the variety, they can be grown in spring, fall, or even winter in mild climates. ",
       "stages": [
         {
@@ -484,7 +484,7 @@
     {
       "cropSoil": "Sand",
       "cropName": "Melon",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Melon.png",
       "cropDesc": "Melons are warm-season fruits that thrive in hot weather. Planting typically occurs in late spring or early summer, with harvesting following 70-80 days later, depending on the variety. This translates to melons gracing your table from mid-summer to early fall, typically around July to September in many regions.",
       "stages": [
         {
@@ -517,7 +517,7 @@
     {
       "cropSoil": "Clay",
       "cropName": "Lettuce",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Lettuce.png",
       "cropDesc": "Lettuce thrives in cooler temperatures. Depending on the variety, it can be grown in spring and fall. Planting typically occurs in early spring or fall.",
       "stages": [
         {
@@ -541,7 +541,7 @@
     {
       "cropSoil": "Clay",
       "cropName": "Potato",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Potato.png",
       "cropDesc": "Potatoes are a cool-season crop that prefers moderate temperatures. Planting typically occurs in late winter or early spring in colder climates and in the fall for warmer regions. Depending on your climate, planting potatoes can occur in either early spring or fall.",
       "stages": [
         {
@@ -592,7 +592,7 @@
     {
       "cropSoil": "Clay",
       "cropName": "Cabbage",
-      "pictureDir": "lib/assets/images/Tomato.jpg",
+      "pictureDir": "lib/assets/images/Cabbage.png",
       "cropDesc": "Cabbage is a cool-season crop that thrives in cooler temperatures. Planting typically occurs in early spring or fall, depending on the variety. Depending on your climate, planting cabbage can occur in either early spring or fall.",
       "stages": [
         {
@@ -634,7 +634,7 @@
     {
     "cropSoil": "Clay",
     "cropName": "Garlic",
-    "pictureDir": "lib/assets/images/Tomato.jpg",
+    "pictureDir": "lib/assets/images/Garlic.png",
     "cropDesc": "Garlic is a cool-season crop that prefers moderate temperatures. Planting typically occurs in fall or early spring, depending on your climate. Depending on your climate, planting garlic can occur in either fall or early spring.",
     "stages": [
       {
@@ -703,7 +703,7 @@
   {
     "cropSoil": "Clay",
     "cropName": "Onion",
-    "pictureDir": "lib/assets/images/Tomato.jpg",
+    "pictureDir": "lib/assets/images/Onion.png",
     "cropDesc": "Onions are a cool-season crop that thrives in cooler temperatures. Planting typically occurs in early spring or fall, depending on the variety. Depending on your climate, planting onions can occur in either early spring or fall.",
     "stages": [
       {
