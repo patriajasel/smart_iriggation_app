@@ -142,9 +142,6 @@ class _cropListViewState extends State<cropListView>
                               ),
                             ),
                             onTap: () {
-                              context
-                                  .read<Database>()
-                                  .getSpecificCrop(cropName);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

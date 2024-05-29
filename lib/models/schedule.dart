@@ -44,4 +44,16 @@ class Nodes {
   Id id = Isar.autoIncrement;
   late int nodeNumber;
   late String plant;
+  late String soilType;
+}
+
+@Collection()
+class AutoSchedule {
+  Id id = Isar.autoIncrement;
+  late int scheduleID;
+  late DateTime timeDate;
+  late int waterAmount;
+  late int nodeNum;
+  late String commandType;
+  late String status;
 }

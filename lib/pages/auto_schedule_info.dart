@@ -3,6 +3,7 @@ import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
+import 'package:smart_iriggation_app/pages/auto_applying_schedule.dart';
 
 class schedInformation extends StatefulWidget {
   final String croName;
@@ -268,7 +269,9 @@ class _schedInformationState extends State<schedInformation> {
                           child: const Text("Cancel")),
                       TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/applySched');
+                            concatenateData(
+                                _selectedIndex!, widget.croName, widget.stages);
+                            //Navigator.pushNamed(context, '/applySched');
                           },
                           child: const Text("Proceed")),
                     ],

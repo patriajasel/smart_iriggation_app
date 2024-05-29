@@ -14,9 +14,18 @@ BluetoothConnection? connection;
 
 class bluetooth_conn {
   void getDevices() async {
+    var status = await Permission.bluetoothConnect.status;
     try {
-      var res = await bluetooth.getBondedDevices();
-      devices = res;
+      if (status.isGranted) {
+        var res = await bluetooth.getBondedDevices();
+        devices = res;
+      } else if (status.isDenied) {
+        // Permission is denied, request permissions
+        await Permission.bluetoothConnect.request();
+      } else if (status.isPermanentlyDenied) {
+        // Permission is permanently denied, navigate to settings
+        openAppSettings();
+      }
     } on PlatformException {
       print("Permission needed are not accepted");
     } catch (e) {}
@@ -71,7 +80,7 @@ class bluetooth_conn {
     await Permission.location.request();
     await Permission.bluetooth.request();
     await Permission.bluetoothScan.request();
-    await Permission.bluetoothConnect.request();
+    //await Permission.bluetoothConnect.request();
     print("Requesting permission");
   }
 

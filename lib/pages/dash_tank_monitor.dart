@@ -1,9 +1,65 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 
-class tankMonitor extends StatelessWidget {
+bluetooth_conn btInstance = bluetooth_conn();
+int? waterLevel;  
+int? fertilizerLevel;
+List<String> tankLevels = [];
+  String currentWord = "";
+  int wordCount = 0;
+
+class tankMonitor extends StatefulWidget {
   const tankMonitor({super.key});
 
+  @override
+  State<tankMonitor> createState() => _tankMonitorState();
+}
+
+class _tankMonitorState extends State<tankMonitor> {
+
+  
+
+  @override
+  void initState() {
+    Timer.periodic(const Duration(seconds: 5), (timer) { 
+      getWaterAndFertilizerLevel();
+    });
+    super.initState();
+  }
+
+  void getWaterAndFertilizerLevel() {
+  btInstance.receiveData();
+
+  if (dataReceived != null) {
+    List<String> tankLevels = dataReceived!.split(',');
+
+    if (tankLevels.length >= 2) {
+      int water = int.tryParse(tankLevels[0]) ?? 0;
+      int fertilizer = int.tryParse(tankLevels[1]) ?? 0;
+
+      setState(() {
+        waterLevel = water.clamp(0, 100); // Ensure water level is between 0 and 100
+        fertilizerLevel = fertilizer.clamp(0, 100); // Ensure fertilizer level is between 0 and 100
+      });
+
+      changeValues(waterLevel!, fertilizerLevel!);
+    }
+  }
+}
+
+void changeValues(int water, int fertilizer) {
+  // No need to check and clamp levels here, as it's already done in getWaterAndFertilizerLevel()
+  setState(() {
+    waterLevel = water;
+    fertilizerLevel = fertilizer;
+  });
+}
+
+
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,7 +97,7 @@ class tankMonitor extends StatelessWidget {
                       color: Colors.white70,
                       height: 300,
                       width: 360,
-                      child: const MyBarChart(),
+                      child: MyBarChart(waterLevel: waterLevel, fertilizerLevel: fertilizerLevel),
                     ),
                   ),
                 ),
@@ -55,7 +111,10 @@ class tankMonitor extends StatelessWidget {
 }
 
 class MyBarChart extends StatelessWidget {
-  const MyBarChart({super.key});
+
+  final int? waterLevel;
+  final int? fertilizerLevel;
+  const MyBarChart({super.key, required this.waterLevel, required this.fertilizerLevel});
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +213,7 @@ List<BarChartGroupData> get barGroups => [
         x: 0,
         barRods: [
           BarChartRodData(
-              toY: 100.0,
+              toY: waterLevel != null ? waterLevel!.toDouble() : 0.0,
               gradient: _barsGradiant,
               width: 20,
               borderRadius: BorderRadius.circular(4))
@@ -165,7 +224,7 @@ List<BarChartGroupData> get barGroups => [
         x: 1,
         barRods: [
           BarChartRodData(
-              toY: 30.5,
+              toY: fertilizerLevel != null ? fertilizerLevel!.toDouble() : 0.0,
               gradient: _barsGradiant,
               width: 20,
               borderRadius: BorderRadius.circular(4))
@@ -184,6 +243,6 @@ class BarChartIrrig extends StatefulWidget {
 class _BarChartIrrigState extends State<BarChartIrrig> {
   @override
   Widget build(BuildContext context) {
-    return const AspectRatio(aspectRatio: 1.6, child: MyBarChart());
+    return AspectRatio(aspectRatio: 1.6, child: MyBarChart(waterLevel: waterLevel, fertilizerLevel: fertilizerLevel));
   }
 }

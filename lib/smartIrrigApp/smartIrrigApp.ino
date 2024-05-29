@@ -69,10 +69,10 @@ void setup() {
 }
   
 void loop() {
-
+  
   if(Serial.available() > 0){
     serialConnectionCommand = Serial.readString();
-    Serial.println(serialConnectionCommand);
+    //Serial.println(serialConnectionCommand);
 
     // Split the sentence into words
     for (int i = 0; i < serialConnectionCommand.length(); i++) {
@@ -87,6 +87,8 @@ void loop() {
     //for (int i = 0; i < wordCount; i++) {
 
     executeCommand(commandArray);
+  } else {
+    monitoring();
   }
   
 }
@@ -100,13 +102,8 @@ void executeCommand(String command[]){
       getSoilType();
      }
   } else if(command[0] == "Scheduled"){
-    scheduledCommands(command[1], command[3]);
-  } else if(command[0] == "Monitoring"){
-    Serial.print(wlevel);
-    Serial.print(",");
-    Serial.print(flevel);
-    Serial.print(",");
-  }
+    scheduledCommands(command[1], command[2]);
+  } 
   
 }
 
@@ -130,45 +127,71 @@ void scheduledCommands (String pinNumbers, String command){
 
   int pins[totalPins];
 
-  for (int i = 0; i < totalPins; i++) {
-    String pin = pinNumbers.substring(i * 2, i * 2 + 2);
+  if(command == "on"){
 
-    pins[i] = pin.toInt();
-  }
+    for (int i = 0; i < totalPins; i++) {
+      String pin = pinNumbers.substring(i * 2, i * 2 + 2);
 
-  for (int i = 0; i < totalPins; i++){
-    if(pins == "on"){
-    digitalWrite(pins[i], LOW);
+      pins[i] = pin.toInt();
+      digitalWrite(pin.toInt(), LOW);
+
+      
+    }
     serialConnectionCommand = "";
     wordCount = 0;
-    }
-    else if(command == "off"){
-      digitalWrite(pins[i], HIGH);
-      serialConnectionCommand = "";
-      wordCount = 0;    
-    }
   }
+  else if(command == "off"){
+    for (int i = 0; i < totalPins; i++) {
+      String pin = pinNumbers.substring(i * 2, i * 2 + 2);
+
+      pins[i] = pin.toInt();
+      digitalWrite(pin.toInt(), HIGH);
+
+       
+    }
+    serialConnectionCommand = "";
+    wordCount = 0; 
+  }
+  
 
 }
 
-void monitoring(){
+void monitoring() {
+  // Trigger the water level sensor
   digitalWrite(WTP, LOW);
-  digitalWrite(FTP, LOW);
   delayMicroseconds(10);
   digitalWrite(WTP, HIGH);
-  digitalWrite(FTP, HIGH);
   delayMicroseconds(10);
   digitalWrite(WTP, LOW);
-  digitalWrite(FTP, LOW);
+  
+  // Measure pulse duration for water level sensor
   wpingtime = pulseIn(WEP, HIGH);
+
+  // Trigger the fertilizer level sensor
+  digitalWrite(FTP, LOW);
+  delayMicroseconds(10);
+  digitalWrite(FTP, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(FTP, LOW);
+  
+  // Measure pulse duration for fertilizer level sensor
   fpingtime = pulseIn(FEP, HIGH);
 
-  wd = (8. / 400.) * wpingtime; 
-  fd = (8. / 400.) * fpingtime;// Equation after calibration
+  // Calculate water level and fertilizer level based on pulse duration
+  wd = (8.0 / 400.0) * wpingtime; 
+  fd = (8.0 / 400.0) * fpingtime;
   wlevel = (1 - wd / depth) * 100.0;
   flevel = (1 - fd / depth) * 100.0;
+
+  Serial.print(wlevel);
+  Serial.print(",");
+  Serial.println(flevel);
+  Serial.print(",");
+
+  // Delay for stability or other operations
   delay(1000);
 }
+
 
 void getSoilType() {
   // Variable to track soil identification status

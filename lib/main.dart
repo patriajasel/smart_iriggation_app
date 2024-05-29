@@ -116,7 +116,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         '/soilIdentify': (context) => const loadingScreen(),
         '/applySched': (context) => const applySchedule(),
         '/blueConnection': (context) => const bluetoothConnection(),
-        '/cropList': (context) => const cropListView()
+        '/cropList': (context) => const cropListView(),
       },
     );
   }

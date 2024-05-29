@@ -17,7 +17,8 @@ class Database extends ChangeNotifier {
       CropInformationSchema,
       StagesSchema,
       WeeksSchema,
-      NodesSchema
+      NodesSchema,
+      AutoScheduleSchema
     ], directory: dir.path);
     final count_crop = await isar.cropInformations.count();
     final count_stages = await isar.stages.count();
@@ -32,6 +33,8 @@ class Database extends ChangeNotifier {
   }
 
   final List<Schedule> currentSchedule = [];
+  final List<Schedule> currentScheduleNode = [];
+  final List<Schedule> autoSchedule = [];
   final List<CropInformation> CropInfo = [];
   final List<CropInformation> specificCrop = [];
   final List<Schedule> firstSchedule = [];
@@ -80,15 +83,17 @@ class Database extends ChangeNotifier {
     }
 
     for (int i = 0; i < 4; i++) {
-      addNode((i + 1), 'Empty');
+      addNode((i + 1), 'Empty', 'Unknown');
     }
   }
 
   //INSERTING NODE INFORMATION TO DATABASE
-  static Future<void> addNode(int nodeNumber, String plant) async {
+  static Future<void> addNode(
+      int nodeNumber, String plant, String soilType) async {
     final newNode = Nodes()
       ..nodeNumber = nodeNumber
-      ..plant = plant;
+      ..plant = plant
+      ..soilType = soilType;
 
     try {
       isar.writeTxnSync(() => isar.nodes.putSync(newNode));
@@ -104,6 +109,17 @@ class Database extends ChangeNotifier {
     currentNodes.clear();
     currentNodes.addAll(fetchedNodes);
     notifyListeners();
+  }
+
+  Future<void> updateNode(int nodeNumber, String plant, String soil) async {
+    final existingNode = await isar.nodes.get(nodeNumber);
+
+    if (existingNode != null) {
+      existingNode.plant = plant;
+      existingNode.soilType = soil;
+      await isar.writeTxn(() => isar.nodes.put(existingNode));
+      await getNodes();
+    }
   }
 
   Future<void> getSpecificNode(int nodeNumber) async {
@@ -143,6 +159,17 @@ class Database extends ChangeNotifier {
         .findAll();
     currentSchedule.clear();
     currentSchedule.addAll(fetchedSchedules);
+    notifyListeners();
+  }
+
+  Future<void> getScheduleBasedOnNode(int nodeNumber) async {
+    List<Schedule> fetchedSchedules = await isar.schedules
+        .filter()
+        .nodeNumEqualTo(nodeNumber)
+        .sortByTimeDate()
+        .findAll();
+    currentScheduleNode.clear();
+    currentScheduleNode.addAll(fetchedSchedules);
     notifyListeners();
   }
 
@@ -233,14 +260,37 @@ class Database extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getSpecificCrop(String cropName) async {
-    final fetchedCrop = await isar.cropInformations
-        .filter()
-        .cropNameEqualTo(cropName)
-        .findAll();
+  // ADDING AUTOMATED SCHEDULE TO THE DATABASE
 
-    specificCrop.clear();
-    specificCrop.addAll(fetchedCrop);
+  Future<void> addnewAutomatedSchedule(
+      int nodenumber,
+      String commandType,
+      int scheduleID,
+      String status,
+      DateTime schedDate,
+      int waterAmount) async {
+    final schedule = AutoSchedule()
+      ..commandType = commandType
+      ..nodeNum = nodenumber
+      ..scheduleID = scheduleID
+      ..status = status
+      ..timeDate = schedDate
+      ..waterAmount = waterAmount;
+
+    isar.writeTxnSync(() => isar.autoSchedules.putSync(schedule));
+
+    getAutoSchedule();
+  }
+
+  //Read from database
+  Future<void> getAutoSchedule() async {
+    List<Schedule> fetchedSchedules = await isar.schedules
+        .filter()
+        .commandTypeEqualTo("Scheduled")
+        .sortByTimeDate()
+        .findAll();
+    autoSchedule.clear();
+    autoSchedule.addAll(fetchedSchedules);
     notifyListeners();
   }
 }
