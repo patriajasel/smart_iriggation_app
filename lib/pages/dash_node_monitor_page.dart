@@ -124,343 +124,266 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
           style: TextStyle(fontFamily: "Rokkitt"),
         ),
       ),
-      body: Container(
-        margin: const EdgeInsets.all(10.0),
-        padding: const EdgeInsets.only(top: 30.0),
-        child: Column(
-          children: [
-            SingleChildScrollView(
-              clipBehavior: Clip.none,
-              controller: ScrollController(initialScrollOffset: 40.0),
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  //SOIL MOISTURE LEVEL
-                  Container(
-                    height: 150,
-                    width: 150,
-                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(
-                        color: Colors.blue,
-                        width: 3,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: const Offset(0, 1),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.only(top: 30.0),
+          child: Column(
+            children: [
+              SingleChildScrollView(
+                clipBehavior: Clip.none,
+                controller: ScrollController(initialScrollOffset: 40.0),
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    //SOIL MOISTURE LEVEL
+                    Container(
+                      height: 150,
+                      width: 150,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 3,
                         ),
-                      ],
-                    ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.water_drop,
-                            color: Colors.blue,
-                            size: 40.0,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                            offset: const Offset(0, 1),
                           ),
-                        ),
-                        Center(
-                          child: Text(
-                            "60%",
-                            style: TextStyle(
-                              fontFamily: "Rokkitt",
-                              fontSize: 25.0,
-                              color: Colors.black,
+                        ],
+                      ),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.water_drop,
+                              color: Colors.blue,
+                              size: 40.0,
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Divider(
-                            color: Colors.blue,
-                            thickness: 4.0,
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            "Moisture Level",
-                            style: TextStyle(
-                              fontFamily: "Rokkitt",
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  //PLANT TYPE
-                  Container(
-                    height: 150,
-                    width: 150,
-                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(
-                        color: Colors.green,
-                        width: 3,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.eco,
-                                color: Colors.green,
-                                size: 40.0,
+                          Center(
+                            child: Text(
+                              "60%",
+                              style: TextStyle(
+                                fontFamily: "Rokkitt",
+                                fontSize: 25.0,
+                                color: Colors.black,
                               ),
                             ),
-                            IconButton(
-                                icon: Icon(Icons.edit),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Divider(
+                              color: Colors.blue,
+                              thickness: 4.0,
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              "Moisture Level",
+                              style: TextStyle(
+                                fontFamily: "Rokkitt",
+                                fontSize: 16,
                                 color: Colors.black,
-                                onPressed: () {
-                                  showDialogBox("Update Plant Name",
-                                      widget.plantType, "plant");
-                                }),
-                          ],
-                        ),
-                        Center(
-                          child: Text(
-                            widget.plantType,
-                            style: const TextStyle(
-                              fontFamily: "Rokkitt",
-                              fontSize: 25.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Divider(
-                            color: Colors.green,
-                            thickness: 4.0,
-                          ),
-                        ),
-                        const Center(
-                          child: Text(
-                            "Plant Type",
-                            style: TextStyle(
-                              fontFamily: "Rokkitt",
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  //SOIL TYPE
-                  Container(
-                    height: 150,
-                    width: 150,
-                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(
-                        color: Colors.brown,
-                        width: 3,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.landscape,
-                                color: Colors.brown,
-                                size: 40.0,
                               ),
-                            ),
-                            IconButton(
-                                icon: Icon(Icons.edit),
-                                color: Colors.black,
-                                onPressed: () {
-                                  showDialogBox("Update Soil Type",
-                                      widget.soilType, "soil");
-                                }),
-                          ],
-                        ),
-                        Center(
-                          child: Text(
-                            widget.soilType,
-                            style: const TextStyle(
-                              fontFamily: "Rokkitt",
-                              fontSize: 25.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Divider(
-                            color: Colors.brown,
-                            thickness: 4.0,
-                          ),
-                        ),
-                        const Center(
-                          child: Text(
-                            "Soil Type",
-                            style: TextStyle(
-                              fontFamily: "Rokkitt",
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 20.0),
-              child: const Divider(
-                color: Colors.black,
-                thickness: 3.0,
-              ),
-            ),
-            Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      color: Colors.blue),
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10.0),
-                  margin: const EdgeInsets.only(top: 10.0),
-                  child: const Column(
-                    children: [
-                      Text(
-                        "Crop Schedules",
-                        style: TextStyle(
-                            fontFamily: "Rokkitt",
-                            fontSize: 20.0,
-                            color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-                additionalSched.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'No automated schedule has been set to this node.',
-                          style: TextStyle(fontSize: 18, fontFamily: "Rokkitt"),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    : DataTable(
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Text(
-                              'Stages',
-                              style: TextStyle(fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Water Amount',
-                              style: TextStyle(fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Status',
-                              style: TextStyle(fontStyle: FontStyle.italic),
                             ),
                           ),
                         ],
-                        rows: List.generate(additionalSched.length, (index) {
-                          return DataRow(cells: [
-                            DataCell(Text(
-                                formatDate(additionalSched[index].timeDate))),
-                            DataCell(Text(
-                                "${additionalSched[index].waterAmount} (mL)")),
-                            DataCell(
-                              const Text(
-                                "In progress",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  deleteSchedules(additionalSched[index].id);
-                                });
-                              },
-                            ),
-                          ]);
-                        }),
-                      )
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0), color: Colors.blue),
-              width: double.infinity,
-              padding: const EdgeInsets.all(10.0),
-              margin: const EdgeInsets.only(top: 10.0),
-              child: const Center(
-                child: Text(
-                  "Additional Schedules",
-                  style: TextStyle(
-                      fontFamily: "Rokkitt",
-                      fontSize: 20.0,
-                      color: Colors.white),
-                ),
-              ),
-            ),
-            additionalSched.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        'No additional schedules have been set.',
-                        style: TextStyle(fontSize: 18, fontFamily: "Rokkitt"),
                       ),
                     ),
-                  )
-                : DataTable(
+
+                    //PLANT TYPE
+                    Container(
+                      height: 150,
+                      width: 150,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(
+                          color: Colors.green,
+                          width: 3,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.eco,
+                                  color: Colors.green,
+                                  size: 40.0,
+                                ),
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.edit),
+                                  color: Colors.black,
+                                  onPressed: () {
+                                    showDialogBox("Update Plant Name",
+                                        widget.plantType, "plant");
+                                  }),
+                            ],
+                          ),
+                          Center(
+                            child: Text(
+                              widget.plantType,
+                              style: const TextStyle(
+                                fontFamily: "Rokkitt",
+                                fontSize: 25.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Divider(
+                              color: Colors.green,
+                              thickness: 4.0,
+                            ),
+                          ),
+                          const Center(
+                            child: Text(
+                              "Plant Type",
+                              style: TextStyle(
+                                fontFamily: "Rokkitt",
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    //SOIL TYPE
+                    Container(
+                      height: 150,
+                      width: 150,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(
+                          color: Colors.brown,
+                          width: 3,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.landscape,
+                                  color: Colors.brown,
+                                  size: 40.0,
+                                ),
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.edit),
+                                  color: Colors.black,
+                                  onPressed: () {
+                                    showDialogBox("Update Soil Type",
+                                        widget.soilType, "soil");
+                                  }),
+                            ],
+                          ),
+                          Center(
+                            child: Text(
+                              widget.soilType,
+                              style: const TextStyle(
+                                fontFamily: "Rokkitt",
+                                fontSize: 25.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Divider(
+                              color: Colors.brown,
+                              thickness: 4.0,
+                            ),
+                          ),
+                          const Center(
+                            child: Text(
+                              "Soil Type",
+                              style: TextStyle(
+                                fontFamily: "Rokkitt",
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 20.0),
+                child: const Divider(
+                  color: Colors.black,
+                  thickness: 3.0,
+                ),
+              ),
+              Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: Colors.blue),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10.0),
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: const Column(
+                      children: [
+                        Text(
+                          "Crop Schedules",
+                          style: TextStyle(
+                              fontFamily: "Rokkitt",
+                              fontSize: 20.0,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataTable(
                     columns: const <DataColumn>[
                       DataColumn(
                         label: Text(
-                          'Date',
+                          'Stages',
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
@@ -472,21 +395,19 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                       ),
                       DataColumn(
                         label: Text(
-                          'Action',
+                          'Status',
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
                     ],
-                    rows: List.generate(additionalSched.length, (index) {
+                    rows: List.generate(10, (index) {
                       return DataRow(cells: [
-                        DataCell(
-                            Text(formatDate(additionalSched[index].timeDate))),
-                        DataCell(
-                            Text("${additionalSched[index].waterAmount} (mL)")),
+                        DataCell(Text("Week: ${index + 1}")),
+                        const DataCell(Text("100 (mL)")),
                         DataCell(
                           const Text(
-                            "Delete",
-                            style: TextStyle(color: Colors.red),
+                            "In progress",
+                            style: TextStyle(color: Colors.amber),
                           ),
                           onTap: () {
                             setState(() {
@@ -497,7 +418,83 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                       ]);
                     }),
                   )
-          ],
+                ],
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.blue),
+                width: double.infinity,
+                padding: const EdgeInsets.all(10.0),
+                margin: const EdgeInsets.only(top: 10.0),
+                child: const Center(
+                  child: Text(
+                    "Additional Schedules",
+                    style: TextStyle(
+                        fontFamily: "Rokkitt",
+                        fontSize: 20.0,
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+              additionalSched.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          'No additional schedules have been set.',
+                          style: TextStyle(fontSize: 18, fontFamily: "Rokkitt"),
+                        ),
+                      ),
+                    )
+                  : DataTable(
+                      columns: const <DataColumn>[
+                        DataColumn(
+                          label: Text(
+                            'Date',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Water Amount',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Action',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                        ),
+                      ],
+                      rows: List.generate(additionalSched.length, (index) {
+                        return DataRow(cells: [
+                          DataCell(Text(
+                              formatDate(additionalSched[index].timeDate))),
+                          DataCell(Text(
+                              "${additionalSched[index].waterAmount} (mL)")),
+                          DataCell(
+                            const Text(
+                              "Delete",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                deleteSchedules(additionalSched[index].id);
+                              });
+                            },
+                          ),
+                        ]);
+                      }),
+                    ),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {}, child: Text("Delete All Node Data")),
+              )
+            ],
+          ),
         ),
       ),
     );

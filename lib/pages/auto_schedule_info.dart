@@ -30,11 +30,16 @@ class _schedInformationState extends State<schedInformation> {
   @override
   void initState() {
     readNodes();
+    readWeeks();
     super.initState();
   }
 
   void readNodes() {
     context.read<Database>().getNodes();
+  }
+
+  void readWeeks() {
+    context.read<Database>().getWeeks(widget.croName);
   }
 
   void arrangeNodeList(List<Nodes> _nList) {
@@ -50,6 +55,7 @@ class _schedInformationState extends State<schedInformation> {
   Widget build(BuildContext context) {
     final nodesDatabase = context.watch<Database>();
     final List<Nodes> _nodes = nodesDatabase.currentNodes;
+    final List<Weeks> weeks = nodesDatabase.weeks;
 
     arrangeNodeList(_nodes);
 
@@ -269,8 +275,8 @@ class _schedInformationState extends State<schedInformation> {
                           child: const Text("Cancel")),
                       TextButton(
                           onPressed: () {
-                            concatenateData(
-                                _selectedIndex!, widget.croName, widget.stages);
+                            concatenateData(_selectedIndex!, widget.croName,
+                                widget.stages, nodesDatabase, weeks);
                             //Navigator.pushNamed(context, '/applySched');
                           },
                           child: const Text("Proceed")),

@@ -38,6 +38,7 @@ class Database extends ChangeNotifier {
   final List<CropInformation> CropInfo = [];
   final List<CropInformation> specificCrop = [];
   final List<Schedule> firstSchedule = [];
+  final List<Weeks> weeks = [];
 
   static List items = [];
 
@@ -247,6 +248,16 @@ class Database extends ChangeNotifier {
     await isar.writeTxnSync(() async {
       action?.weeks.saveSync();
     });
+  }
+
+  // GETTING THE WEEKS
+  Future<void> getWeeks(String cropName) async {
+    List<Weeks> fetchedWeeks =
+        await isar.weeks.where().filter().cropEqualTo(cropName).findAll();
+
+    weeks.clear();
+    weeks.addAll(fetchedWeeks);
+    notifyListeners();
   }
 
   Future<void> getCropsBasedSoil(String soilType) async {
