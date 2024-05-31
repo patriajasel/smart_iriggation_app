@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class Notify {
@@ -31,11 +32,19 @@ class Notify {
 
   Future scheduledNotification(
       int id, String body, DateTime scheduledTime) async {
+    await checkAndRequestExactAlarmPermission();
+
     await notificationsPlugin.zonedSchedule(id, "Smart Irrigation App", body,
         tz.TZDateTime.from(scheduledTime, tz.local), notificationDetails(),
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+  }
+
+  Future<void> checkAndRequestExactAlarmPermission() async {
+    if (await Permission.scheduleExactAlarm.isDenied) {
+      await Permission.scheduleExactAlarm.request();
+    }
   }
 
   Future cancelSchedule(int schedID) async {

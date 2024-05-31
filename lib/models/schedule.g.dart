@@ -4016,29 +4016,39 @@ const AutoScheduleSchema = CollectionSchema(
       name: r'commandType',
       type: IsarType.string,
     ),
-    r'nodeNum': PropertySchema(
+    r'day': PropertySchema(
       id: 1,
+      name: r'day',
+      type: IsarType.long,
+    ),
+    r'nodeNum': PropertySchema(
+      id: 2,
       name: r'nodeNum',
       type: IsarType.long,
     ),
     r'scheduleID': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'scheduleID',
       type: IsarType.long,
     ),
     r'status': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'status',
       type: IsarType.string,
     ),
     r'timeDate': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'timeDate',
       type: IsarType.dateTime,
     ),
     r'waterAmount': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'waterAmount',
+      type: IsarType.long,
+    ),
+    r'week': PropertySchema(
+      id: 7,
+      name: r'week',
       type: IsarType.long,
     )
   },
@@ -4074,11 +4084,13 @@ void _autoScheduleSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.commandType);
-  writer.writeLong(offsets[1], object.nodeNum);
-  writer.writeLong(offsets[2], object.scheduleID);
-  writer.writeString(offsets[3], object.status);
-  writer.writeDateTime(offsets[4], object.timeDate);
-  writer.writeLong(offsets[5], object.waterAmount);
+  writer.writeLong(offsets[1], object.day);
+  writer.writeLong(offsets[2], object.nodeNum);
+  writer.writeLong(offsets[3], object.scheduleID);
+  writer.writeString(offsets[4], object.status);
+  writer.writeDateTime(offsets[5], object.timeDate);
+  writer.writeLong(offsets[6], object.waterAmount);
+  writer.writeLong(offsets[7], object.week);
 }
 
 AutoSchedule _autoScheduleDeserialize(
@@ -4089,12 +4101,14 @@ AutoSchedule _autoScheduleDeserialize(
 ) {
   final object = AutoSchedule();
   object.commandType = reader.readString(offsets[0]);
+  object.day = reader.readLong(offsets[1]);
   object.id = id;
-  object.nodeNum = reader.readLong(offsets[1]);
-  object.scheduleID = reader.readLong(offsets[2]);
-  object.status = reader.readString(offsets[3]);
-  object.timeDate = reader.readDateTime(offsets[4]);
-  object.waterAmount = reader.readLong(offsets[5]);
+  object.nodeNum = reader.readLong(offsets[2]);
+  object.scheduleID = reader.readLong(offsets[3]);
+  object.status = reader.readString(offsets[4]);
+  object.timeDate = reader.readDateTime(offsets[5]);
+  object.waterAmount = reader.readLong(offsets[6]);
+  object.week = reader.readLong(offsets[7]);
   return object;
 }
 
@@ -4112,10 +4126,14 @@ P _autoScheduleDeserializeProp<P>(
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 5:
+      return (reader.readDateTime(offset)) as P;
+    case 6:
+      return (reader.readLong(offset)) as P;
+    case 7:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -4348,6 +4366,60 @@ extension AutoScheduleQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'commandType',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition> dayEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'day',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      dayGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'day',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition> dayLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'day',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition> dayBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'day',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -4763,6 +4835,60 @@ extension AutoScheduleQueryFilter
       ));
     });
   }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition> weekEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'week',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      weekGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'week',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition> weekLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'week',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition> weekBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'week',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension AutoScheduleQueryObject
@@ -4783,6 +4909,18 @@ extension AutoScheduleQuerySortBy
       sortByCommandTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'commandType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> sortByDay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> sortByDayDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.desc);
     });
   }
 
@@ -4847,6 +4985,18 @@ extension AutoScheduleQuerySortBy
       return query.addSortBy(r'waterAmount', Sort.desc);
     });
   }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> sortByWeek() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'week', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> sortByWeekDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'week', Sort.desc);
+    });
+  }
 }
 
 extension AutoScheduleQuerySortThenBy
@@ -4861,6 +5011,18 @@ extension AutoScheduleQuerySortThenBy
       thenByCommandTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'commandType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> thenByDay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> thenByDayDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.desc);
     });
   }
 
@@ -4937,6 +5099,18 @@ extension AutoScheduleQuerySortThenBy
       return query.addSortBy(r'waterAmount', Sort.desc);
     });
   }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> thenByWeek() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'week', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> thenByWeekDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'week', Sort.desc);
+    });
+  }
 }
 
 extension AutoScheduleQueryWhereDistinct
@@ -4945,6 +5119,12 @@ extension AutoScheduleQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'commandType', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QDistinct> distinctByDay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'day');
     });
   }
 
@@ -4978,6 +5158,12 @@ extension AutoScheduleQueryWhereDistinct
       return query.addDistinctBy(r'waterAmount');
     });
   }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QDistinct> distinctByWeek() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'week');
+    });
+  }
 }
 
 extension AutoScheduleQueryProperty
@@ -4991,6 +5177,12 @@ extension AutoScheduleQueryProperty
   QueryBuilder<AutoSchedule, String, QQueryOperations> commandTypeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'commandType');
+    });
+  }
+
+  QueryBuilder<AutoSchedule, int, QQueryOperations> dayProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'day');
     });
   }
 
@@ -5021,6 +5213,12 @@ extension AutoScheduleQueryProperty
   QueryBuilder<AutoSchedule, int, QQueryOperations> waterAmountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'waterAmount');
+    });
+  }
+
+  QueryBuilder<AutoSchedule, int, QQueryOperations> weekProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'week');
     });
   }
 }

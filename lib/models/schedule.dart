@@ -56,4 +56,6 @@ class AutoSchedule {
   late int nodeNum;
   late String commandType;
   late String status;
+  late int week;
+  late int day;
 }

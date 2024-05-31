@@ -279,14 +279,18 @@ class Database extends ChangeNotifier {
       int scheduleID,
       String status,
       DateTime schedDate,
-      int waterAmount) async {
+      int waterAmount,
+      int week,
+      int day) async {
     final schedule = AutoSchedule()
       ..commandType = commandType
       ..nodeNum = nodenumber
       ..scheduleID = scheduleID
       ..status = status
       ..timeDate = schedDate
-      ..waterAmount = waterAmount;
+      ..waterAmount = waterAmount
+      ..week = week
+      ..day = day;
 
     isar.writeTxnSync(() => isar.autoSchedules.putSync(schedule));
 
