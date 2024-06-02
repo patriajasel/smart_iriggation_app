@@ -24,7 +24,7 @@ class _tankMonitorState extends State<tankMonitor> {
 
   @override
   void initState() {
-    Timer.periodic(const Duration(seconds: 5), (timer) { 
+    Timer.periodic(const Duration(minutes: 10), (timer) { 
       getWaterAndFertilizerLevel();
     });
     super.initState();
@@ -72,32 +72,41 @@ void changeValues(int water, int fertilizer) {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  'Tank Monitoring',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25.0,
-                      fontFamily: "Rokkitt"),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Tank Monitoring',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25.0,
+                          fontFamily: "Rokkitt"),
+                    ),
+
+                    IconButton(onPressed: (){ getWaterAndFertilizerLevel(); }, icon: const Icon(Icons.refresh), color: Colors.white,)
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Colors.blue),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      color: Colors.white70,
-                      height: 300,
-                      width: 360,
-                      child: MyBarChart(waterLevel: waterLevel, fertilizerLevel: fertilizerLevel),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(color: Colors.blue),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        color: Colors.white70,
+                        height: 300,
+                        width: 360,
+                        child: MyBarChart(waterLevel: waterLevel, fertilizerLevel: fertilizerLevel),
+                      ),
                     ),
                   ),
                 ),

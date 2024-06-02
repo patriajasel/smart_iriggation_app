@@ -145,7 +145,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
           data: ThemeData(useMaterial3: false),
           child: SwitchListTile(
               title: const Text(
-                "Water Pump",
+                "Water Valve",
                 style: TextStyle(fontFamily: "Rokkitt", fontSize: 18),
               ),
               value: isWaterValveOpen,
@@ -162,7 +162,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
           data: ThemeData(useMaterial3: false),
           child: SwitchListTile(
               title: const Text(
-                "Fertilizer Pump",
+                "Fertilizer Valve",
                 style: TextStyle(fontFamily: "Rokkitt", fontSize: 18),
               ),
               value: isFertilizerValveOpen,

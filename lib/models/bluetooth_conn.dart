@@ -74,6 +74,8 @@ class bluetooth_conn {
         ),
       );
     }
+
+    print(data);
   }
 
   void requestPermission() async {

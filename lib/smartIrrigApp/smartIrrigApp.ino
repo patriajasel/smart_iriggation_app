@@ -35,6 +35,17 @@ int wlevel;
 int flevel;
 float depth = 41;
 
+//SOIL MOISTURE PINS
+#define sensorPin1 A0
+#define sensorPin2 A1
+#define sensorPin3 A2
+#define sensorPin4 A3
+
+int sensorValue1;
+int sensorValue2;
+int sensorValue3;
+int sensorValue4;
+
 String soilType;
 
 void setup() {
@@ -88,7 +99,12 @@ void loop() {
 
     executeCommand(commandArray);
   } else {
+    sensorValue1 = analogRead(sensorPin1);
+    sensorValue2 = analogRead(sensorPin2);
+    sensorValue3 = analogRead(sensorPin3);
+    sensorValue4 = analogRead(sensorPin4); 
     monitoring();
+
   }
   
 }
@@ -103,8 +119,33 @@ void executeCommand(String command[]){
      }
   } else if(command[0] == "Scheduled"){
     scheduledCommands(command[1], command[2]);
-  } 
+  } else if(command[0] == "Sensor"){
+    getSensorValue(command[1].toInt());
+  }
   
+}
+
+void getSensorValue(int soilMoistureNumber){
+  Serial.print(soilMoistureNumber);
+
+  int outputValue1 = map(sensorValue1, 0, 1023, 255, 0);
+  int outputValue2 = map(sensorValue2, 0, 1023, 255, 0);
+  int outputValue3 = map(sensorValue3, 0, 1023, 255, 0);
+  int outputValue4 = map(sensorValue4, 0, 1023, 255, 0); 
+
+  if(soilMoistureNumber == 1){
+    Serial.println(outputValue1);
+  }
+  else if(soilMoistureNumber == 2){
+    Serial.println(outputValue2);
+  }
+  else if(soilMoistureNumber == 3){
+    Serial.println(outputValue3);
+  }
+  else if(soilMoistureNumber == 4){
+    Serial.println(outputValue4);
+  }
+      
 }
 
 void manualCommands(int nodeNumber, String command){

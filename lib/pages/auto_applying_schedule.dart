@@ -20,7 +20,7 @@ void concatenateData(int nodeNumber, String cropName, IsarLinks<Stages> stages,
   }
   schedDate.clear();
   waterParts.clear();
-  parts.clear;
+  parts.clear();
   arrangeWaterAmount(weeksInString);
   getDatePerWaterAmount(waterParts);
   addAutomatedSchedule(schedDatabase, nodeNumber, commandType, status,

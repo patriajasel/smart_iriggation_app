@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_iriggation_app/main.dart';
+import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
 
@@ -206,21 +208,34 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                           ),
                         ],
                       ),
-                      child: const Column(
+                      child:  Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.water_drop,
-                              color: Colors.blue,
-                              size: 40.0,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.water_drop,
+                                  color: Colors.blue,
+                                  size: 40.0,
+                                ),
+                              ),
+                              IconButton(
+                                  icon:  const Icon(Icons.refresh),
+                                  color: Colors.black,
+                                  onPressed: () {
+                                    setState(() {
+                                      btInstance.sendData("Sensor,${widget.nodeNumber},", context);
+                                    });
+                                  }),
+                            ],
                           ),
                           Center(
                             child: Text(
-                              "60%",
-                              style: TextStyle(
+                              "$dataReceived%",
+                              style: const TextStyle(
                                 fontFamily: "Rokkitt",
                                 fontSize: 25.0,
                                 color: Colors.black,
@@ -664,32 +679,6 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
 
 String formatDate(DateTime dateTime) {
   // Format the date
-  String formattedDate = DateFormat('EE - ').add_jm().format(dateTime);
+  String formattedDate = DateFormat('MMM d - ').add_jm().format(dateTime);
   return formattedDate;
 }
-
-/*Widget? getWeeks(String stage, IsarLinks<Weeks> weeks) {
-  List<Weeks> perWeek = weeks.toList();
-  return ExpansionTile(
-    title: Text(stage),
-    children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-              columns: const [
-                DataColumn(label: Text('Action')),
-                DataColumn(label: Text('Water per Plant'))
-              ],
-              rows: List.generate(perWeek.length, (index) {
-                return DataRow(cells: [
-                  DataCell(Text(perWeek[index].week)),
-                  DataCell(Text(perWeek[index].waterAmount))
-                ]);
-              })),
-        ),
-      )
-    ],
-  );
-}*/
