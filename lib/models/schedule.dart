@@ -45,6 +45,7 @@ class Nodes {
   late int nodeNumber;
   late String plant;
   late String soilType;
+  late List<int> waterPerDay;
 }
 
 @Collection()
@@ -58,4 +59,5 @@ class AutoSchedule {
   late String status;
   late int week;
   late int day;
+  late String cropName;
 }

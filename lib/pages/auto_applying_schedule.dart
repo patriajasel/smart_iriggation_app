@@ -4,6 +4,7 @@ import 'package:smart_iriggation_app/models/schedule.dart';
 
 List<List<int>> waterParts = [];
 List<List<List<DateTime>>> schedDate = [[]];
+List<int> parts = [];
 
 void concatenateData(int nodeNumber, String cropName, IsarLinks<Stages> stages,
     Database schedDatabase, List<Weeks> week) {
@@ -19,14 +20,14 @@ void concatenateData(int nodeNumber, String cropName, IsarLinks<Stages> stages,
   }
   schedDate.clear();
   waterParts.clear();
+  parts.clear;
   arrangeWaterAmount(weeksInString);
   getDatePerWaterAmount(waterParts);
   addAutomatedSchedule(schedDatabase, nodeNumber, commandType, status,
-      waterParts, schedDate, cropName);
+      waterParts, schedDate, cropName, parts);
 }
 
 void arrangeWaterAmount(List<String> waterAmount) {
-  List<int> parts = [];
   for (int i = 0; i < waterAmount.length; i++) {
     parts.add(getNumberAfterDash(waterAmount[i]));
   }
@@ -115,7 +116,8 @@ void addAutomatedSchedule(
     String status,
     List<List<int>> waterParts,
     List<List<List<DateTime>>> schedDate,
-    String cropName) {
+    String cropName,
+    List<int> parts) {
   for (int i = 0; i < schedDate.length; i++) {
     for (int j = 0; j < schedDate[i].length; j++) {
       for (int k = 0; k < schedDate[i][j].length; k++) {
@@ -129,10 +131,11 @@ void addAutomatedSchedule(
             schedDate[i][j][k],
             waterParts[i][k],
             i + 1,
-            j + 1);
+            j + 1,
+            cropName);
       }
     }
   }
 
-  schedDatabase.updateNode(nodeNumber, cropName, "Loam");
+  schedDatabase.updateNode(nodeNumber, cropName, "Loam", parts);
 }

@@ -3338,6 +3338,11 @@ const NodesSchema = CollectionSchema(
       id: 2,
       name: r'soilType',
       type: IsarType.string,
+    ),
+    r'waterPerDay': PropertySchema(
+      id: 3,
+      name: r'waterPerDay',
+      type: IsarType.longList,
     )
   },
   estimateSize: _nodesEstimateSize,
@@ -3362,6 +3367,7 @@ int _nodesEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.plant.length * 3;
   bytesCount += 3 + object.soilType.length * 3;
+  bytesCount += 3 + object.waterPerDay.length * 8;
   return bytesCount;
 }
 
@@ -3374,6 +3380,7 @@ void _nodesSerialize(
   writer.writeLong(offsets[0], object.nodeNumber);
   writer.writeString(offsets[1], object.plant);
   writer.writeString(offsets[2], object.soilType);
+  writer.writeLongList(offsets[3], object.waterPerDay);
 }
 
 Nodes _nodesDeserialize(
@@ -3387,6 +3394,7 @@ Nodes _nodesDeserialize(
   object.nodeNumber = reader.readLong(offsets[0]);
   object.plant = reader.readString(offsets[1]);
   object.soilType = reader.readString(offsets[2]);
+  object.waterPerDay = reader.readLongList(offsets[3]) ?? [];
   return object;
 }
 
@@ -3403,6 +3411,8 @@ P _nodesDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readLongList(offset) ?? []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -3858,6 +3868,145 @@ extension NodesQueryFilter on QueryBuilder<Nodes, Nodes, QFilterCondition> {
       ));
     });
   }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> waterPerDayElementEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'waterPerDay',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition>
+      waterPerDayElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'waterPerDay',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> waterPerDayElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'waterPerDay',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> waterPerDayElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'waterPerDay',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> waterPerDayLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'waterPerDay',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> waterPerDayIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'waterPerDay',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> waterPerDayIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'waterPerDay',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> waterPerDayLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'waterPerDay',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition>
+      waterPerDayLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'waterPerDay',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Nodes, Nodes, QAfterFilterCondition> waterPerDayLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'waterPerDay',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
 }
 
 extension NodesQueryObject on QueryBuilder<Nodes, Nodes, QFilterCondition> {}
@@ -3972,6 +4121,12 @@ extension NodesQueryWhereDistinct on QueryBuilder<Nodes, Nodes, QDistinct> {
       return query.addDistinctBy(r'soilType', caseSensitive: caseSensitive);
     });
   }
+
+  QueryBuilder<Nodes, Nodes, QDistinct> distinctByWaterPerDay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'waterPerDay');
+    });
+  }
 }
 
 extension NodesQueryProperty on QueryBuilder<Nodes, Nodes, QQueryProperty> {
@@ -3998,6 +4153,12 @@ extension NodesQueryProperty on QueryBuilder<Nodes, Nodes, QQueryProperty> {
       return query.addPropertyName(r'soilType');
     });
   }
+
+  QueryBuilder<Nodes, List<int>, QQueryOperations> waterPerDayProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'waterPerDay');
+    });
+  }
 }
 
 // coverage:ignore-file
@@ -4016,38 +4177,43 @@ const AutoScheduleSchema = CollectionSchema(
       name: r'commandType',
       type: IsarType.string,
     ),
-    r'day': PropertySchema(
+    r'cropName': PropertySchema(
       id: 1,
+      name: r'cropName',
+      type: IsarType.string,
+    ),
+    r'day': PropertySchema(
+      id: 2,
       name: r'day',
       type: IsarType.long,
     ),
     r'nodeNum': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'nodeNum',
       type: IsarType.long,
     ),
     r'scheduleID': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'scheduleID',
       type: IsarType.long,
     ),
     r'status': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'status',
       type: IsarType.string,
     ),
     r'timeDate': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'timeDate',
       type: IsarType.dateTime,
     ),
     r'waterAmount': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'waterAmount',
       type: IsarType.long,
     ),
     r'week': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'week',
       type: IsarType.long,
     )
@@ -4073,6 +4239,7 @@ int _autoScheduleEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.commandType.length * 3;
+  bytesCount += 3 + object.cropName.length * 3;
   bytesCount += 3 + object.status.length * 3;
   return bytesCount;
 }
@@ -4084,13 +4251,14 @@ void _autoScheduleSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.commandType);
-  writer.writeLong(offsets[1], object.day);
-  writer.writeLong(offsets[2], object.nodeNum);
-  writer.writeLong(offsets[3], object.scheduleID);
-  writer.writeString(offsets[4], object.status);
-  writer.writeDateTime(offsets[5], object.timeDate);
-  writer.writeLong(offsets[6], object.waterAmount);
-  writer.writeLong(offsets[7], object.week);
+  writer.writeString(offsets[1], object.cropName);
+  writer.writeLong(offsets[2], object.day);
+  writer.writeLong(offsets[3], object.nodeNum);
+  writer.writeLong(offsets[4], object.scheduleID);
+  writer.writeString(offsets[5], object.status);
+  writer.writeDateTime(offsets[6], object.timeDate);
+  writer.writeLong(offsets[7], object.waterAmount);
+  writer.writeLong(offsets[8], object.week);
 }
 
 AutoSchedule _autoScheduleDeserialize(
@@ -4101,14 +4269,15 @@ AutoSchedule _autoScheduleDeserialize(
 ) {
   final object = AutoSchedule();
   object.commandType = reader.readString(offsets[0]);
-  object.day = reader.readLong(offsets[1]);
+  object.cropName = reader.readString(offsets[1]);
+  object.day = reader.readLong(offsets[2]);
   object.id = id;
-  object.nodeNum = reader.readLong(offsets[2]);
-  object.scheduleID = reader.readLong(offsets[3]);
-  object.status = reader.readString(offsets[4]);
-  object.timeDate = reader.readDateTime(offsets[5]);
-  object.waterAmount = reader.readLong(offsets[6]);
-  object.week = reader.readLong(offsets[7]);
+  object.nodeNum = reader.readLong(offsets[3]);
+  object.scheduleID = reader.readLong(offsets[4]);
+  object.status = reader.readString(offsets[5]);
+  object.timeDate = reader.readDateTime(offsets[6]);
+  object.waterAmount = reader.readLong(offsets[7]);
+  object.week = reader.readLong(offsets[8]);
   return object;
 }
 
@@ -4122,18 +4291,20 @@ P _autoScheduleDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
       return (reader.readLong(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
-    case 5:
-      return (reader.readDateTime(offset)) as P;
-    case 6:
       return (reader.readLong(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readDateTime(offset)) as P;
     case 7:
+      return (reader.readLong(offset)) as P;
+    case 8:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -4365,6 +4536,142 @@ extension AutoScheduleQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'commandType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'cropName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'cropName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'cropName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'cropName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'cropName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'cropName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'cropName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'cropName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'cropName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterFilterCondition>
+      cropNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'cropName',
         value: '',
       ));
     });
@@ -4912,6 +5219,18 @@ extension AutoScheduleQuerySortBy
     });
   }
 
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> sortByCropName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cropName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> sortByCropNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cropName', Sort.desc);
+    });
+  }
+
   QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> sortByDay() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'day', Sort.asc);
@@ -5011,6 +5330,18 @@ extension AutoScheduleQuerySortThenBy
       thenByCommandTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'commandType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> thenByCropName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cropName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AutoSchedule, AutoSchedule, QAfterSortBy> thenByCropNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cropName', Sort.desc);
     });
   }
 
@@ -5122,6 +5453,13 @@ extension AutoScheduleQueryWhereDistinct
     });
   }
 
+  QueryBuilder<AutoSchedule, AutoSchedule, QDistinct> distinctByCropName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'cropName', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<AutoSchedule, AutoSchedule, QDistinct> distinctByDay() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'day');
@@ -5177,6 +5515,12 @@ extension AutoScheduleQueryProperty
   QueryBuilder<AutoSchedule, String, QQueryOperations> commandTypeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'commandType');
+    });
+  }
+
+  QueryBuilder<AutoSchedule, String, QQueryOperations> cropNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'cropName');
     });
   }
 

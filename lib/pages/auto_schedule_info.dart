@@ -275,9 +275,61 @@ class _schedInformationState extends State<schedInformation> {
                           child: const Text("Cancel")),
                       TextButton(
                           onPressed: () {
-                            concatenateData(_selectedIndex!, widget.croName,
-                                widget.stages, nodesDatabase, weeks);
-                            //Navigator.pushNamed(context, '/applySched');
+                            print(_selectedIndex);
+                            if (_nodes[_selectedIndex! - 1].plant == "Empty") {
+                              concatenateData(_selectedIndex!, widget.croName,
+                                  widget.stages, nodesDatabase, weeks);
+                              Navigator.pushNamed(context, '/applySched');
+                            } else {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                        "Warning!!",
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontFamily: "Rokkitt",
+                                            fontSize: 25.0),
+                                      ),
+                                      content: const Text(
+                                          "The node you selected is not empty. Please choose another node or delete the data to proceed."),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child:
+                                                const Text("Choose Another")),
+                                        TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                nodesDatabase
+                                                    .deleteAutoScheduleByNode(
+                                                        _selectedIndex!);
+                                                nodesDatabase
+                                                    .deleteScheduleByNode(
+                                                        _selectedIndex!);
+                                                nodesDatabase.updateNode(
+                                                    _selectedIndex!,
+                                                    "Empty",
+                                                    "Unknown", []);
+                                                concatenateData(
+                                                    _selectedIndex!,
+                                                    widget.croName,
+                                                    widget.stages,
+                                                    nodesDatabase,
+                                                    weeks);
+                                                Navigator.pushNamed(
+                                                    context, '/applySched');
+                                              });
+                                            },
+                                            child: const Text(
+                                                "Delete Data and Proceed"))
+                                      ],
+                                    );
+                                  });
+                            }
                           },
                           child: const Text("Proceed")),
                     ],

@@ -10,11 +10,13 @@ class nodeMonitorPage extends StatefulWidget {
   final int nodeNumber;
   final String plantType;
   final String soilType;
+  final List<int> waterPerDay;
   const nodeMonitorPage(
       {super.key,
       required this.nodeNumber,
       required this.plantType,
-      required this.soilType});
+      required this.soilType,
+      required this.waterPerDay});
 
   @override
   State<nodeMonitorPage> createState() => _nodeMonitorPageState();
@@ -22,16 +24,24 @@ class nodeMonitorPage extends StatefulWidget {
 
 class _nodeMonitorPageState extends State<nodeMonitorPage> {
   final textController = TextEditingController();
+  List<int> numberOfWeeks = [];
+  List<int> waterPerDay = [];
+  List<int> numberOfDays = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     readSchedBasedOnNode(widget.nodeNumber);
+    readAutomatedSchedBasedOnNode(widget.nodeNumber, widget.plantType);
   }
 
   void readSchedBasedOnNode(int node) {
     context.read<Database>().getScheduleBasedOnNode(node);
+  }
+
+  void readAutomatedSchedBasedOnNode(int node, String cropName) {
+    context.read<Database>().getAutoScheduleByNode(node, cropName);
   }
 
   void deleteSchedules(int id) {
@@ -81,12 +91,14 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                               context.read<Database>().updateNode(
                                   widget.nodeNumber,
                                   textController.text,
-                                  widget.soilType);
+                                  widget.soilType,
+                                  widget.waterPerDay);
                             } else if (what == "soil") {
                               context.read<Database>().updateNode(
                                   widget.nodeNumber,
                                   widget.plantType,
-                                  textController.text);
+                                  textController.text,
+                                  widget.waterPerDay);
                             }
 
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -108,11 +120,48 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
         });
   }
 
+  void populateWeeks(List<AutoSchedule> autoSched) {
+    Set<int> numberOfWeeksSet =
+        {}; // Using a Set to automatically handle duplicates
+
+    for (var schedule in autoSched) {
+      numberOfWeeksSet.add(schedule.week);
+    }
+
+    // Clear the existing list and add the unique values from the set
+    numberOfWeeks.clear();
+    numberOfWeeks.addAll(numberOfWeeksSet);
+
+    // Optionally, sort the list if needed
+    numberOfWeeks.sort();
+  }
+
+  void populateDays(List<AutoSchedule> autoSched) {
+    Set<int> numberOfDaysSet =
+        {}; // Using a Set to automatically handle duplicates
+
+    for (var schedule in autoSched) {
+      numberOfDaysSet.add(schedule.day);
+    }
+
+    // Clear the existing list and add the unique values from the set
+    numberOfDays.clear();
+    numberOfDays.addAll(numberOfDaysSet);
+
+    // Optionally, sort the list if needed
+    numberOfDays.sort();
+  }
+
   @override
   Widget build(BuildContext context) {
     final nodeDatabase = context.watch<Database>();
 
     List<Schedule> additionalSched = nodeDatabase.currentScheduleNode;
+    List<AutoSchedule> autoSched = nodeDatabase.autoSchedule;
+    List<int> waterPerDay = widget.waterPerDay;
+
+    numberOfWeeks.clear();
+    populateWeeks(autoSched);
 
     return Scaffold(
       appBar: AppBar(
@@ -235,7 +284,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                                 ),
                               ),
                               IconButton(
-                                  icon: Icon(Icons.edit),
+                                  icon: const Icon(Icons.edit),
                                   color: Colors.black,
                                   onPressed: () {
                                     showDialogBox("Update Plant Name",
@@ -310,7 +359,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                                 ),
                               ),
                               IconButton(
-                                  icon: Icon(Icons.edit),
+                                  icon: const Icon(Icons.edit),
                                   color: Colors.black,
                                   onPressed: () {
                                     showDialogBox("Update Soil Type",
@@ -379,45 +428,62 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                       ],
                     ),
                   ),
-                  DataTable(
-                    columns: const <DataColumn>[
-                      DataColumn(
-                        label: Text(
-                          'Stages',
-                          style: TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Water Amount',
-                          style: TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Status',
-                          style: TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ),
-                    ],
-                    rows: List.generate(10, (index) {
-                      return DataRow(cells: [
-                        DataCell(Text("Week: ${index + 1}")),
-                        const DataCell(Text("100 (mL)")),
-                        DataCell(
-                          const Text(
-                            "In progress",
-                            style: TextStyle(color: Colors.amber),
+                  autoSched.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'This node was not applied with Automatic process by our system.',
+                            style:
+                                TextStyle(fontSize: 18, fontFamily: "Rokkitt"),
+                            textAlign: TextAlign.center,
                           ),
-                          onTap: () {
-                            setState(() {
-                              deleteSchedules(additionalSched[index].id);
-                            });
-                          },
+                        )
+                      : DataTable(
+                          columns: const <DataColumn>[
+                            DataColumn(
+                              label: Text(
+                                'Week',
+                                style: TextStyle(fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Water (per Day)',
+                                style: TextStyle(fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Status',
+                                style: TextStyle(fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                          ],
+                          rows: List.generate(numberOfWeeks.length, (index) {
+                            return DataRow(cells: [
+                              DataCell(Text("Week: ${numberOfWeeks[index]}"),
+                                  onTap: () {
+                                showSchedulePerDay(
+                                    context, numberOfWeeks[index]);
+                              }),
+                              DataCell(Text("${waterPerDay[index]} (mL)"),
+                                  onTap: () {
+                                showSchedulePerDay(
+                                    context, numberOfWeeks[index]);
+                              }),
+                              DataCell(
+                                const Text(
+                                  "In progress",
+                                  style: TextStyle(color: Colors.amber),
+                                ),
+                                onTap: () {
+                                  showSchedulePerDay(
+                                      context, numberOfWeeks[index]);
+                                },
+                              ),
+                            ]);
+                          }),
                         ),
-                      ]);
-                    }),
-                  )
                 ],
               ),
               Container(
@@ -488,16 +554,111 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                         ]);
                       }),
                     ),
-              Container(
+              SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {}, child: Text("Delete All Node Data")),
+                    onPressed: () {
+                      setState(() {
+                        nodeDatabase
+                            .deleteAutoScheduleByNode(widget.nodeNumber);
+                        nodeDatabase.deleteScheduleByNode(widget.nodeNumber);
+                        nodeDatabase.updateNode(
+                            widget.nodeNumber, "Empty", "Unknown", []);
+                      });
+                    },
+                    child: const Text("Delete all Node data")),
               )
             ],
           ),
         ),
       ),
     );
+  }
+
+  void showSchedulePerDay(BuildContext context, int weekNumber) async {
+    // Fetch the weekly schedule data before showing the dialog
+    await context
+        .read<Database>()
+        .getAutoScheduleByWeek(weekNumber, widget.plantType);
+    final schedDatabase = context.read<Database>();
+    List<AutoSchedule> schedByWeek = schedDatabase.autoScheduleByWeek;
+    populateDays(schedByWeek);
+
+    showDialog(
+      // ignore: use_build_context_synchronously
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Schedule Per Day",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.black),
+          ),
+          titleTextStyle:
+              const TextStyle(fontFamily: "Rokkitt", fontSize: 25.0),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: 500,
+              child: ListBody(
+                children: List.generate(numberOfDays.length, (index) {
+                  // Fetch data for each day synchronously
+                  context.read<Database>().getAutoScheduleByDay(
+                      widget.plantType, weekNumber, index + 1);
+                  List<AutoSchedule> schedPerDay =
+                      schedDatabase.autoScheduleByDay;
+
+                  return ExpansionTile(
+                    title: Text("Day: ${numberOfDays[index]}"),
+                    children: <Widget>[
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns: const [
+                            DataColumn(label: Text('Date')),
+                            DataColumn(label: Text('Water per Plant')),
+                            DataColumn(label: Text('Status'))
+                          ],
+                          rows: List.generate(schedPerDay.length, (index) {
+                            return DataRow(cells: [
+                              DataCell(Text(
+                                  formatDate(schedPerDay[index].timeDate))),
+                              DataCell(Text(
+                                  "${schedPerDay[index].waterAmount} (mL)")),
+                              DataCell(
+                                Text(
+                                  "${schedPerDay[index].status}",
+                                  style: TextStyle(
+                                    color: getStatusColor(
+                                        schedPerDay[index].status),
+                                  ),
+                                ),
+                              ),
+                            ]);
+                          }),
+                        ),
+                      )
+                    ],
+                  );
+                }),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Color getStatusColor(String status) {
+    switch (status) {
+      case 'In progress':
+        return Colors.amber;
+      case 'Complete':
+        return Colors.green;
+      case 'Cancelled':
+        return Colors.red;
+      default:
+        return Colors.black;
+    }
   }
 }
 

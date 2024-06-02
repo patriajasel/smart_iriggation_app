@@ -66,6 +66,7 @@ class _NodesListViewState extends State<nodesListView> {
                                 nodeNumber: index + 1,
                                 plantType: nodeList[index].plant,
                                 soilType: nodeList[index].soilType,
+                                waterPerDay: nodeList[index].waterPerDay,
                               ),
                             ),
                           );
