@@ -97,7 +97,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
   Widget devicesInfo() {
     return ListTile(
       title: Text(
-        "Connected to: ${connectedDevice?.name ?? "None"}",
+        "Connected to: ${connection != null ? "HC-05" : "None"}",
         style: const TextStyle(
           fontFamily: "Rokkitt",
           fontSize: 18,

@@ -18,7 +18,6 @@ class Database extends ChangeNotifier {
       StagesSchema,
       WeeksSchema,
       NodesSchema,
-      AutoScheduleSchema
     ], directory: dir.path);
     final count_crop = await isar.cropInformations.count();
     final count_stages = await isar.stages.count();
@@ -34,13 +33,14 @@ class Database extends ChangeNotifier {
 
   final List<Schedule> currentSchedule = [];
   final List<Schedule> currentScheduleNode = [];
-  final List<AutoSchedule> autoSchedule = [];
-  final List<AutoSchedule> autoScheduleByWeek = [];
-  final List<AutoSchedule> autoScheduleByDay = [];
   final List<CropInformation> CropInfo = [];
   final List<CropInformation> specificCrop = [];
   final List<Schedule> firstSchedule = [];
+  final List<Schedule> schedulesToSet = [];
   final List<Weeks> weeks = [];
+  final List<Schedule> autoSchedule = [];
+  final List<Schedule> autoScheduleByWeek = [];
+  final List<Schedule> autoScheduleByDay = [];
 
   static List items = [];
 
@@ -141,14 +141,26 @@ class Database extends ChangeNotifier {
   }
 
   //Create a data
-  Future<void> addNewSchedule(int schedID, DateTime time, int waterAmount,
-      int nodeNumber, String commandType) async {
+  Future<void> addNewSchedule(
+      String commandType,
+      String cropName,
+      int day,
+      int nodeNumber,
+      int scheduleID,
+      String status,
+      DateTime timeDate,
+      int waterAmount,
+      int week) async {
     final newSched = Schedule()
-      ..scheduleID = schedID
-      ..timeDate = time
-      ..waterAmount = waterAmount
+      ..commandType = commandType
+      ..cropName = cropName
+      ..day = day
       ..nodeNum = nodeNumber
-      ..commandType = commandType;
+      ..scheduleID = scheduleID
+      ..status = status
+      ..timeDate = timeDate
+      ..waterAmount = waterAmount
+      ..week = week;
 
     await isar.writeTxn(() => isar.schedules.put(newSched));
 
@@ -171,6 +183,8 @@ class Database extends ChangeNotifier {
   Future<void> getScheduleBasedOnNode(int nodeNumber) async {
     List<Schedule> fetchedSchedules = await isar.schedules
         .filter()
+        .commandTypeEqualTo("Scheduled")
+        .and()
         .nodeNumEqualTo(nodeNumber)
         .sortByTimeDate()
         .findAll();
@@ -190,19 +204,23 @@ class Database extends ChangeNotifier {
     notifyListeners();
   }
 
-  //Delete from database
-  Future<void> deleteSchedule(int id) async {
-    await isar.writeTxnSync(() => isar.schedules.deleteSync(id));
-
-    await getSchedule();
-  }
-
-  Future<void> deleteScheduleByNode(int nodeNumber) async {
-    await isar.writeTxnSync(() => isar.schedules
+  Future<void> getSchedulesWithSameTime(DateTime timedate) async {
+    List<Schedule> fetchedSchedules = await isar.schedules
         .where()
         .filter()
-        .nodeNumEqualTo(nodeNumber)
-        .deleteAllSync());
+        .timeDateEqualTo(timedate)
+        .sortByWaterAmount()
+        .findAll();
+    schedulesToSet.clear();
+    if (fetchedSchedules.isNotEmpty) {
+      schedulesToSet.addAll(fetchedSchedules);
+    }
+    notifyListeners();
+  }
+
+  //Delete from database
+  Future<void> deleteSchedule(int id) async {
+    await isar.writeTxn(() => isar.schedules.delete(id));
 
     await getSchedule();
   }
@@ -286,9 +304,9 @@ class Database extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ADDING AUTOMATED SCHEDULE TO THE DATABASE
+  //FOR AUTOMATIC SCHEDULES
 
-  Future<void> addnewAutomatedSchedule(
+  Future<void> addAutomatedSchedule(
       int nodenumber,
       String commandType,
       int scheduleID,
@@ -298,7 +316,7 @@ class Database extends ChangeNotifier {
       int week,
       int day,
       String cropName) async {
-    final schedule = AutoSchedule()
+    final schedule = Schedule()
       ..commandType = commandType
       ..nodeNum = nodenumber
       ..scheduleID = scheduleID
@@ -309,13 +327,15 @@ class Database extends ChangeNotifier {
       ..day = day
       ..cropName = cropName;
 
-    isar.writeTxnSync(() => isar.autoSchedules.putSync(schedule));
+    isar.writeTxnSync(() => isar.schedules.putSync(schedule));
   }
 
   //Read from database
   Future<void> getAutoScheduleByNode(int nodeNumber, String cropName) async {
-    List<AutoSchedule> fetchedSchedules = isar.autoSchedules
+    List<Schedule> fetchedSchedules = isar.schedules
         .filter()
+        .commandTypeEqualTo("Automated")
+        .and()
         .nodeNumEqualTo(nodeNumber)
         .and()
         .cropNameEqualTo(cropName)
@@ -326,8 +346,10 @@ class Database extends ChangeNotifier {
   }
 
   Future<void> getAutoScheduleByWeek(int weekNumber, String cropName) async {
-    List<AutoSchedule> fetchedSchedules = isar.autoSchedules
+    List<Schedule> fetchedSchedules = isar.schedules
         .filter()
+        .commandTypeEqualTo("Automated")
+        .and()
         .weekEqualTo(weekNumber)
         .and()
         .cropNameEqualTo(cropName)
@@ -339,8 +361,10 @@ class Database extends ChangeNotifier {
 
   Future<void> getAutoScheduleByDay(
       String cropName, int weekNumber, int dayNumber) async {
-    List<AutoSchedule> fetchedSchedules = isar.autoSchedules
+    List<Schedule> fetchedSchedules = isar.schedules
         .filter()
+        .commandTypeEqualTo("Automated")
+        .and()
         .weekEqualTo(weekNumber)
         .and()
         .dayEqualTo(dayNumber)
@@ -352,8 +376,8 @@ class Database extends ChangeNotifier {
     autoScheduleByDay.addAll(fetchedSchedules);
   }
 
-  Future<void> deleteAutoScheduleByNode(int nodeNumber) async {
-    isar.writeTxnSync(() => isar.autoSchedules
+  Future<void> deleteAllScheduleByNode(int nodeNumber) async {
+    isar.writeTxnSync(() => isar.schedules
         .where()
         .filter()
         .nodeNumEqualTo(nodeNumber)

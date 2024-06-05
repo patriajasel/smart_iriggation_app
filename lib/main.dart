@@ -7,6 +7,7 @@ import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/models/create_schedule_task.dart';
 import 'package:smart_iriggation_app/models/foreground.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
+import 'package:smart_iriggation_app/pages/load_delete_node_data.dart';
 import 'models/database.dart';
 import 'pages/auto_crop_list.dart';
 import 'pages/load_apply_sched_screen.dart';
@@ -58,7 +59,6 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
   void initState() {
     Timer.periodic(const Duration(seconds: 10), (timer) {
       getFirstSchedule();
-      print("First Schedule fetched successfully");
     });
     super.initState();
     WidgetsBinding.instance.addObserver(this);
@@ -104,7 +104,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     final deleteSched = context.read<Database>();
 
     if (firstSched.firstSchedule.isNotEmpty) {
-      getTheSchedule(firstSched, deleteSched, context);
+      getFirstSchedTime(firstSched, deleteSched, context);
     }
 
     return MaterialApp(
@@ -117,6 +117,7 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
         '/applySched': (context) => const applySchedule(),
         '/blueConnection': (context) => const bluetoothConnection(),
         '/cropList': (context) => const cropListView(),
+        '/deleteData': (context) => const deletingScreen()
       },
     );
   }

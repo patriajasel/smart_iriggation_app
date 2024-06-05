@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:smart_iriggation_app/pages/dash_node_monitor_page.dart';
 
 String? dataReceived;
 
@@ -53,14 +54,22 @@ class bluetooth_conn {
   }
 
   void receiveData() {
-    connection?.input?.listen(onDataReceived).onDone(() {
-      print('Receiving Data');
-    });
+    if (connection?.isConnected ?? false) {
+      connection?.input = connection?.input?.asBroadcastStream();
+      connection?.input?.listen(onDataReceived).onDone(() {
+        print('Receiving Data');
+      });
+    }
   }
 
   void onDataReceived(Uint8List data) {
     // Handle received data from Arduino here
     dataReceived = String.fromCharCodes(data);
+    List<String> returnedData = dataReceived!.split(',');
+
+    if (returnedData[0] == "Sensors") {
+      soilMoistureValue = int.parse(returnedData[1]);
+    }
   }
 
   void sendData(String data, BuildContext context) {

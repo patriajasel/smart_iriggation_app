@@ -5,11 +5,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 
 bluetooth_conn btInstance = bluetooth_conn();
-int? waterLevel;  
+int? waterLevel;
 int? fertilizerLevel;
 List<String> tankLevels = [];
-  String currentWord = "";
-  int wordCount = 0;
+String currentWord = "";
+int wordCount = 0;
 
 class tankMonitor extends StatefulWidget {
   const tankMonitor({super.key});
@@ -19,47 +19,45 @@ class tankMonitor extends StatefulWidget {
 }
 
 class _tankMonitorState extends State<tankMonitor> {
-
-  
-
   @override
   void initState() {
-    Timer.periodic(const Duration(minutes: 10), (timer) { 
+    Timer.periodic(const Duration(minutes: 10), (timer) {
       getWaterAndFertilizerLevel();
     });
     super.initState();
   }
 
   void getWaterAndFertilizerLevel() {
-  btInstance.receiveData();
+    btInstance.sendData("Monitor,", context);
+    btInstance.receiveData();
 
-  if (dataReceived != null) {
-    List<String> tankLevels = dataReceived!.split(',');
+    if (dataReceived != null) {
+      List<String> tankLevels = dataReceived!.split(',');
 
-    if (tankLevels.length >= 2) {
-      int water = int.tryParse(tankLevels[0]) ?? 0;
-      int fertilizer = int.tryParse(tankLevels[1]) ?? 0;
+      if (tankLevels.length >= 2) {
+        int water = int.tryParse(tankLevels[0]) ?? 0;
+        int fertilizer = int.tryParse(tankLevels[1]) ?? 0;
 
-      setState(() {
-        waterLevel = water.clamp(0, 100); // Ensure water level is between 0 and 100
-        fertilizerLevel = fertilizer.clamp(0, 100); // Ensure fertilizer level is between 0 and 100
-      });
+        setState(() {
+          waterLevel =
+              water.clamp(0, 100); // Ensure water level is between 0 and 100
+          fertilizerLevel = fertilizer.clamp(
+              0, 100); // Ensure fertilizer level is between 0 and 100
+        });
 
-      changeValues(waterLevel!, fertilizerLevel!);
+        changeValues(waterLevel!, fertilizerLevel!);
+      }
     }
   }
-}
 
-void changeValues(int water, int fertilizer) {
-  // No need to check and clamp levels here, as it's already done in getWaterAndFertilizerLevel()
-  setState(() {
-    waterLevel = water;
-    fertilizerLevel = fertilizer;
-  });
-}
+  void changeValues(int water, int fertilizer) {
+    // No need to check and clamp levels here, as it's already done in getWaterAndFertilizerLevel()
+    setState(() {
+      waterLevel = water;
+      fertilizerLevel = fertilizer;
+    });
+  }
 
-
-  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -85,8 +83,13 @@ void changeValues(int water, int fertilizer) {
                           fontSize: 25.0,
                           fontFamily: "Rokkitt"),
                     ),
-
-                    IconButton(onPressed: (){ getWaterAndFertilizerLevel(); }, icon: const Icon(Icons.refresh), color: Colors.white,)
+                    IconButton(
+                      onPressed: () {
+                        getWaterAndFertilizerLevel();
+                      },
+                      icon: const Icon(Icons.refresh),
+                      color: Colors.white,
+                    )
                   ],
                 ),
               ),
@@ -105,7 +108,9 @@ void changeValues(int water, int fertilizer) {
                         color: Colors.white70,
                         height: 300,
                         width: 360,
-                        child: MyBarChart(waterLevel: waterLevel, fertilizerLevel: fertilizerLevel),
+                        child: MyBarChart(
+                            waterLevel: waterLevel,
+                            fertilizerLevel: fertilizerLevel),
                       ),
                     ),
                   ),
@@ -120,10 +125,10 @@ void changeValues(int water, int fertilizer) {
 }
 
 class MyBarChart extends StatelessWidget {
-
   final int? waterLevel;
   final int? fertilizerLevel;
-  const MyBarChart({super.key, required this.waterLevel, required this.fertilizerLevel});
+  const MyBarChart(
+      {super.key, required this.waterLevel, required this.fertilizerLevel});
 
   @override
   Widget build(BuildContext context) {
@@ -252,6 +257,9 @@ class BarChartIrrig extends StatefulWidget {
 class _BarChartIrrigState extends State<BarChartIrrig> {
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(aspectRatio: 1.6, child: MyBarChart(waterLevel: waterLevel, fertilizerLevel: fertilizerLevel));
+    return AspectRatio(
+        aspectRatio: 1.6,
+        child: MyBarChart(
+            waterLevel: waterLevel, fertilizerLevel: fertilizerLevel));
   }
 }

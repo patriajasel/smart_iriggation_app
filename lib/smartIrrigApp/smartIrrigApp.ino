@@ -41,10 +41,10 @@ float depth = 41;
 #define sensorPin3 A2
 #define sensorPin4 A3
 
-int sensorValue1;
-int sensorValue2;
-int sensorValue3;
-int sensorValue4;
+int outputValue1;
+int outputValue2;
+int outputValue3;
+int outputValue4;
 
 String soilType;
 
@@ -99,10 +99,7 @@ void loop() {
 
     executeCommand(commandArray);
   } else {
-    sensorValue1 = analogRead(sensorPin1);
-    sensorValue2 = analogRead(sensorPin2);
-    sensorValue3 = analogRead(sensorPin3);
-    sensorValue4 = analogRead(sensorPin4); 
+    getSensorValue();
     monitoring();
 
   }
@@ -120,32 +117,51 @@ void executeCommand(String command[]){
   } else if(command[0] == "Scheduled"){
     scheduledCommands(command[1], command[2]);
   } else if(command[0] == "Sensor"){
-    getSensorValue(command[1].toInt());
+    sendSensorValue(command[1].toInt());
+  } else if(command[0] == "Monitor"){
+    sendMonitoringValues();
   }
   
 }
 
-void getSensorValue(int soilMoistureNumber){
-  Serial.print(soilMoistureNumber);
+void getSensorValue() {
+    int sensorValue1 = analogRead(sensorPin1);
+    int sensorValue2 = analogRead(sensorPin2);
+    int sensorValue3 = analogRead(sensorPin3);
+    int sensorValue4 = analogRead(sensorPin4); 
 
-  int outputValue1 = map(sensorValue1, 0, 1023, 255, 0);
-  int outputValue2 = map(sensorValue2, 0, 1023, 255, 0);
-  int outputValue3 = map(sensorValue3, 0, 1023, 255, 0);
-  int outputValue4 = map(sensorValue4, 0, 1023, 255, 0); 
+    outputValue1 = map(sensorValue1, 0, 1023, 255, 0);
+    outputValue2 = map(sensorValue2, 0, 1023, 255, 0);
+    outputValue3 = map(sensorValue3, 0, 1023, 255, 0);
+    outputValue4 = map(sensorValue4, 0, 1023, 255, 0); 
+
+    delay(1000);
+}
+
+void sendSensorValue(int soilMoistureNumber){
 
   if(soilMoistureNumber == 1){
-    Serial.println(outputValue1);
+    Serial.print("Sensors,");
+    Serial.print(outputValue1);
+    Serial.println(",");
   }
   else if(soilMoistureNumber == 2){
-    Serial.println(outputValue2);
+    Serial.print("Sensors,");
+    Serial.print(outputValue2);
+    Serial.println(",");
   }
   else if(soilMoistureNumber == 3){
-    Serial.println(outputValue3);
+    Serial.print("Sensors,");
+    Serial.print(outputValue3);
+    Serial.println(",");
   }
   else if(soilMoistureNumber == 4){
-    Serial.println(outputValue4);
+    Serial.print("Sensors,");
+    Serial.print(outputValue4);
+    Serial.println(",");
   }
-      
+
+  serialConnectionCommand = "";
 }
 
 void manualCommands(int nodeNumber, String command){
@@ -197,6 +213,13 @@ void scheduledCommands (String pinNumbers, String command){
 
 }
 
+void sendMonitoringValues(){
+  Serial.print(wlevel);
+  Serial.print(",");
+  Serial.print(flevel);
+  Serial.println(",");
+}
+
 void monitoring() {
   // Trigger the water level sensor
   digitalWrite(WTP, LOW);
@@ -223,11 +246,6 @@ void monitoring() {
   fd = (8.0 / 400.0) * fpingtime;
   wlevel = (1 - wd / depth) * 100.0;
   flevel = (1 - fd / depth) * 100.0;
-
-  Serial.print(wlevel);
-  Serial.print(",");
-  Serial.println(flevel);
-  Serial.print(",");
 
   // Delay for stability or other operations
   delay(1000);

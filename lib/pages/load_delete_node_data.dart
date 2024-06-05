@@ -4,14 +4,14 @@ import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 
-class loadingScreen extends StatefulWidget {
-  const loadingScreen({super.key});
+class deletingScreen extends StatefulWidget {
+  const deletingScreen({super.key});
 
   @override
-  State<loadingScreen> createState() => _loadingScreenState();
+  State<deletingScreen> createState() => _deletingScreenState();
 }
 
-class _loadingScreenState extends State<loadingScreen>
+class _deletingScreenState extends State<deletingScreen>
     with SingleTickerProviderStateMixin {
   bluetooth_conn btInstance = bluetooth_conn();
 
@@ -21,8 +21,8 @@ class _loadingScreenState extends State<loadingScreen>
 
     btInstance.receiveData();
 
-    Timer(const Duration(seconds: 20), () {
-      Navigator.pushNamed(context, '/cropList');
+    Timer(const Duration(seconds: 5), () {
+      Navigator.popUntil(context, (route) => route.isFirst);
     });
   }
 
@@ -31,19 +31,21 @@ class _loadingScreenState extends State<loadingScreen>
     return PopScope(
       canPop: false,
       child: Scaffold(
+        backgroundColor: Colors.blue,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Center(
-                child: Lottie.asset("lib/assets/animations/water_loading.json",
+                child: Lottie.asset("lib/assets/animations/delete_data.json",
                     height: 250, width: 250, fit: BoxFit.fill),
               ),
               const Text(
-                "Identifying Soil",
+                "Deleting All Data",
                 style: TextStyle(
                   fontFamily: "Rokkitt",
                   fontSize: 25,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               )

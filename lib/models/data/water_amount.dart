@@ -7,10 +7,10 @@ class WaterAmountProvider {
       '4Node': 5,
     },
     100: {
-      '1Node': 5,
-      '2Node': 5,
-      '3Node': 5,
-      '4Node': 5,
+      '1Node': 20,
+      '2Node': 30,
+      '3Node': 40,
+      '4Node': 50,
     },
     150: {
       '1Node': 5,

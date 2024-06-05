@@ -4,9 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_iriggation_app/main.dart';
-import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/models/database.dart';
+import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
+
+int? soilMoistureValue;
 
 class nodeMonitorPage extends StatefulWidget {
   final int nodeNumber;
@@ -36,6 +38,18 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
     super.initState();
     readSchedBasedOnNode(widget.nodeNumber);
     readAutomatedSchedBasedOnNode(widget.nodeNumber, widget.plantType);
+
+    btInstance.sendData("Sensor,${widget.nodeNumber},", context);
+    setState(() {
+      btInstance.receiveData();
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    soilMoistureValue = null;
   }
 
   void readSchedBasedOnNode(int node) {
@@ -122,7 +136,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
         });
   }
 
-  void populateWeeks(List<AutoSchedule> autoSched) {
+  void populateWeeks(List<Schedule> autoSched) {
     Set<int> numberOfWeeksSet =
         {}; // Using a Set to automatically handle duplicates
 
@@ -138,7 +152,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
     numberOfWeeks.sort();
   }
 
-  void populateDays(List<AutoSchedule> autoSched) {
+  void populateDays(List<Schedule> autoSched) {
     Set<int> numberOfDaysSet =
         {}; // Using a Set to automatically handle duplicates
 
@@ -159,7 +173,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
     final nodeDatabase = context.watch<Database>();
 
     List<Schedule> additionalSched = nodeDatabase.currentScheduleNode;
-    List<AutoSchedule> autoSched = nodeDatabase.autoSchedule;
+    List<Schedule> autoSched = nodeDatabase.autoSchedule;
     List<int> waterPerDay = widget.waterPerDay;
 
     numberOfWeeks.clear();
@@ -208,7 +222,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                           ),
                         ],
                       ),
-                      child:  Column(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
@@ -223,18 +237,24 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                                 ),
                               ),
                               IconButton(
-                                  icon:  const Icon(Icons.refresh),
+                                  icon: const Icon(Icons.refresh),
                                   color: Colors.black,
                                   onPressed: () {
+                                    btInstance.sendData(
+                                        "Sensor,${widget.nodeNumber},",
+                                        context);
+
                                     setState(() {
-                                      btInstance.sendData("Sensor,${widget.nodeNumber},", context);
+                                      btInstance.receiveData();
                                     });
                                   }),
                             ],
                           ),
                           Center(
                             child: Text(
-                              "$dataReceived%",
+                              soilMoistureValue != null
+                                  ? "$soilMoistureValue%"
+                                  : "N/A",
                               style: const TextStyle(
                                 fontFamily: "Rokkitt",
                                 fontSize: 25.0,
@@ -242,14 +262,14 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                               ),
                             ),
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Divider(
                               color: Colors.blue,
                               thickness: 4.0,
                             ),
                           ),
-                          Center(
+                          const Center(
                             child: Text(
                               "Moisture Level",
                               style: TextStyle(
@@ -561,8 +581,11 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                               style: TextStyle(color: Colors.red),
                             ),
                             onTap: () {
+                              deleteSchedules(additionalSched[index].id);
+                              Notify().cancelSchedule(
+                                  additionalSched[index].scheduleID);
                               setState(() {
-                                deleteSchedules(additionalSched[index].id);
+                                additionalSched.removeAt(index);
                               });
                             },
                           ),
@@ -573,13 +596,11 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        nodeDatabase
-                            .deleteAutoScheduleByNode(widget.nodeNumber);
-                        nodeDatabase.deleteScheduleByNode(widget.nodeNumber);
-                        nodeDatabase.updateNode(
-                            widget.nodeNumber, "Empty", "Unknown", []);
-                      });
+                      nodeDatabase.deleteAllScheduleByNode(widget.nodeNumber);
+                      nodeDatabase.updateNode(
+                          widget.nodeNumber, "Empty", "Unknown", []);
+
+                      Navigator.pushNamed(context, '/deleteData');
                     },
                     child: const Text("Delete all Node data")),
               )
@@ -596,7 +617,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
         .read<Database>()
         .getAutoScheduleByWeek(weekNumber, widget.plantType);
     final schedDatabase = context.read<Database>();
-    List<AutoSchedule> schedByWeek = schedDatabase.autoScheduleByWeek;
+    List<Schedule> schedByWeek = schedDatabase.autoScheduleByWeek;
     populateDays(schedByWeek);
 
     showDialog(
@@ -619,8 +640,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                   // Fetch data for each day synchronously
                   context.read<Database>().getAutoScheduleByDay(
                       widget.plantType, weekNumber, index + 1);
-                  List<AutoSchedule> schedPerDay =
-                      schedDatabase.autoScheduleByDay;
+                  List<Schedule> schedPerDay = schedDatabase.autoScheduleByDay;
 
                   return ExpansionTile(
                     title: Text("Day: ${numberOfDays[index]}"),
@@ -636,12 +656,12 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                           rows: List.generate(schedPerDay.length, (index) {
                             return DataRow(cells: [
                               DataCell(Text(
-                                  formatDate(schedPerDay[index].timeDate))),
+                                  formatAutoDate(schedPerDay[index].timeDate))),
                               DataCell(Text(
                                   "${schedPerDay[index].waterAmount} (mL)")),
                               DataCell(
                                 Text(
-                                  "${schedPerDay[index].status}",
+                                  schedPerDay[index].status,
                                   style: TextStyle(
                                     color: getStatusColor(
                                         schedPerDay[index].status),
@@ -677,8 +697,14 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
   }
 }
 
-String formatDate(DateTime dateTime) {
+String formatAutoDate(DateTime dateTime) {
   // Format the date
   String formattedDate = DateFormat('MMM d - ').add_jm().format(dateTime);
+  return formattedDate;
+}
+
+String formatDate(DateTime dateTime) {
+  // Format the date
+  String formattedDate = DateFormat('E - ').add_jm().format(dateTime);
   return formattedDate;
 }

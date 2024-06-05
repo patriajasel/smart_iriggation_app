@@ -146,8 +146,6 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                       } else {
                         _dateTime = DateTime.now();
                         formattedDate = formatDate(_dateTime);
-                        print(currentTime);
-                        print(selectedTime);
                       }
 
                       if (timeOfDay.period == DayPeriod.am &&
@@ -353,15 +351,18 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                               int schedID = int.parse(
                                   "${scheduledTime.year}${scheduledTime.hour}${scheduledTime.minute}");
 
-                              print(_selectedAmount);
-
                               //ADDING SCHEDULE IN THE ISAR DATABASE
+
                               nodesDatabase.addNewSchedule(
+                                  commandType,
+                                  "N/A",
+                                  0,
+                                  _selectedIndex!,
                                   schedID,
+                                  "N/A",
                                   scheduledTime,
                                   _selectedAmount!,
-                                  _selectedIndex!,
-                                  commandType);
+                                  0);
 
                               //SHOWING SNACK BAR
                               final snackbar = SnackBar(

@@ -305,10 +305,7 @@ class _schedInformationState extends State<schedInformation> {
                                             onPressed: () {
                                               setState(() {
                                                 nodesDatabase
-                                                    .deleteAutoScheduleByNode(
-                                                        _selectedIndex!);
-                                                nodesDatabase
-                                                    .deleteScheduleByNode(
+                                                    .deleteAllScheduleByNode(
                                                         _selectedIndex!);
                                                 nodesDatabase.updateNode(
                                                     _selectedIndex!,

@@ -10,6 +10,10 @@ class Schedule {
   late int waterAmount;
   late int nodeNum;
   late String commandType;
+  late String status;
+  late int week;
+  late int day;
+  late String cropName;
 }
 
 @Collection()
@@ -46,18 +50,4 @@ class Nodes {
   late String plant;
   late String soilType;
   late List<int> waterPerDay;
-}
-
-@Collection()
-class AutoSchedule {
-  Id id = Isar.autoIncrement;
-  late int scheduleID;
-  late DateTime timeDate;
-  late int waterAmount;
-  late int nodeNum;
-  late String commandType;
-  late String status;
-  late int week;
-  late int day;
-  late String cropName;
 }

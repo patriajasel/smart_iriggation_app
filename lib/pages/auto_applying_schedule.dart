@@ -123,7 +123,8 @@ void addAutomatedSchedule(
       for (int k = 0; k < schedDate[i][j].length; k++) {
         int scheduleID = int.parse(
             "${schedDate[i][j][k].year}${schedDate[i][j][k].hour}${schedDate[i][j][k].minute}");
-        schedDatabase.addnewAutomatedSchedule(
+
+        schedDatabase.addAutomatedSchedule(
             nodeNumber,
             commandType,
             scheduleID,

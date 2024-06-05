@@ -25,7 +25,8 @@ class _applyScheduleState extends State<applySchedule>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         body: Center(
           child: Column(
@@ -51,9 +52,6 @@ class _applyScheduleState extends State<applySchedule>
           ),
         ),
       ),
-      onWillPop: () async {
-        return false;
-      },
     );
   }
 }
