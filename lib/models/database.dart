@@ -35,7 +35,7 @@ class Database extends ChangeNotifier {
   final List<Schedule> currentScheduleNode = [];
   final List<CropInformation> CropInfo = [];
   final List<CropInformation> specificCrop = [];
-  final List<Schedule> firstSchedule = [];
+  Schedule? firstSchedule;
   final List<Schedule> schedulesToSet = [];
   final List<Weeks> weeks = [];
   final List<Schedule> autoSchedule = [];
@@ -197,9 +197,9 @@ class Database extends ChangeNotifier {
   Future<void> getFirstSchedule() async {
     Schedule? fetchedSchedules =
         await isar.schedules.where().sortByTimeDate().findFirst();
-    firstSchedule.clear();
+    firstSchedule = null;
     if (fetchedSchedules != null) {
-      firstSchedule.add(fetchedSchedules);
+      firstSchedule = fetchedSchedules;
     }
     notifyListeners();
   }

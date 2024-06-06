@@ -5,7 +5,7 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_iriggation_app/pages/dash_node_monitor_page.dart';
 
-String? dataReceived;
+String? dataReceived = "Loam";
 
 final bluetooth = FlutterBluetoothSerial.instance;
 bool bluetoothState = false;
@@ -76,12 +76,12 @@ class bluetooth_conn {
     if (connection?.isConnected ?? false) {
       connection?.output.add(ascii.encode(data));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      /*ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('You are currently not connected to Bluetooth HC-05'),
           duration: Duration(seconds: 2),
         ),
-      );
+      );*/
     }
 
     print(data);

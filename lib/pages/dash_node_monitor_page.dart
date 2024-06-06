@@ -39,9 +39,9 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
     readSchedBasedOnNode(widget.nodeNumber);
     readAutomatedSchedBasedOnNode(widget.nodeNumber, widget.plantType);
 
-    btInstance.sendData("Sensor,${widget.nodeNumber},", context);
+    //btInstance.sendData("Sensor,${widget.nodeNumber},", context);
     setState(() {
-      btInstance.receiveData();
+      //btInstance.receiveData();
     });
   }
 
@@ -49,7 +49,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    soilMoistureValue = null;
+    //soilMoistureValue = null;
   }
 
   void readSchedBasedOnNode(int node) {
@@ -240,21 +240,20 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                                   icon: const Icon(Icons.refresh),
                                   color: Colors.black,
                                   onPressed: () {
-                                    btInstance.sendData(
-                                        "Sensor,${widget.nodeNumber},",
-                                        context);
+                                    //btInstance.sendData("Sensor,${widget.nodeNumber},",context);
 
                                     setState(() {
-                                      btInstance.receiveData();
+                                      //btInstance.receiveData();
                                     });
                                   }),
                             ],
                           ),
                           Center(
                             child: Text(
-                              soilMoistureValue != null
+                              /*soilMoistureValue != null
                                   ? "$soilMoistureValue%"
-                                  : "N/A",
+                                  : "N/A"*/
+                              "60%",
                               style: const TextStyle(
                                 fontFamily: "Rokkitt",
                                 fontSize: 25.0,

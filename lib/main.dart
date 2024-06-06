@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:schedulers/schedulers.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/models/create_schedule_task.dart';
 import 'package:smart_iriggation_app/models/foreground.dart';
@@ -94,6 +95,8 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
     if (mounted) {
       setState(() {
         context.read<Database>().getFirstSchedule();
+
+        print("First Schedule was fetched");
       });
     }
   }
@@ -101,10 +104,14 @@ class _MainState extends State<Main> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final firstSched = context.watch<Database>();
-    final deleteSched = context.read<Database>();
+    final schedulerMain = TimeScheduler();
 
-    if (firstSched.firstSchedule.isNotEmpty) {
-      getFirstSchedTime(firstSched, deleteSched, context);
+    if (firstSched.firstSchedule != null) {
+      schedulerMain.run(
+          () => checkForMultipleSchedule(
+              firstSched.firstSchedule, context, firstSched),
+          firstSched.firstSchedule!.timeDate
+              .subtract(const Duration(minutes: 1)));
     }
 
     return MaterialApp(
