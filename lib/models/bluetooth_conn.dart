@@ -46,7 +46,7 @@ class bluetooth_conn {
           return; // Exit the loop once connected
         }
       }
-      
+
       // If the loop completes without finding the device
     } on Exception catch (e) {
       print("Failed to connect to HC-05: $e");
@@ -74,22 +74,28 @@ class bluetooth_conn {
     print(returnedData);
     if (returnedData[0] == "Sensors") {
       soilMoistureValue = int.parse(returnedData[1]);
-    } else if(returnedData[0] == "Identifier"){
+    } else if (returnedData[0] == "Identifier") {
       soilType = returnedData[1];
-    } else if(returnedData[0] == "Monitor") {
-      waterLevel = (returnedData.length > 1) ? int.tryParse(returnedData[1]) ?? 0 : 0;
-      fertilizerLevel = (returnedData.length > 2) ? int.tryParse(returnedData[2]) ?? 0 : 0;
-      soilMoisture1 = (returnedData.length > 3) ? int.tryParse(returnedData[3]) ?? 0 : 0;
-      soilMoisture2 = (returnedData.length > 4) ? int.tryParse(returnedData[4]) ?? 0 : 0;
-      soilMoisture3 = (returnedData.length > 5) ? int.tryParse(returnedData[5]) ?? 0 : 0;
-      soilMoisture4 = (returnedData.length > 6) ? int.tryParse(returnedData[6]) ?? 0 : 0;
+    } else if (returnedData[0] == "Monitor") {
+      waterLevel =
+          (returnedData.length > 1) ? int.tryParse(returnedData[1]) ?? 0 : 0;
+      fertilizerLevel =
+          (returnedData.length > 2) ? int.tryParse(returnedData[2]) ?? 0 : 0;
+      soilMoisture1 =
+          (returnedData.length > 3) ? int.tryParse(returnedData[3]) ?? 0 : 0;
+      soilMoisture2 =
+          (returnedData.length > 4) ? int.tryParse(returnedData[4]) ?? 0 : 0;
+      soilMoisture3 =
+          (returnedData.length > 5) ? int.tryParse(returnedData[5]) ?? 0 : 0;
+      soilMoisture4 =
+          (returnedData.length > 6) ? int.tryParse(returnedData[6]) ?? 0 : 0;
     }
   }
 
   void sendData(String data, BuildContext context) {
     if (connection?.isConnected ?? false) {
       connection?.output.add(ascii.encode(data));
-    } 
+    }
 
     print(data);
   }

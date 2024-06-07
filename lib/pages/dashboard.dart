@@ -64,19 +64,18 @@ class _MyDashboardState extends State<MyDashboard> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: () {
-          if(connection != null){
+          if (connection != null) {
             Navigator.pushNamed(context, '/soilIdentify');
-          btInstance.sendData("Auto,Soil,", context);
+            btInstance.sendData("Auto,Soil,", context);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You are currently not connected to Bluetooth HC-05'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+              const SnackBar(
+                content:
+                    Text('You are currently not connected to Bluetooth HC-05'),
+                duration: Duration(seconds: 2),
+              ),
+            );
           }
-
-          
         },
         tooltip: 'Irrigate',
         elevation: 0,
@@ -84,7 +83,7 @@ class _MyDashboardState extends State<MyDashboard> {
           side: BorderSide(
               color: Colors.blue, width: 3.0, style: BorderStyle.solid),
         ),
-        child: const Icon(Icons.water_drop, color: Colors.blue),
+        child: Icon(Icons.water_drop, color: Colors.cyanAccent.shade200),
       ),
       bottomNavigationBar: const bottomNavBar(),
     );
