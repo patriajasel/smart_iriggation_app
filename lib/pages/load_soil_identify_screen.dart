@@ -19,8 +19,6 @@ class _loadingScreenState extends State<loadingScreen>
   void initState() {
     super.initState();
 
-    btInstance.receiveData();
-
     Timer(const Duration(seconds: 20), () {
       Navigator.pushNamed(context, '/cropList');
     });

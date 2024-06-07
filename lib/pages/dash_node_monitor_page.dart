@@ -1,12 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_iriggation_app/main.dart';
 import 'package:smart_iriggation_app/models/database.dart';
 import 'package:smart_iriggation_app/models/notifications.dart';
 import 'package:smart_iriggation_app/models/schedule.dart';
+
+int? soilMoisture1;
+int? soilMoisture2;
+int? soilMoisture3;
+int? soilMoisture4;
 
 int? soilMoistureValue;
 
@@ -38,18 +44,29 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
     super.initState();
     readSchedBasedOnNode(widget.nodeNumber);
     readAutomatedSchedBasedOnNode(widget.nodeNumber, widget.plantType);
-
-    //btInstance.sendData("Sensor,${widget.nodeNumber},", context);
-    setState(() {
-      //btInstance.receiveData();
-    });
+    Timer.periodic(const Duration(seconds: 10), (timer) { setState(() {
+      switch (widget.nodeNumber) {
+        case 1:
+          soilMoistureValue = soilMoisture1;
+          break;
+        case 2:
+          soilMoistureValue = soilMoisture2;
+          break;
+        case 3:
+          soilMoistureValue = soilMoisture3;
+          break;
+        case 4:
+          soilMoistureValue = soilMoisture4;
+          break;
+        default:
+      }
+    }); });
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    //soilMoistureValue = null;
   }
 
   void readSchedBasedOnNode(int node) {
@@ -240,20 +257,17 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                                   icon: const Icon(Icons.refresh),
                                   color: Colors.black,
                                   onPressed: () {
-                                    //btInstance.sendData("Sensor,${widget.nodeNumber},",context);
 
                                     setState(() {
-                                      //btInstance.receiveData();
                                     });
                                   }),
                             ],
                           ),
                           Center(
                             child: Text(
-                              /*soilMoistureValue != null
+                              soilMoistureValue != null
                                   ? "$soilMoistureValue%"
-                                  : "N/A"*/
-                              "60%",
+                                  : "N/A",
                               style: const TextStyle(
                                 fontFamily: "Rokkitt",
                                 fontSize: 25.0,

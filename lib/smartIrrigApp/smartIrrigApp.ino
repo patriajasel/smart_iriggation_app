@@ -6,6 +6,8 @@ String serialConnectionCommand;
 String currentWord; // String to store individual words
 int wordCount = 0; // Counter for the number of words
 String commandArray[4]; // Assuming a maximum of 10 words, adjust this as needed
+int seconds = 15;
+String soilType = "Unidentified"; 
 
 //VALVES AND PUMPS
 int valve1 = 28;
@@ -40,13 +42,6 @@ float depth = 41;
 #define sensorPin2 A1
 #define sensorPin3 A2
 #define sensorPin4 A3
-
-int outputValue1;
-int outputValue2;
-int outputValue3;
-int outputValue4;
-
-String soilType;
 
 void setup() {
   Serial.begin(9600);
@@ -83,7 +78,7 @@ void loop() {
   
   if(Serial.available() > 0){
     serialConnectionCommand = Serial.readString();
-    //Serial.println(serialConnectionCommand);
+    Serial.println(serialConnectionCommand);
 
     // Split the sentence into words
     for (int i = 0; i < serialConnectionCommand.length(); i++) {
@@ -99,7 +94,6 @@ void loop() {
 
     executeCommand(commandArray);
   } else {
-    getSensorValue();
     monitoring();
 
   }
@@ -116,52 +110,8 @@ void executeCommand(String command[]){
      }
   } else if(command[0] == "Scheduled"){
     scheduledCommands(command[1], command[2]);
-  } else if(command[0] == "Sensor"){
-    sendSensorValue(command[1].toInt());
-  } else if(command[0] == "Monitor"){
-    sendMonitoringValues();
-  }
+  } 
   
-}
-
-void getSensorValue() {
-    int sensorValue1 = analogRead(sensorPin1);
-    int sensorValue2 = analogRead(sensorPin2);
-    int sensorValue3 = analogRead(sensorPin3);
-    int sensorValue4 = analogRead(sensorPin4); 
-
-    outputValue1 = map(sensorValue1, 0, 1023, 255, 0);
-    outputValue2 = map(sensorValue2, 0, 1023, 255, 0);
-    outputValue3 = map(sensorValue3, 0, 1023, 255, 0);
-    outputValue4 = map(sensorValue4, 0, 1023, 255, 0); 
-
-    delay(1000);
-}
-
-void sendSensorValue(int soilMoistureNumber){
-
-  if(soilMoistureNumber == 1){
-    Serial.print("Sensors,");
-    Serial.print(outputValue1);
-    Serial.println(",");
-  }
-  else if(soilMoistureNumber == 2){
-    Serial.print("Sensors,");
-    Serial.print(outputValue2);
-    Serial.println(",");
-  }
-  else if(soilMoistureNumber == 3){
-    Serial.print("Sensors,");
-    Serial.print(outputValue3);
-    Serial.println(",");
-  }
-  else if(soilMoistureNumber == 4){
-    Serial.print("Sensors,");
-    Serial.print(outputValue4);
-    Serial.println(",");
-  }
-
-  serialConnectionCommand = "";
 }
 
 void manualCommands(int nodeNumber, String command){
@@ -213,13 +163,6 @@ void scheduledCommands (String pinNumbers, String command){
 
 }
 
-void sendMonitoringValues(){
-  Serial.print(wlevel);
-  Serial.print(",");
-  Serial.print(flevel);
-  Serial.println(",");
-}
-
 void monitoring() {
   // Trigger the water level sensor
   digitalWrite(WTP, LOW);
@@ -247,18 +190,37 @@ void monitoring() {
   wlevel = (1 - wd / depth) * 100.0;
   flevel = (1 - fd / depth) * 100.0;
 
+  int sensorValue1 = analogRead(sensorPin1);
+  int sensorValue2 = analogRead(sensorPin2);
+  int sensorValue3 = analogRead(sensorPin3);
+  int sensorValue4 = analogRead(sensorPin4); 
+
+  int outputValue1 = map(sensorValue1, 0, 1023, 255, 0);
+  int outputValue2 = map(sensorValue2, 0, 1023, 255, 0);
+  int outputValue3 = map(sensorValue3, 0, 1023, 255, 0);
+  int outputValue4 = map(sensorValue4, 0, 1023, 255, 0); 
+
   // Delay for stability or other operations
+  Serial.print("Monitor,");
+  Serial.print(wlevel);
+  Serial.print(",");
+  Serial.print(flevel);
+  Serial.print(",");
+  Serial.print(outputValue1);
+  Serial.print(",");
+  Serial.print(outputValue2);
+  Serial.print(",");
+  Serial.print(outputValue3);
+  Serial.print(",");
+  Serial.print(outputValue4);
+  Serial.println(",");
+
   delay(1000);
 }
 
 
 void getSoilType() {
-  // Variable to track soil identification status
-  static bool soilIdentified = false;
-  static unsigned long startTime = millis();
-  const unsigned long scanDuration = 15000; // 15 seconds
-
-  if (!soilIdentified && millis() - startTime <= scanDuration) {
+  for(int i = 0; i < seconds; i++){
     byte queryData[]{0x01, 0x03, 0x00, 0x00, 0x00, 0x07, 0x04, 0x08};
     byte receivedData[19];
     digitalWrite(DE, HIGH);
@@ -268,11 +230,12 @@ void getSoilType() {
 
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
-    delay(500);
+    delay(1000);
 
-    String soilType = "Unidentified";
+    // Variable to track soil identification status
+    static bool soilIdentified = false;
 
-    if (mySerial.available() >= sizeof(receivedData)) {  // Check if there are enough bytes available to read
+    if (!soilIdentified && mySerial.available() >= sizeof(receivedData)) {  // Check if there are enough bytes available to read
       mySerial.readBytes(receivedData, sizeof(receivedData));  // Read the received data into the receivedData array
       // Parse and print the received data in decimal format
       unsigned int soilPH = (receivedData[9] << 8) | receivedData[10];
@@ -284,30 +247,27 @@ void getSoilType() {
       float soilPHFloat = (float)soilPH / 10.0;
       const float tolerance = 0.1; // Adjust this tolerance value as needed
 
-      if ((nitrogen == 0) && (phosphorus >= 23 && phosphorus <= 47) && (potassium >= 15 && potassium <= 40)) {
+      if (soilPHFloat >= 5.8 && soilPHFloat <= 8.0 && nitrogen == 0 && phosphorus >= 21 && phosphorus <= 32 && potassium >= 13 && potassium <= 24) {
         soilType = "Loam";
-        soilIdentified = true;
-      } else if (abs(soilPHFloat - 9.0) <= tolerance && nitrogen == 0 && phosphorus == 16 && potassium == 8) {
+      } else if (soilPHFloat >= 7.9 && soilPHFloat <= 8.8 && nitrogen == 0 && phosphorus > 15 && phosphorus < 18 && potassium > 7 && potassium < 10) {
         soilType = "Clay";
-        soilIdentified = true;
-      } else if (abs(soilPHFloat - 9.0) <= tolerance && nitrogen == 0 && phosphorus == 0 && potassium == 0) {
+      } else if (soilPHFloat >= 8.5 && soilPHFloat <= 9.0 && nitrogen == 0 && phosphorus == 15 && potassium == 7) {
         soilType = "Sand";
-        soilIdentified = true;
       } else {
         soilType = "Unidentified";
       }
 
-      if (soilType != "Unidentified" && soilIdentified) {
-        Serial.print(soilType);
-      }
+      if(i == 14) {
+      soilIdentified = true;
+      serialConnectionCommand = "";
+      Serial.print("Identifier,");
+      Serial.print(soilType);
+      Serial.println(",");
+      return;
     }
-  } else if (millis() - startTime > scanDuration) {
-    // If 15 seconds have passed and soil type is still unidentified
-    if (!soilIdentified) {
-      Serial.print("Unidentified");
+
     }
-    // Reset for next scan cycle
+
     soilIdentified = false;
-    startTime = millis(); // Restart the timer for the next scan
   }
 }

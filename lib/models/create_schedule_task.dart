@@ -15,7 +15,7 @@ final scheduler = TimeScheduler();
 checkForMultipleSchedule(
     Schedule? firstSchedule, BuildContext context, Database firstSched) {
   if (firstSchedule != null) {
-    context.read<Database>().getSchedulesWithSameTime(firstSchedule!.timeDate);
+    context.read<Database>().getSchedulesWithSameTime(firstSchedule.timeDate);
     List<Schedule> schedToSet = firstSched.schedulesToSet;
 
     if (schedToSet.length > 1) {
@@ -172,7 +172,7 @@ void createMultipleSchedules(
   } else if (schedToSet.length == 3) {
     // IF 3 SCHEDULES HAVE THE SAME TIME
     if (durationsPerNode[0] == durationsPerNode[1] &&
-        durationsPerNode[0] == durationsPerNode[2]) {
+        durationsPerNode[0] == durationsPerNode[2]) { 
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
           scheduler.run(
@@ -317,5 +317,336 @@ void createMultipleSchedules(
         return;
       }
     }
-  }
+  } else if(schedToSet.length == 4){
+    // IF 4 SCHEDULES HAVE THE SAME TIME
+    if (durationsPerNode[0] == durationsPerNode[1] && durationsPerNode[1] == durationsPerNode[2] && durationsPerNode[2] == durationsPerNode[3] && durationsPerNode[3] == durationsPerNode[4]) {
+      if (isFirstScheduleSet == false) {
+        if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        context)
+                  },
+              schedToSet[0].timeDate);
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},off,",
+                        context),
+                    deleteSchedules(schedToSet, deleteSched)
+                  },
+              schedToSet[0]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[0])));
+          isFirstScheduleSet = true;
+        }
+      } else {
+        return;
+      }
+    } else if (durationsPerNode[0] == durationsPerNode[1]) {
+      if (isFirstScheduleSet == false) {
+        if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        context)
+                  },
+              schedToSet[0].timeDate);
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[1].commandType},${nodesList[0]}${nodesList[1]},off,",
+                        context)
+                  },
+              schedToSet[1]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[1])));
+          
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[2].commandType},${nodesList[2]},off,",
+                        context)
+                  },
+              schedToSet[2]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[2])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[3]},off,",
+                        context),
+                    deleteSchedules(schedToSet, deleteSched)
+                  },
+              schedToSet[3]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[3])));
+          isFirstScheduleSet = true;
+        }
+      } else {
+        return;
+      }
+    } else if (durationsPerNode[1] == durationsPerNode[2]) {
+      if (isFirstScheduleSet == false) {
+        if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        context)
+                  },
+              schedToSet[0].timeDate);
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[1].commandType},${nodesList[0]},off,",
+                        context)
+                  },
+              schedToSet[1]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[1])));
+          
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[2].commandType},${nodesList[1]}${nodesList[2]},off,",
+                        context)
+                  },
+              schedToSet[2]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[2])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[3]},off,",
+                        context),
+                    deleteSchedules(schedToSet, deleteSched)
+                  },
+              schedToSet[3]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[3])));
+          isFirstScheduleSet = true;
+        }
+      } else {
+        return;
+      }
+    } else if (durationsPerNode[2] == durationsPerNode[3]) {
+      if (isFirstScheduleSet == false) {
+        if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        context)
+                  },
+              schedToSet[0].timeDate);
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[1].commandType},${nodesList[0]},off,",
+                        context)
+                  },
+              schedToSet[1]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[1])));
+          
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[2].commandType},${nodesList[1]},off,",
+                        context)
+                  },
+              schedToSet[2]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[2])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[2]}${nodesList[3]},off,",
+                        context),
+                    deleteSchedules(schedToSet, deleteSched)
+                  },
+              schedToSet[3]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[3])));
+          isFirstScheduleSet = true;
+        }
+      } else {
+        return;
+      }
+    } else if (durationsPerNode[0] == durationsPerNode[1] && durationsPerNode[2] == durationsPerNode[3] ) {
+      if (isFirstScheduleSet == false) {
+        if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        context)
+                  },
+              schedToSet[0].timeDate);
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[1].commandType},${nodesList[0]}${nodesList[1]},off,",
+                        context)
+                  },
+              schedToSet[1]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[1])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[2]}${nodesList[3]},off,",
+                        context),
+                    deleteSchedules(schedToSet, deleteSched)
+                  },
+              schedToSet[3]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[3])));
+          isFirstScheduleSet = true;
+        }
+      } else {
+        return;
+      }
+    } else if (durationsPerNode[0] == durationsPerNode[1] && durationsPerNode[1] == durationsPerNode[2] ) {
+      if (isFirstScheduleSet == false) {
+        if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        context)
+                  },
+              schedToSet[0].timeDate);
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[2].commandType},${nodesList[0]}${nodesList[1]}${nodesList[2]},off,",
+                        context)
+                  },
+              schedToSet[2]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[2])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[3]},off,",
+                        context),
+                    deleteSchedules(schedToSet, deleteSched)
+                  },
+              schedToSet[3]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[3])));
+          isFirstScheduleSet = true;
+        }
+      } else {
+        return;
+      }
+    } else if (durationsPerNode[1] == durationsPerNode[2] && durationsPerNode[2] == durationsPerNode[3] ) {
+      if (isFirstScheduleSet == false) {
+        if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        context)
+                  },
+              schedToSet[0].timeDate);
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${nodesList[0]},off,",
+                        context)
+                  },
+              schedToSet[0]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[0])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[1]}${nodesList[2]}${nodesList[3]},off,",
+                        context),
+                    deleteSchedules(schedToSet, deleteSched)
+                  },
+              schedToSet[3]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[3])));
+          isFirstScheduleSet = true;
+        }
+      } else {
+        return;
+      }
+    } else {
+      if (isFirstScheduleSet == false) {
+        if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        context)
+                  },
+              schedToSet[0].timeDate);
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[0].commandType},${nodesList[0]},off,",
+                        context)
+                  },
+              schedToSet[0]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[0])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[1].commandType},${nodesList[1]},off,",
+                        context)
+                  },
+              schedToSet[1]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[1])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[2].commandType},${nodesList[2]},off,",
+                        context)
+                  },
+              schedToSet[2]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[2])));
+
+          scheduler.run(
+              () => {
+                    btInstance.sendData(
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[3]},off,",
+                        context),
+                    deleteSchedules(schedToSet, deleteSched)
+                  },
+              schedToSet[3]
+                  .timeDate
+                  .add(Duration(seconds: durationsPerNode[3])));
+          isFirstScheduleSet = true;
+        }
+      } else {
+        return;
+      }
+    }
+  } 
 }

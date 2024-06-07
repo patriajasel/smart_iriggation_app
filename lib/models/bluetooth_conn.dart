@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:smart_iriggation_app/pages/auto_crop_list.dart';
 import 'package:smart_iriggation_app/pages/dash_node_monitor_page.dart';
+import 'package:smart_iriggation_app/pages/dash_tank_monitor.dart';
 
-String? dataReceived = "Loam";
+String? dataReceived;
 
 final bluetooth = FlutterBluetoothSerial.instance;
 bool bluetoothState = false;
@@ -40,9 +42,11 @@ class bluetooth_conn {
         if (device.name == "HC-05" && device.address == "58:56:00:00:56:64") {
           connection = await BluetoothConnection.toAddress(device.address);
           deviceConnected = device;
+          receiveData();
           return; // Exit the loop once connected
         }
       }
+      
       // If the loop completes without finding the device
     } on Exception catch (e) {
       print("Failed to connect to HC-05: $e");
@@ -67,22 +71,25 @@ class bluetooth_conn {
     dataReceived = String.fromCharCodes(data);
     List<String> returnedData = dataReceived!.split(',');
 
+    print(returnedData);
     if (returnedData[0] == "Sensors") {
       soilMoistureValue = int.parse(returnedData[1]);
+    } else if(returnedData[0] == "Identifier"){
+      soilType = returnedData[1];
+    } else if(returnedData[0] == "Monitor") {
+      waterLevel = (returnedData.length > 1) ? int.tryParse(returnedData[1]) ?? 0 : 0;
+      fertilizerLevel = (returnedData.length > 2) ? int.tryParse(returnedData[2]) ?? 0 : 0;
+      soilMoisture1 = (returnedData.length > 3) ? int.tryParse(returnedData[3]) ?? 0 : 0;
+      soilMoisture2 = (returnedData.length > 4) ? int.tryParse(returnedData[4]) ?? 0 : 0;
+      soilMoisture3 = (returnedData.length > 5) ? int.tryParse(returnedData[5]) ?? 0 : 0;
+      soilMoisture4 = (returnedData.length > 6) ? int.tryParse(returnedData[6]) ?? 0 : 0;
     }
   }
 
   void sendData(String data, BuildContext context) {
     if (connection?.isConnected ?? false) {
       connection?.output.add(ascii.encode(data));
-    } else {
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You are currently not connected to Bluetooth HC-05'),
-          duration: Duration(seconds: 2),
-        ),
-      );*/
-    }
+    } 
 
     print(data);
   }

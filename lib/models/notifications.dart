@@ -8,7 +8,7 @@ class Notify {
 
   Future<void> initNotification() async {
     AndroidInitializationSettings androidInitializationSettings =
-        const AndroidInitializationSettings('flutter_logo');
+        const AndroidInitializationSettings('smart_irrig_icon');
 
     var initializationSetting =
         InitializationSettings(android: androidInitializationSettings);

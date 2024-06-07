@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'dash_bot_nav.dart';
@@ -18,14 +16,7 @@ class MyDashboard extends StatefulWidget {
 class _MyDashboardState extends State<MyDashboard> {
   @override
   void initState() {
-    Timer.periodic(const Duration(minutes: 10), (timer) {
-      getWaterAndFertilizerLevel();
-    });
     super.initState();
-  }
-
-  void getWaterAndFertilizerLevel() {
-    btInstance.receiveData();
   }
 
   @override
@@ -73,8 +64,19 @@ class _MyDashboardState extends State<MyDashboard> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: () {
-          Navigator.pushNamed(context, '/soilIdentify');
+          if(connection != null){
+            Navigator.pushNamed(context, '/soilIdentify');
           btInstance.sendData("Auto,Soil,", context);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You are currently not connected to Bluetooth HC-05'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+          }
+
+          
         },
         tooltip: 'Irrigate',
         elevation: 0,

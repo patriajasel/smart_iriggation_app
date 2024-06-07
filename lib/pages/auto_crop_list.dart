@@ -6,6 +6,7 @@ import 'package:smart_iriggation_app/models/bluetooth_conn.dart';
 import 'package:smart_iriggation_app/pages/auto_schedule_info.dart';
 
 bluetooth_conn btInstance = bluetooth_conn();
+String? soilType;
 
 class cropListView extends StatefulWidget {
   const cropListView({super.key});
@@ -23,7 +24,11 @@ class _cropListViewState extends State<cropListView>
   }
 
   void readCropList() {
-    context.read<Database>().getCropsBasedSoil(dataReceived!);
+    if(soilType != null){
+      context.read<Database>().getCropsBasedSoil(soilType!);
+    } else {
+      soilType ??= "Unidentified";
+    }  
   }
 
   @override
@@ -56,7 +61,7 @@ class _cropListViewState extends State<cropListView>
                     fontFamily: "Rokkitt", fontSize: 25.0, color: Colors.black),
               ),
               trailing: Text(
-                dataReceived!,
+                soilType!,
                 style: const TextStyle(
                     fontFamily: "Rokkitt", fontSize: 25.0, color: Colors.black),
               ),
@@ -239,7 +244,7 @@ class _cropListViewState extends State<cropListView>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 buildSoilIdentifier(),
-                if (dataReceived == "Unidentified" || dataReceived == null)
+                if (soilType == "Unidentified")
                   buildUnidentifiedContent()
                 else
                   buildCropListContent(),
