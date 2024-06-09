@@ -79,107 +79,105 @@ class _schedInformationState extends State<schedInformation> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          Center(
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 20.0),
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.blue,
-                      width: 4,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundImage: AssetImage(widget.directory),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  widget.croName,
-                  style: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Rokkitt",
-                  ),
-                ),
-                const SizedBox(height: 5),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Divider(),
-                ),
-              ],
-            ),
-          ),
-          Column(
+      body: Column(children: [
+        Center(
+          child: Column(
             children: [
               Container(
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(8.0),
-                color: Colors.blue,
-                width: double.infinity,
-                child: const Text(
-                  "Crop Description: ",
-                  style: TextStyle(
-                    fontFamily: "Rokkitt",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    color: Colors.white,
+                margin: const EdgeInsets.only(top: 20.0),
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 4,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundImage: AssetImage(widget.directory),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
-                child: Text(
-                  widget.cropDescription,
-                  textAlign: TextAlign.center,
+              const SizedBox(height: 8),
+              Text(
+                widget.croName,
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Rokkitt",
                 ),
               ),
+              const SizedBox(height: 5),
               const Padding(
                 padding: EdgeInsets.only(left: 10.0, right: 10.0),
                 child: Divider(),
               ),
-              Container(
-                color: Colors.blue,
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(8.0),
-                alignment: Alignment.centerLeft,
-                child: const Text(
-                  "Crop Schedule:",
-                  style: TextStyle(
-                    fontFamily: "Rokkitt",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
             ],
           ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: stages.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return getWeeks(stages[index].period, stages[index].weeks);
-                }),
-          ),
-        ]),
-      ),
+        ),
+        Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.blue,
+              width: double.infinity,
+              child: const Text(
+                "Crop Description: ",
+                style: TextStyle(
+                  fontFamily: "Rokkitt",
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
+              child: Text(
+                widget.cropDescription,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Divider(),
+            ),
+            Container(
+              color: Colors.blue,
+              margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.centerLeft,
+              child: const Text(
+                "Crop Schedule:",
+                style: TextStyle(
+                  fontFamily: "Rokkitt",
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Expanded(
+          child: ListView.builder(
+              itemCount: stages.length,
+              itemBuilder: (BuildContext context, int index) {
+                return getWeeks(stages[index].period, stages[index].weeks);
+              }),
+        ),
+      ]),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: ElevatedButton(

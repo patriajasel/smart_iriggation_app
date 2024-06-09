@@ -101,7 +101,7 @@ class _cropListViewState extends State<cropListView>
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/soilIdentify');
-                      btInstance.sendData("Auto,Soil,", context);
+                      btInstance.sendData("Soil,", context);
                     },
                     child: const Text('Retry'),
                   ),
@@ -111,6 +111,8 @@ class _cropListViewState extends State<cropListView>
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.popUntil(context, (route) => route.isFirst);
+                      
+                      
                     },
                     child: const Text('Cancel'),
                   ),

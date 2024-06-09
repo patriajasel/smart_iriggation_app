@@ -6,8 +6,9 @@ String serialConnectionCommand;
 String currentWord; // String to store individual words
 int wordCount = 0; // Counter for the number of words
 String commandArray[4]; // Assuming a maximum of 10 words, adjust this as needed
-int seconds = 15;
+int seconds = 30;
 String soilType = "Unidentified"; 
+static bool soilIdentified = false;
 
 //VALVES AND PUMPS
 int valve1 = 28;
@@ -104,10 +105,9 @@ void executeCommand(String command[]){
   if(command[0] == "Manual"){
     manualCommands(command[1].toInt(), command[2]);
 
-  } else if(command[0] == "Auto"){
-     if(command[1] == "Soil") {
+  } else if(command[0] == "Soil") {
+      soilIdentified = false;
       getSoilType();
-     }
   } else if(command[0] == "Scheduled"){
     scheduledCommands(command[1], command[2]);
   } 
@@ -201,7 +201,7 @@ void monitoring() {
   int outputValue4 = map(sensorValue4, 0, 1023, 255, 0); 
 
   // Delay for stability or other operations
-  Serial.print("Monitor,");
+  Serial.print("Moni,");
   Serial.print(wlevel);
   Serial.print(",");
   Serial.print(flevel);
@@ -215,7 +215,7 @@ void monitoring() {
   Serial.print(outputValue4);
   Serial.println(",");
 
-  delay(1000);
+  delay(500);
 }
 
 
@@ -230,10 +230,9 @@ void getSoilType() {
 
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
-    delay(1000);
+    delay(500);
 
     // Variable to track soil identification status
-    static bool soilIdentified = false;
 
     if (!soilIdentified && mySerial.available() >= sizeof(receivedData)) {  // Check if there are enough bytes available to read
       mySerial.readBytes(receivedData, sizeof(receivedData));  // Read the received data into the receivedData array
@@ -247,9 +246,10 @@ void getSoilType() {
       float soilPHFloat = (float)soilPH / 10.0;
       const float tolerance = 0.1; // Adjust this tolerance value as needed
 
+
       if (soilPHFloat >= 5.8 && soilPHFloat <= 8.0 && nitrogen == 0 && phosphorus >= 21 && phosphorus <= 32 && potassium >= 13 && potassium <= 24) {
         soilType = "Loam";
-      } else if (soilPHFloat >= 7.9 && soilPHFloat <= 8.8 && nitrogen == 0 && phosphorus > 15 && phosphorus < 18 && potassium > 7 && potassium < 10) {
+      } else if (soilPHFloat >= 7.9 && soilPHFloat <= 9.0 && nitrogen == 0 && phosphorus > 15 && phosphorus < 18 && potassium > 7 && potassium < 10) {
         soilType = "Clay";
       } else if (soilPHFloat >= 8.5 && soilPHFloat <= 9.0 && nitrogen == 0 && phosphorus == 15 && potassium == 7) {
         soilType = "Sand";
@@ -257,17 +257,15 @@ void getSoilType() {
         soilType = "Unidentified";
       }
 
-      if(i == 14) {
+      if(i == 14 && soilIdentified == false) {
       soilIdentified = true;
       serialConnectionCommand = "";
-      Serial.print("Identifier,");
+      Serial.print("I,");
       Serial.print(soilType);
       Serial.println(",");
-      return;
+      break;
+      }
     }
-
-    }
-
-    soilIdentified = false;
+    
   }
 }

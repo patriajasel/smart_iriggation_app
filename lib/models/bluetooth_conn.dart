@@ -72,11 +72,9 @@ class bluetooth_conn {
     List<String> returnedData = dataReceived!.split(',');
 
     print(returnedData);
-    if (returnedData[0] == "Sensors") {
-      soilMoistureValue = int.parse(returnedData[1]);
-    } else if (returnedData[0] == "Identifier") {
+    if (returnedData[0] == "I") {
       soilType = returnedData[1];
-    } else if (returnedData[0] == "Monitor") {
+    } else if (returnedData[0] == "Moni") {
       waterLevel =
           (returnedData.length > 1) ? int.tryParse(returnedData[1]) ?? 0 : 0;
       fertilizerLevel =
@@ -90,6 +88,9 @@ class bluetooth_conn {
       soilMoisture4 =
           (returnedData.length > 6) ? int.tryParse(returnedData[6]) ?? 0 : 0;
     }
+
+    returnedData.clear();
+    dataReceived = "";
   }
 
   void sendData(String data, BuildContext context) {

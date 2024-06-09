@@ -367,7 +367,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                               //SHOWING SNACK BAR
                               final snackbar = SnackBar(
                                 content: const Text('New Schedule Added'),
-                                duration: const Duration(seconds: 3),
+                                duration: const Duration(seconds: 1),
                                 action: SnackBarAction(
                                     label: "View",
                                     onPressed: () {

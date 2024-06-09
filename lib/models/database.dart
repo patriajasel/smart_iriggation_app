@@ -172,7 +172,7 @@ class Database extends ChangeNotifier {
   Future<void> getSchedule() async {
     List<Schedule> fetchedSchedules = await isar.schedules
         .filter()
-        .commandTypeEqualTo("Scheduled")
+        .commandTypeEqualTo("Scheduled").and().statusEqualTo("N/A")
         .sortByTimeDate()
         .findAll();
     currentSchedule.clear();
@@ -185,7 +185,7 @@ class Database extends ChangeNotifier {
         .filter()
         .commandTypeEqualTo("Scheduled")
         .and()
-        .nodeNumEqualTo(nodeNumber)
+        .nodeNumEqualTo(nodeNumber).and().statusEqualTo("N/A")
         .sortByTimeDate()
         .findAll();
     currentScheduleNode.clear();
@@ -196,7 +196,7 @@ class Database extends ChangeNotifier {
   //Getting nearest Schedule
   Future<void> getFirstSchedule() async {
     Schedule? fetchedSchedules =
-        await isar.schedules.where().sortByTimeDate().findFirst();
+        await isar.schedules.where().filter().not().statusEqualTo("Cancelled").and().not().statusEqualTo("Completed").findFirst();
     firstSchedule = null;
     if (fetchedSchedules != null) {
       firstSchedule = fetchedSchedules;
@@ -208,7 +208,7 @@ class Database extends ChangeNotifier {
     List<Schedule> fetchedSchedules = await isar.schedules
         .where()
         .filter()
-        .timeDateEqualTo(timedate)
+        .timeDateEqualTo(timedate).and().not().statusEqualTo("Cancelled")
         .sortByWaterAmount()
         .findAll();
     schedulesToSet.clear();
@@ -216,6 +216,26 @@ class Database extends ChangeNotifier {
       schedulesToSet.addAll(fetchedSchedules);
     }
     notifyListeners();
+  }
+
+  Future<void> updateSchedule(String status, int id) async {
+    final existingSchedule = await isar.schedules.get(id);
+
+    if (existingSchedule != null) {
+      existingSchedule.status = status;
+      isar.writeTxnSync(() => isar.schedules.putSync(existingSchedule));
+      await getNodes();
+    }
+  }
+
+  Future<void> updateScheduleDateTime(DateTime time, int id) async {
+    final existingSchedule = await isar.schedules.get(id);
+
+    if (existingSchedule != null) {
+      existingSchedule.timeDate = time;
+      isar.writeTxnSync(() => isar.schedules.putSync(existingSchedule));
+      await getNodes();
+    }
   }
 
   //Delete from database
@@ -334,7 +354,7 @@ class Database extends ChangeNotifier {
   Future<void> getAutoScheduleByNode(int nodeNumber, String cropName) async {
     List<Schedule> fetchedSchedules = isar.schedules
         .filter()
-        .commandTypeEqualTo("Automated")
+        .commandTypeEqualTo("Scheduled").and().not().statusEqualTo("N/A")
         .and()
         .nodeNumEqualTo(nodeNumber)
         .and()
@@ -348,7 +368,7 @@ class Database extends ChangeNotifier {
   Future<void> getAutoScheduleByWeek(int weekNumber, String cropName) async {
     List<Schedule> fetchedSchedules = isar.schedules
         .filter()
-        .commandTypeEqualTo("Automated")
+        .commandTypeEqualTo("Scheduled").and().not().statusEqualTo("N/A")
         .and()
         .weekEqualTo(weekNumber)
         .and()
@@ -363,7 +383,7 @@ class Database extends ChangeNotifier {
       String cropName, int weekNumber, int dayNumber) async {
     List<Schedule> fetchedSchedules = isar.schedules
         .filter()
-        .commandTypeEqualTo("Automated")
+        .commandTypeEqualTo("Scheduled")
         .and()
         .weekEqualTo(weekNumber)
         .and()

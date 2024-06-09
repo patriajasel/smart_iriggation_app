@@ -16,6 +16,8 @@ int? soilMoisture4;
 
 int? soilMoistureValue;
 
+late Timer _timer;
+
 class nodeMonitorPage extends StatefulWidget {
   final int nodeNumber;
   final String plantType;
@@ -44,7 +46,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
     super.initState();
     readSchedBasedOnNode(widget.nodeNumber);
     readAutomatedSchedBasedOnNode(widget.nodeNumber, widget.plantType);
-    Timer.periodic(const Duration(seconds: 10), (timer) { setState(() {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) { setState(() {
       switch (widget.nodeNumber) {
         case 1:
           soilMoistureValue = soilMoisture1;
@@ -67,6 +69,7 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    _timer.cancel();
   }
 
   void readSchedBasedOnNode(int node) {

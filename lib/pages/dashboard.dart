@@ -66,7 +66,7 @@ class _MyDashboardState extends State<MyDashboard> {
         onPressed: () {
           if (connection != null) {
             Navigator.pushNamed(context, '/soilIdentify');
-            btInstance.sendData("Auto,Soil,", context);
+            btInstance.sendData("Soil,", context);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

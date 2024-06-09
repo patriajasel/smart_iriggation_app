@@ -12,7 +12,7 @@ void concatenateData(int nodeNumber, String cropName, IsarLinks<Stages> stages,
   stage.addAll(stages);
   List<Weeks> weeks = week;
   List<String> weeksInString = [];
-  const String commandType = "Automated";
+  const String commandType = "Scheduled";
   const String status = "In progress";
 
   for (int i = 0; i < weeks.length; i++) {
@@ -75,7 +75,7 @@ void separateWater(int water, int parts, int roundingFactor) {
 }
 
 void getDatePerWaterAmount(List<List<int>> waterParts) {
-  DateTime baseHour = getNearestHour(DateTime.now());
+  DateTime baseTime = DateTime.now().add(const Duration(minutes: 3));
 
   for (int i = 0; i < waterParts.length; i++) {
     List<List<DateTime>> scheds = [];
@@ -84,8 +84,14 @@ void getDatePerWaterAmount(List<List<int>> waterParts) {
       for (int j = 0; j < 7; j++) {
         List<DateTime> sched = [];
         for (int k = 0; k < waterParts[i].length; k++) {
-          baseHour = baseHour.add(const Duration(hours: 12));
-          sched.add(baseHour);
+          if(k == 0){
+            sched.add(baseTime);
+          }
+          else {
+            baseTime = baseTime.add(const Duration(hours: 12));
+          sched.add(baseTime);
+          }
+          
         }
         scheds.add(sched);
       }
@@ -94,8 +100,8 @@ void getDatePerWaterAmount(List<List<int>> waterParts) {
       for (int j = 0; j < 7; j++) {
         List<DateTime> sched = [];
         for (int k = 0; k < waterParts[i].length; k++) {
-          baseHour = baseHour.add(const Duration(hours: 8));
-          sched.add(baseHour);
+          baseTime = baseTime.add(const Duration(hours: 8));
+          sched.add(baseTime);
         }
         scheds.add(sched);
       }

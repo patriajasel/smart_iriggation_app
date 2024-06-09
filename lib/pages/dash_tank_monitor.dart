@@ -17,8 +17,7 @@ class _tankMonitorState extends State<tankMonitor> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(seconds: 10), (timer) { setState(() {
-      
+    Timer.periodic(const Duration(seconds: 5), (timer) { setState(() {
     }); });
   }
 
