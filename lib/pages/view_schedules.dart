@@ -64,6 +64,7 @@ class _ViewScheduleState extends State<ViewSchedule> {
           final dbTime = listSchedules[index].timeDate;
           final dbAmount = listSchedules[index].waterAmount;
           final dbNode = listSchedules[index].nodeNum;
+          final dbValve = listSchedules[index].valve;
 
           getPlantType(dbNode);
 
@@ -125,7 +126,7 @@ class _ViewScheduleState extends State<ViewSchedule> {
                     const SizedBox(
                         height: 8.0), // Spacing between title and subtitle
                     Text(
-                      'Node #: $dbNode \nPlant type: $plant \n$dbAmount (mL)',
+                      'Node #: $dbNode \nPlant type: $plant \n$dbAmount (mL) \n$dbValve',
                       style: const TextStyle(
                         fontSize: 14.0,
                         fontFamily: "Rokkitt",

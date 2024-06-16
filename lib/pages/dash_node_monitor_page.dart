@@ -47,21 +47,6 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
     readSchedBasedOnNode(widget.nodeNumber);
     readAutomatedSchedBasedOnNode(widget.nodeNumber, widget.plantType);
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) { setState(() {
-      switch (widget.nodeNumber) {
-        case 1:
-          soilMoistureValue = soilMoisture1;
-          break;
-        case 2:
-          soilMoistureValue = soilMoisture2;
-          break;
-        case 3:
-          soilMoistureValue = soilMoisture3;
-          break;
-        case 4:
-          soilMoistureValue = soilMoisture4;
-          break;
-        default:
-      }
     }); });
   }
 
@@ -268,9 +253,20 @@ class _nodeMonitorPageState extends State<nodeMonitorPage> {
                           ),
                           Center(
                             child: Text(
-                              soilMoistureValue != null
-                                  ? "$soilMoistureValue%"
-                                  : "N/A",
+                              (() {
+                                if (widget.nodeNumber == 1) {
+                                  return soilMoisture1 != null ? "$soilMoisture1%" : "N/A";
+                                } else if (widget.nodeNumber == 2) {
+                                  return soilMoisture2 != null ? "$soilMoisture2%" : "N/A";
+                                } else if (widget.nodeNumber == 3) {
+                                  return soilMoisture3 != null ? "$soilMoisture3%" : "N/A";
+                                } else if (widget.nodeNumber == 3) {
+                                  return soilMoisture4 != null ? "$soilMoisture4%" : "N/A";
+                                } 
+                                else {
+                                  return "N/A"; 
+                                }
+                              })(),
                               style: const TextStyle(
                                 fontFamily: "Rokkitt",
                                 fontSize: 25.0,

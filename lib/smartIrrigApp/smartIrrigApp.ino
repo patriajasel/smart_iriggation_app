@@ -2,10 +2,8 @@
  
 SoftwareSerial mySerial(10, 11);  // RX, TX (choose any available pins) DI 11, RO 10
 
-String serialConnectionCommand;
-String currentWord; // String to store individual words
-int wordCount = 0; // Counter for the number of words
-String commandArray[4]; // Assuming a maximum of 10 words, adjust this as needed
+ // Counter for the number of words
+ // Assuming a maximum of 10 words, adjust this as needed
 int seconds = 30;
 String soilType = "Unidentified"; 
 static bool soilIdentified = false;
@@ -78,6 +76,10 @@ void setup() {
 void loop() {
   
   if(Serial.available() > 0){
+    String commandArray[4];
+    String serialConnectionCommand;
+    String currentWord; // String to store individual words
+    int wordCount = 0;
     serialConnectionCommand = Serial.readString();
     Serial.println(serialConnectionCommand);
 
@@ -107,7 +109,7 @@ void executeCommand(String command[]){
 
   } else if(command[0] == "Soil") {
       soilIdentified = false;
-      getSoilType();
+      getSoilType(command[0]);
   } else if(command[0] == "Scheduled"){
     scheduledCommands(command[1], command[2]);
   } 
@@ -118,13 +120,9 @@ void manualCommands(int nodeNumber, String command){
   
   if(command == "on"){
     digitalWrite(nodeNumber, LOW);
-    serialConnectionCommand = "";
-    wordCount = 0;
   }
   else if(command == "off"){
     digitalWrite(nodeNumber, HIGH);
-    serialConnectionCommand = "";
-    wordCount = 0;    
   }
 }
 
@@ -144,8 +142,6 @@ void scheduledCommands (String pinNumbers, String command){
 
       
     }
-    serialConnectionCommand = "";
-    wordCount = 0;
   }
   else if(command == "off"){
     for (int i = 0; i < totalPins; i++) {
@@ -153,14 +149,10 @@ void scheduledCommands (String pinNumbers, String command){
 
       pins[i] = pin.toInt();
       digitalWrite(pin.toInt(), HIGH);
-
-       
+     
     }
-    serialConnectionCommand = "";
-    wordCount = 0; 
   }
   
-
 }
 
 void monitoring() {
@@ -174,7 +166,7 @@ void monitoring() {
   // Measure pulse duration for water level sensor
   wpingtime = pulseIn(WEP, HIGH);
 
-  // Trigger the fertilizer level sensor
+   // Trigger the fertilizer level sensor
   digitalWrite(FTP, LOW);
   delayMicroseconds(10);
   digitalWrite(FTP, HIGH);
@@ -195,10 +187,10 @@ void monitoring() {
   int sensorValue3 = analogRead(sensorPin3);
   int sensorValue4 = analogRead(sensorPin4); 
 
-  int outputValue1 = map(sensorValue1, 0, 1023, 255, 0);
-  int outputValue2 = map(sensorValue2, 0, 1023, 255, 0);
-  int outputValue3 = map(sensorValue3, 0, 1023, 255, 0);
-  int outputValue4 = map(sensorValue4, 0, 1023, 255, 0); 
+  int outputValue1 = ( 100 - ( (sensorValue1/1023.00) * 100 ) );
+  int outputValue2 = ( 100 - ( (sensorValue2/1023.00) * 100 ) );
+  int outputValue3 = ( 100 - ( (sensorValue3/1023.00) * 100 ) );
+  int outputValue4 = ( 100 - ( (sensorValue4/1023.00) * 100 ) );
 
   // Delay for stability or other operations
   Serial.print("Moni,");
@@ -219,53 +211,65 @@ void monitoring() {
 }
 
 
-void getSoilType() {
-  for(int i = 0; i < seconds; i++){
-    byte queryData[]{0x01, 0x03, 0x00, 0x00, 0x00, 0x07, 0x04, 0x08};
-    byte receivedData[19];
-    digitalWrite(DE, HIGH);
-    digitalWrite(RE, HIGH);
+void getSoilType(String command) {
 
-    mySerial.write(queryData, sizeof(queryData));  // send query data to NPK
-
-    digitalWrite(DE, LOW);
-    digitalWrite(RE, LOW);
-    delay(500);
-
-    // Variable to track soil identification status
-
-    if (!soilIdentified && mySerial.available() >= sizeof(receivedData)) {  // Check if there are enough bytes available to read
-      mySerial.readBytes(receivedData, sizeof(receivedData));  // Read the received data into the receivedData array
-      // Parse and print the received data in decimal format
-      unsigned int soilPH = (receivedData[9] << 8) | receivedData[10];
-      unsigned int nitrogen = (receivedData[11] << 8) | receivedData[12];
-      unsigned int phosphorus = (receivedData[13] << 8) | receivedData[14];
-      unsigned int potassium = (receivedData[15] << 8) | receivedData[16];
-
-      // Determine the type of soil using if-else conditions with tolerance
-      float soilPHFloat = (float)soilPH / 10.0;
-      const float tolerance = 0.1; // Adjust this tolerance value as needed
-
-
-      if (soilPHFloat >= 5.8 && soilPHFloat <= 8.0 && nitrogen == 0 && phosphorus >= 21 && phosphorus <= 32 && potassium >= 13 && potassium <= 24) {
-        soilType = "Loam";
-      } else if (soilPHFloat >= 7.9 && soilPHFloat <= 9.0 && nitrogen == 0 && phosphorus > 15 && phosphorus < 18 && potassium > 7 && potassium < 10) {
-        soilType = "Clay";
-      } else if (soilPHFloat >= 8.5 && soilPHFloat <= 9.0 && nitrogen == 0 && phosphorus == 15 && potassium == 7) {
-        soilType = "Sand";
-      } else {
-        soilType = "Unidentified";
-      }
-
-      if(i == 14 && soilIdentified == false) {
-      soilIdentified = true;
-      serialConnectionCommand = "";
-      Serial.print("I,");
-      Serial.print(soilType);
-      Serial.println(",");
-      break;
-      }
-    }
+  if(command == "Soil"){
     
+    for(int i = 0; i < seconds; i++){
+      byte queryData[]{0x01, 0x03, 0x00, 0x00, 0x00, 0x07, 0x04, 0x08};
+      byte receivedData[19];
+      digitalWrite(DE, HIGH);
+      digitalWrite(RE, HIGH);
+
+      mySerial.write(queryData, sizeof(queryData));  // send query data to NPK
+
+      digitalWrite(DE, LOW);
+      digitalWrite(RE, LOW);
+      delay(500);
+      
+      if (!soilIdentified && mySerial.available() >= sizeof(receivedData)) {  // Check if there are enough bytes available to read
+        mySerial.readBytes(receivedData, sizeof(receivedData));  // Read the received data into the receivedData array
+        // Parse and print the received data in decimal format
+        unsigned int soilPH = (receivedData[9] << 8) | receivedData[10];
+        unsigned int nitrogen = (receivedData[11] << 8) | receivedData[12];
+        unsigned int phosphorus = (receivedData[13] << 8) | receivedData[14];
+        unsigned int potassium = (receivedData[15] << 8) | receivedData[16];
+
+        // Determine the type of soil using if-else conditions with tolerance
+        float soilPHFloat = (float)soilPH / 10.0;
+        const float tolerance = 0.1; // Adjust this tolerance value as needed
+
+        /*
+        Serial.print("Soil pH: ");
+        Serial.println((float)soilPH / 10.0);
+        Serial.print("Nitrogen: ");
+        Serial.println(nitrogen);
+        Serial.print("Phosphorus: ");
+        Serial.println(phosphorus);
+        Serial.print("Potassium: ");
+        Serial.println(potassium);
+        */
+
+        if ((soilPHFloat >= 5.8 && soilPHFloat <= 8.0 && nitrogen == 0 && phosphorus >= 21 && phosphorus <= 32 && potassium >= 13 && potassium <= 24) /*|| (soilPHFloat >= 6.9 && soilPHFloat <= 7.6 && nitrogen >= 21 && nitrogen <= 29 && phosphorus >= 101 && phosphorus <= 133 && potassium >= 95 && potassium <= 166) */) {
+          soilType = "Loam";
+        } else if (soilPHFloat >= 7.9 && soilPHFloat <= 9.0 && nitrogen == 0 && phosphorus > 15 && phosphorus < 18 && potassium > 7 && potassium < 10) {
+          soilType = "Clay";
+        } else if (soilPHFloat >= 8.5 && soilPHFloat <= 9.0 && nitrogen == 0 && phosphorus == 15 && potassium == 7) {
+          soilType = "Sand";
+        } else {
+          soilType = "Unidentified";
+        }
+
+        if(i == 14 && soilIdentified == false) {
+        soilIdentified = true;  
+        Serial.print("I,");
+        Serial.print(soilType);
+        Serial.println(",");
+        break;
+        }
+      }
+      
+    }
   }
+  
 }

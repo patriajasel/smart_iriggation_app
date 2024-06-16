@@ -71,7 +71,7 @@ class bluetooth_conn {
     dataReceived = String.fromCharCodes(data);
     List<String> returnedData = dataReceived!.split(',');
 
-    print(returnedData);
+    //print(returnedData);
     if (returnedData[0] == "I") {
       soilType = returnedData[1];
     } else if (returnedData[0] == "Moni") {

@@ -150,7 +150,8 @@ class Database extends ChangeNotifier {
       String status,
       DateTime timeDate,
       int waterAmount,
-      int week) async {
+      int week,
+      String valve) async {
     final newSched = Schedule()
       ..commandType = commandType
       ..cropName = cropName
@@ -160,7 +161,8 @@ class Database extends ChangeNotifier {
       ..status = status
       ..timeDate = timeDate
       ..waterAmount = waterAmount
-      ..week = week;
+      ..week = week
+      ..valve = valve;
 
     await isar.writeTxn(() => isar.schedules.put(newSched));
 
@@ -172,7 +174,9 @@ class Database extends ChangeNotifier {
   Future<void> getSchedule() async {
     List<Schedule> fetchedSchedules = await isar.schedules
         .filter()
-        .commandTypeEqualTo("Scheduled").and().statusEqualTo("N/A")
+        .commandTypeEqualTo("Scheduled")
+        .and()
+        .statusEqualTo("N/A")
         .sortByTimeDate()
         .findAll();
     currentSchedule.clear();
@@ -185,7 +189,11 @@ class Database extends ChangeNotifier {
         .filter()
         .commandTypeEqualTo("Scheduled")
         .and()
-        .nodeNumEqualTo(nodeNumber).and().statusEqualTo("N/A")
+        .valveEqualTo("Water")
+        .and()
+        .nodeNumEqualTo(nodeNumber)
+        .and()
+        .statusEqualTo("N/A")
         .sortByTimeDate()
         .findAll();
     currentScheduleNode.clear();
@@ -195,8 +203,16 @@ class Database extends ChangeNotifier {
 
   //Getting nearest Schedule
   Future<void> getFirstSchedule() async {
-    Schedule? fetchedSchedules =
-        await isar.schedules.where().filter().not().statusEqualTo("Cancelled").and().not().statusEqualTo("Completed").findFirst();
+    Schedule? fetchedSchedules = await isar.schedules
+        .where()
+        .filter()
+        .not()
+        .statusEqualTo("Cancelled")
+        .and()
+        .not()
+        .statusEqualTo("Completed")
+        .sortByTimeDate()
+        .findFirst();
     firstSchedule = null;
     if (fetchedSchedules != null) {
       firstSchedule = fetchedSchedules;
@@ -208,7 +224,10 @@ class Database extends ChangeNotifier {
     List<Schedule> fetchedSchedules = await isar.schedules
         .where()
         .filter()
-        .timeDateEqualTo(timedate).and().not().statusEqualTo("Cancelled")
+        .timeDateEqualTo(timedate)
+        .and()
+        .not()
+        .statusEqualTo("Cancelled")
         .sortByWaterAmount()
         .findAll();
     schedulesToSet.clear();
@@ -335,7 +354,8 @@ class Database extends ChangeNotifier {
       int waterAmount,
       int week,
       int day,
-      String cropName) async {
+      String cropName,
+      String valve) async {
     final schedule = Schedule()
       ..commandType = commandType
       ..nodeNum = nodenumber
@@ -345,7 +365,8 @@ class Database extends ChangeNotifier {
       ..waterAmount = waterAmount
       ..week = week
       ..day = day
-      ..cropName = cropName;
+      ..cropName = cropName
+      ..valve = valve;
 
     isar.writeTxnSync(() => isar.schedules.putSync(schedule));
   }
@@ -354,7 +375,10 @@ class Database extends ChangeNotifier {
   Future<void> getAutoScheduleByNode(int nodeNumber, String cropName) async {
     List<Schedule> fetchedSchedules = isar.schedules
         .filter()
-        .commandTypeEqualTo("Scheduled").and().not().statusEqualTo("N/A")
+        .commandTypeEqualTo("Scheduled")
+        .and()
+        .not()
+        .statusEqualTo("N/A")
         .and()
         .nodeNumEqualTo(nodeNumber)
         .and()
@@ -368,7 +392,10 @@ class Database extends ChangeNotifier {
   Future<void> getAutoScheduleByWeek(int weekNumber, String cropName) async {
     List<Schedule> fetchedSchedules = isar.schedules
         .filter()
-        .commandTypeEqualTo("Scheduled").and().not().statusEqualTo("N/A")
+        .commandTypeEqualTo("Scheduled")
+        .and()
+        .not()
+        .statusEqualTo("N/A")
         .and()
         .weekEqualTo(weekNumber)
         .and()

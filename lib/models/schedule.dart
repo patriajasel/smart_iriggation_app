@@ -14,6 +14,7 @@ class Schedule {
   late int week;
   late int day;
   late String cropName;
+  late String valve;
 }
 
 @Collection()

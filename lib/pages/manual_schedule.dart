@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -30,10 +28,12 @@ class _ManualSchedulerState extends State<ManualScheduler> {
   int? _selectedIndex;
 
   List<String> arrangedList = [];
+  List<String> valveSelector = ["Water", "Fertilizer"];
 
   final String commandType = "Scheduled";
 
   int? _selectedAmount;
+  String? _selectedValve = "Water";
 
   @override
   void initState() {
@@ -283,7 +283,7 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                             return DropdownMenuItem(
                                 value: item,
                                 child: Text(
-                                  "${item} (mL)",
+                                  "$item (mL)",
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontFamily: "Rokkitt",
@@ -293,6 +293,55 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                           onChanged: (int? value) {
                             setState(() {
                               _selectedAmount = value;
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_drop_down),
+                          //iconEnabledColor: Colors.white,
+                        ),
+                      ),
+                    ),
+
+                    //Valve Selection
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 15.0),
+                      child: Center(
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Select the valve',
+                            labelStyle: const TextStyle(
+                              fontFamily: "Rokkitt",
+                              fontSize: 24.0,
+                              //color: Colors.white
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  //color: Colors.white
+                                  ), // Set border color
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  //  color: Colors.white
+                                  ), // Set border color
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          value: _selectedValve,
+                          items: valveSelector.map((String item) {
+                            return DropdownMenuItem(
+                                value: item,
+                                child: Text(
+                                  item,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Rokkitt",
+                                      fontSize: 18.0),
+                                ));
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedValve = value.toString();
                             });
                           },
                           icon: const Icon(Icons.arrow_drop_down),
@@ -362,7 +411,8 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                                   "N/A",
                                   scheduledTime,
                                   _selectedAmount!,
-                                  0);
+                                  0,
+                                  _selectedValve!);
 
                               //SHOWING SNACK BAR
                               final snackbar = SnackBar(
@@ -384,18 +434,33 @@ class _ManualSchedulerState extends State<ManualScheduler> {
                               int differenceInMinutes =
                                   difference.inMinutes.abs();
 
-                              if (differenceInMinutes > 10) {
-                                notifyMe10Mins(
-                                    int.parse("${schedID}10"),
-                                    "Watering Node #: $_selectedIndex in 10 mins. Please open the app to connect to to Bluetooth Device.",
-                                    scheduledTime
-                                        .subtract(const Duration(minutes: 10)));
-                              }
+                              if (_selectedValve == "Water") {
+                                if (differenceInMinutes > 10) {
+                                  notifyMe10Mins(
+                                      int.parse("${schedID}10"),
+                                      "Watering Node #: $_selectedIndex in 10 mins. Please open the app to connect to to Bluetooth Device.",
+                                      scheduledTime.subtract(
+                                          const Duration(minutes: 10)));
+                                }
 
-                              notifyTask(
-                                  schedID,
-                                  "Watering Node #: $_selectedIndex.",
-                                  scheduledTime);
+                                notifyTask(
+                                    schedID,
+                                    "Watering Node #: $_selectedIndex.",
+                                    scheduledTime);
+                              } else if (_selectedValve == "Fertilizer") {
+                                if (differenceInMinutes > 10) {
+                                  notifyMe10Mins(
+                                      int.parse("${schedID}10"),
+                                      "Fertilizing Node #: $_selectedIndex in 10 mins. Please open the app to connect to to Bluetooth Device.",
+                                      scheduledTime.subtract(
+                                          const Duration(minutes: 10)));
+                                }
+
+                                notifyTask(
+                                    schedID,
+                                    "Fertilizing Node #: $_selectedIndex.",
+                                    scheduledTime);
+                              }
 
                               selectedTime = currentTime;
                             });

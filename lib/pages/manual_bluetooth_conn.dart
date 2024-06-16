@@ -76,22 +76,25 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
   }
 
   Widget bluetoothConfig() {
-    return SwitchListTile(
-        value: bluetoothState,
-        onChanged: (bool value) async {
-          if (value) {
-            await bluetooth.requestEnable();
-          } else {
-            await bluetooth.requestDisable();
-          }
-        },
-        title: Text(
-          bluetoothState ? "Turn Off Bluetooth" : "Turn On Bluetooth",
-          style: const TextStyle(
-            fontFamily: "Rokkitt",
-            fontSize: 18,
-          ),
-        ));
+    return Theme(
+      data: ThemeData(useMaterial3: false),
+      child: SwitchListTile(
+          value: bluetoothState,
+          onChanged: (bool value) async {
+            if (value) {
+              await bluetooth.requestEnable();
+            } else {
+              await bluetooth.requestDisable();
+            }
+          },
+          title: Text(
+            bluetoothState ? "Turn Off Bluetooth" : "Turn On Bluetooth",
+            style: const TextStyle(
+              fontFamily: "Rokkitt",
+              fontSize: 18,
+            ),
+          )),
+    );
   }
 
   Widget devicesInfo() {
@@ -237,6 +240,22 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               onChanged: (bool value) {
                 setState(() {
                   command = "$commandType,${getArdPin(7)},${getCommand(7)},";
+                  isNode4Open = value;
+                  btInstance.sendData(command!, context);
+                });
+              }),
+        ),
+        Theme(
+          data: ThemeData(useMaterial3: false),
+          child: SwitchListTile(
+              title: const Text(
+                "Mixer",
+                style: TextStyle(fontFamily: "Rokkitt", fontSize: 18),
+              ),
+              value: isMixerOpen,
+              onChanged: (bool value) {
+                setState(() {
+                  command = "$commandType,${getArdPin(8)},${getCommand(8)},";
                   isNode4Open = value;
                   btInstance.sendData(command!, context);
                 });

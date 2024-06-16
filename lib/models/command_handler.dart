@@ -7,6 +7,7 @@ bool isNode4Open = false;
 bool isPumpOpen = false;
 bool isWaterValveOpen = false;
 bool isFertilizerValveOpen = false;
+bool isMixerOpen = false;
 
 int getArdPin(int nodeNumber) {
   switch (nodeNumber) {
@@ -24,6 +25,8 @@ int getArdPin(int nodeNumber) {
       return 32; // NODE 3
     case 7:
       return 34; // NODE 4
+    case 8:
+      return 36; // MIXER
     default:
       return 0;
   }
@@ -70,6 +73,12 @@ String getCommand(int nodeNumber) {
     }
   } else if (nodeNumber == 7) {
     if (isNode4Open == false) {
+      return "on";
+    } else {
+      return "off";
+    }
+  } else if (nodeNumber == 8) {
+    if (isMixerOpen == false) {
       return "on";
     } else {
       return "off";

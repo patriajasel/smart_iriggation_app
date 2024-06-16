@@ -14,6 +14,7 @@ void concatenateData(int nodeNumber, String cropName, IsarLinks<Stages> stages,
   List<String> weeksInString = [];
   const String commandType = "Scheduled";
   const String status = "In progress";
+  const String valve = "Water";
 
   for (int i = 0; i < weeks.length; i++) {
     weeksInString.add(weeks[i].waterAmount);
@@ -24,7 +25,7 @@ void concatenateData(int nodeNumber, String cropName, IsarLinks<Stages> stages,
   arrangeWaterAmount(weeksInString);
   getDatePerWaterAmount(waterParts);
   addAutomatedSchedule(schedDatabase, nodeNumber, commandType, status,
-      waterParts, schedDate, cropName, parts);
+      waterParts, schedDate, cropName, parts, valve);
 }
 
 void arrangeWaterAmount(List<String> waterAmount) {
@@ -84,14 +85,12 @@ void getDatePerWaterAmount(List<List<int>> waterParts) {
       for (int j = 0; j < 7; j++) {
         List<DateTime> sched = [];
         for (int k = 0; k < waterParts[i].length; k++) {
-          if(k == 0){
+          if (k == 0) {
+            sched.add(baseTime);
+          } else {
+            baseTime = baseTime.add(const Duration(hours: 12));
             sched.add(baseTime);
           }
-          else {
-            baseTime = baseTime.add(const Duration(hours: 12));
-          sched.add(baseTime);
-          }
-          
         }
         scheds.add(sched);
       }
@@ -123,7 +122,8 @@ void addAutomatedSchedule(
     List<List<int>> waterParts,
     List<List<List<DateTime>>> schedDate,
     String cropName,
-    List<int> parts) {
+    List<int> parts,
+    String valve) {
   for (int i = 0; i < schedDate.length; i++) {
     for (int j = 0; j < schedDate[i].length; j++) {
       for (int k = 0; k < schedDate[i][j].length; k++) {
@@ -139,7 +139,8 @@ void addAutomatedSchedule(
             waterParts[i][k],
             i + 1,
             j + 1,
-            cropName);
+            cropName,
+            valve);
       }
     }
   }

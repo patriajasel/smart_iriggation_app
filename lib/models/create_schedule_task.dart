@@ -12,64 +12,81 @@ bluetooth_conn btInstance = bluetooth_conn();
 bool isFirstScheduleSet = false;
 WaterAmountProvider provider = WaterAmountProvider();
 final scheduler = TimeScheduler();
+const int mixerDuration = 30;
 
 checkForMultipleSchedule(
     Schedule? firstSchedule, BuildContext context, Database firstSched) {
   if (firstSchedule != null) {
     context.read<Database>().getSchedulesWithSameTime(firstSchedule.timeDate);
-    List<Schedule> schedToSet = checkSoilMoisture(firstSched.schedulesToSet, firstSched);
-    List<Schedule> updateSchedulesToSet = checkSoilMoisture(schedToSet, firstSched);
+    List<Schedule> schedToSet =
+        checkSoilMoisture(firstSched.schedulesToSet, firstSched);
+    List<Schedule> updateSchedulesToSet =
+        checkSoilMoisture(schedToSet, firstSched);
+
+    print(firstSchedule.timeDate);
 
     if (schedToSet.length > 1) {
       print("There are multiple Schedules");
       createMultipleSchedules(updateSchedulesToSet, context, firstSched);
     } else if (schedToSet.length == 1) {
-      print("There is only on Schedule");
+      print("There is only one Schedule");
       createSingleSchedule(firstSchedule, firstSched, context);
     }
   }
 }
-List<Schedule> checkSoilMoisture(List<Schedule> scheds, Database db){
+
+List<Schedule> checkSoilMoisture(List<Schedule> scheds, Database db) {
   List<Schedule> updatedSchedule = [];
 
-  for(int i = 0; i < scheds.length; i++){
-    if(scheds[i].status == "N/A"){
+  for (int i = 0; i < scheds.length; i++) {
+    if (scheds[i].status == "N/A") {
       updatedSchedule.add(scheds[i]);
-    }
-    else if(scheds[i].status == "In progress"){
+    } else if (scheds[i].status == "In progress") {
       switch (scheds[i].nodeNum) {
         case 1:
-          if(soilMoisture1! > 50){
-            db.updateScheduleDateTime(scheds[i].timeDate.add(const Duration(hours: 1)), scheds[i].id);
+          if (soilMoisture1! > 50) {
+            db.updateScheduleDateTime(
+                scheds[i].timeDate.add(const Duration(hours: 1)), scheds[i].id);
           } else if (soilMoisture1! > 30 && soilMoisture1! < 50) {
-            db.updateScheduleDateTime(scheds[i].timeDate.add(const Duration(minutes: 30)), scheds[i].id);
+            db.updateScheduleDateTime(
+                scheds[i].timeDate.add(const Duration(minutes: 30)),
+                scheds[i].id);
           } else {
             updatedSchedule.add(scheds[i]);
           }
           break;
         case 2:
-          if(soilMoisture2! > 50){
-            db.updateScheduleDateTime(scheds[i].timeDate.add(const Duration(hours: 1)), scheds[i].id);
+          if (soilMoisture2! > 50) {
+            db.updateScheduleDateTime(
+                scheds[i].timeDate.add(const Duration(hours: 1)), scheds[i].id);
           } else if (soilMoisture2! > 30 && soilMoisture2! < 50) {
-            db.updateScheduleDateTime(scheds[i].timeDate.add(const Duration(minutes: 30)), scheds[i].id);
+            db.updateScheduleDateTime(
+                scheds[i].timeDate.add(const Duration(minutes: 30)),
+                scheds[i].id);
           } else {
             updatedSchedule.add(scheds[i]);
           }
           break;
         case 3:
-          if(soilMoisture3! > 50){
-            db.updateScheduleDateTime(scheds[i].timeDate.add(const Duration(hours: 1)), scheds[i].id);
+          if (soilMoisture3! > 50) {
+            db.updateScheduleDateTime(
+                scheds[i].timeDate.add(const Duration(hours: 1)), scheds[i].id);
           } else if (soilMoisture3! > 30 && soilMoisture3! < 50) {
-            db.updateScheduleDateTime(scheds[i].timeDate.add(const Duration(minutes: 30)), scheds[i].id);
+            db.updateScheduleDateTime(
+                scheds[i].timeDate.add(const Duration(minutes: 30)),
+                scheds[i].id);
           } else {
             updatedSchedule.add(scheds[i]);
           }
           break;
         case 4:
-          if(soilMoisture4! > 50){
-            db.updateScheduleDateTime(scheds[i].timeDate.add(const Duration(hours: 1)), scheds[i].id);
+          if (soilMoisture4! > 50) {
+            db.updateScheduleDateTime(
+                scheds[i].timeDate.add(const Duration(hours: 1)), scheds[i].id);
           } else if (soilMoisture4! > 30 && soilMoisture4! < 50) {
-            db.updateScheduleDateTime(scheds[i].timeDate.add(const Duration(minutes: 30)), scheds[i].id);
+            db.updateScheduleDateTime(
+                scheds[i].timeDate.add(const Duration(minutes: 30)),
+                scheds[i].id);
           } else {
             updatedSchedule.add(scheds[i]);
           }
@@ -81,21 +98,36 @@ List<Schedule> checkSoilMoisture(List<Schedule> scheds, Database db){
   return updatedSchedule;
 }
 
+void openMixer(int duration, DateTime time, BuildContext context) {
+  final DateTime timeStart = time.subtract(const Duration(seconds: 40));
+  scheduler.run(
+      () => {btInstance.sendData("Scheduled,${getArdPin(8)},on,", context)},
+      timeStart);
+
+  scheduler.run(
+      () => {btInstance.sendData("Scheduled,${getArdPin(8)},off,", context)},
+      timeStart.add(Duration(seconds: duration)));
+}
 
 void createSingleSchedule(
     Schedule firstSchedule, Database deleteSched, BuildContext context) {
+  late int valve;
   int? durationToIrrigate =
       provider.waterAmount[firstSchedule.waterAmount]!['1Node'];
+  if (firstSchedule.valve == "Water") {
+    valve = 2;
+  } else if (firstSchedule.valve == "Fertilizer") {
+    valve = 3;
+    openMixer(mixerDuration, firstSchedule.timeDate, context);
+  }
 
   if (DateTime.now().toUtc().isAfter(firstSchedule.timeDate)) {
-
-    if(firstSchedule.status == "In progress"){
+    if (firstSchedule.status == "In progress") {
       deleteSched.updateSchedule("Completed", firstSchedule.id);
-    } else if(firstSchedule.status == "N/A") {
+    } else if (firstSchedule.status == "N/A") {
       deleteSched
-        .deleteSchedule(firstSchedule.id)
-        .whenComplete(() => print("Schedule Deleted"));
-    
+          .deleteSchedule(firstSchedule.id)
+          .whenComplete(() => print("Schedule Deleted"));
     }
     isFirstScheduleSet = false;
   }
@@ -105,7 +137,7 @@ void createSingleSchedule(
       scheduler.run(
           () => {
                 btInstance.sendData(
-                    "${firstSchedule.commandType},${getArdPin(1)}${getArdPin(2)}${getArdPin(firstSchedule.nodeNum + 3)},on,",
+                    "${firstSchedule.commandType},${getArdPin(1)}${getArdPin(valve)}${getArdPin(firstSchedule.nodeNum + 3)},on,",
                     context)
               },
           firstSchedule.timeDate);
@@ -113,7 +145,7 @@ void createSingleSchedule(
       scheduler.run(
           () => {
                 btInstance.sendData(
-                    "${firstSchedule.commandType},${getArdPin(1)}${getArdPin(2)}${getArdPin(firstSchedule.nodeNum + 3)},off,",
+                    "${firstSchedule.commandType},${getArdPin(1)}${getArdPin(valve)}${getArdPin(firstSchedule.nodeNum + 3)},off,",
                     context)
               },
           firstSchedule.timeDate.add(Duration(seconds: durationToIrrigate!)));
@@ -126,14 +158,13 @@ void createSingleSchedule(
 
 void deleteSchedules(List<Schedule> scheds, Database db) {
   for (int i = 0; i < scheds.length; i++) {
-    if(scheds[i].status == "N/A"){
+    if (scheds[i].status == "N/A") {
       db
-        .deleteSchedule(scheds[i].id)
-        .whenComplete(() => print("Schedule Deleted"));
-    } else if (scheds[i].status == "In progress"){
+          .deleteSchedule(scheds[i].id)
+          .whenComplete(() => print("Schedule Deleted"));
+    } else if (scheds[i].status == "In progress") {
       db.updateSchedule("Completed", scheds[i].id);
     }
-    
   }
   isFirstScheduleSet = false;
 }
@@ -144,13 +175,21 @@ void createMultipleSchedules(
     List<Schedule> schedToSet, BuildContext context, Database deleteSched) {
   List<int> nodesList = [];
   List<int> durationsPerNode = [];
+  late int valve;
 
   if (DateTime.now().toUtc().isAfter(schedToSet[0].timeDate)) {
-   deleteSchedules(schedToSet, deleteSched);
+    deleteSchedules(schedToSet, deleteSched);
   }
 
   for (int i = 0; i < schedToSet.length; i++) {
     nodesList.add(getArdPin(schedToSet[i].nodeNum + 3));
+
+    if (schedToSet[i].valve == "Water") {
+      valve = 2;
+    } else if (schedToSet[i].valve == "Fertilizer") {
+      valve = 3;
+    }
+
     switch (schedToSet.length) {
       case 1:
         durationsPerNode.add(
@@ -174,6 +213,13 @@ void createMultipleSchedules(
   }
 
   if (schedToSet.length == 2) {
+    if (schedToSet[0].valve == "Fertilizer" ||
+        schedToSet[1].valve == "Fertilizer") {
+      if (isFirstScheduleSet == false) {
+        openMixer(mixerDuration, schedToSet[0].timeDate, context);
+      }
+    }
+
     // IF 2 SCHEDULES HAVE THE SAME TIME
     if (durationsPerNode[0] == durationsPerNode[1]) {
       if (isFirstScheduleSet == false) {
@@ -181,7 +227,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -189,7 +235,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]},off,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -207,7 +253,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -225,7 +271,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[1]},off,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[1]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -240,9 +286,18 @@ void createMultipleSchedules(
     }
   } else if (schedToSet.length == 3) {
     // IF 3 SCHEDULES HAVE THE SAME TIME
+
+    if (schedToSet[0].valve == "Fertilizer" ||
+        schedToSet[1].valve == "Fertilizer" ||
+        schedToSet[2].valve == "Fertilizer") {
+      if (isFirstScheduleSet == false) {
+        openMixer(mixerDuration, schedToSet[0].timeDate, context);
+      }
+    }
+
     if (durationsPerNode[0] == durationsPerNode[1] &&
-        durationsPerNode[1] == durationsPerNode[2]) { 
-          print("3 schedules have the same amount");
+        durationsPerNode[1] == durationsPerNode[2]) {
+      print("3 schedules have the same amount");
       if (isFirstScheduleSet == false) {
         print("Setting the Schedule");
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
@@ -250,7 +305,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -258,7 +313,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]},off,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -276,7 +331,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -294,7 +349,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[2]},off,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[2]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -312,7 +367,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -330,7 +385,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[1]}${nodesList[2]},off,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[1]}${nodesList[2]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -348,7 +403,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -376,7 +431,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[2].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[2]},off,",
+                        "${schedToSet[2].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[2]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -389,15 +444,28 @@ void createMultipleSchedules(
         return;
       }
     }
-  } else if(schedToSet.length == 4){
+  } else if (schedToSet.length == 4) {
     // IF 4 SCHEDULES HAVE THE SAME TIME
-    if (durationsPerNode[0] == durationsPerNode[1] && durationsPerNode[1] == durationsPerNode[2] && durationsPerNode[2] == durationsPerNode[3] && durationsPerNode[3] == durationsPerNode[4]) {
+
+    if (schedToSet[0].valve == "Fertilizer" ||
+        schedToSet[1].valve == "Fertilizer" ||
+        schedToSet[2].valve == "Fertilizer" ||
+        schedToSet[3].valve == "Fertilizer") {
+      if (isFirstScheduleSet == false) {
+        openMixer(mixerDuration, schedToSet[0].timeDate, context);
+      }
+    }
+
+    if (durationsPerNode[0] == durationsPerNode[1] &&
+        durationsPerNode[1] == durationsPerNode[2] &&
+        durationsPerNode[2] == durationsPerNode[3] &&
+        durationsPerNode[3] == durationsPerNode[4]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -405,7 +473,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},off,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -423,7 +491,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -437,7 +505,7 @@ void createMultipleSchedules(
               schedToSet[1]
                   .timeDate
                   .add(Duration(seconds: durationsPerNode[1])));
-          
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -451,7 +519,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[3]},off,",
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[3]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -469,7 +537,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -483,7 +551,7 @@ void createMultipleSchedules(
               schedToSet[1]
                   .timeDate
                   .add(Duration(seconds: durationsPerNode[1])));
-          
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -497,7 +565,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[3]},off,",
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[3]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -515,7 +583,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -529,7 +597,7 @@ void createMultipleSchedules(
               schedToSet[1]
                   .timeDate
                   .add(Duration(seconds: durationsPerNode[1])));
-          
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -543,7 +611,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[2]}${nodesList[3]},off,",
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[2]}${nodesList[3]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -555,13 +623,14 @@ void createMultipleSchedules(
       } else {
         return;
       }
-    } else if (durationsPerNode[0] == durationsPerNode[1] && durationsPerNode[2] == durationsPerNode[3] ) {
+    } else if (durationsPerNode[0] == durationsPerNode[1] &&
+        durationsPerNode[2] == durationsPerNode[3]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -579,7 +648,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[2]}${nodesList[3]},off,",
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[2]}${nodesList[3]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -591,13 +660,14 @@ void createMultipleSchedules(
       } else {
         return;
       }
-    } else if (durationsPerNode[0] == durationsPerNode[1] && durationsPerNode[1] == durationsPerNode[2] ) {
+    } else if (durationsPerNode[0] == durationsPerNode[1] &&
+        durationsPerNode[1] == durationsPerNode[2]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -615,7 +685,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[3]},off,",
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[3]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -627,13 +697,14 @@ void createMultipleSchedules(
       } else {
         return;
       }
-    } else if (durationsPerNode[1] == durationsPerNode[2] && durationsPerNode[2] == durationsPerNode[3] ) {
+    } else if (durationsPerNode[1] == durationsPerNode[2] &&
+        durationsPerNode[2] == durationsPerNode[3]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -651,7 +722,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[1]}${nodesList[2]}${nodesList[3]},off,",
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[1]}${nodesList[2]}${nodesList[3]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -669,7 +740,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
+                        "${schedToSet[0].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[0]}${nodesList[1]}${nodesList[2]}${nodesList[3]},on,",
                         context)
                   },
               schedToSet[0].timeDate);
@@ -707,7 +778,7 @@ void createMultipleSchedules(
           scheduler.run(
               () => {
                     btInstance.sendData(
-                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(2)}${nodesList[3]},off,",
+                        "${schedToSet[3].commandType},${getArdPin(1)}${getArdPin(valve)}${nodesList[3]},off,",
                         context),
                     deleteSchedules(schedToSet, deleteSched)
                   },
@@ -720,5 +791,5 @@ void createMultipleSchedules(
         return;
       }
     }
-  } 
+  }
 }

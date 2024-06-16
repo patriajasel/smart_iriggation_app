@@ -52,13 +52,18 @@ const ScheduleSchema = CollectionSchema(
       name: r'timeDate',
       type: IsarType.dateTime,
     ),
-    r'waterAmount': PropertySchema(
+    r'valve': PropertySchema(
       id: 7,
+      name: r'valve',
+      type: IsarType.string,
+    ),
+    r'waterAmount': PropertySchema(
+      id: 8,
       name: r'waterAmount',
       type: IsarType.long,
     ),
     r'week': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'week',
       type: IsarType.long,
     )
@@ -86,6 +91,7 @@ int _scheduleEstimateSize(
   bytesCount += 3 + object.commandType.length * 3;
   bytesCount += 3 + object.cropName.length * 3;
   bytesCount += 3 + object.status.length * 3;
+  bytesCount += 3 + object.valve.length * 3;
   return bytesCount;
 }
 
@@ -102,8 +108,9 @@ void _scheduleSerialize(
   writer.writeLong(offsets[4], object.scheduleID);
   writer.writeString(offsets[5], object.status);
   writer.writeDateTime(offsets[6], object.timeDate);
-  writer.writeLong(offsets[7], object.waterAmount);
-  writer.writeLong(offsets[8], object.week);
+  writer.writeString(offsets[7], object.valve);
+  writer.writeLong(offsets[8], object.waterAmount);
+  writer.writeLong(offsets[9], object.week);
 }
 
 Schedule _scheduleDeserialize(
@@ -121,8 +128,9 @@ Schedule _scheduleDeserialize(
   object.scheduleID = reader.readLong(offsets[4]);
   object.status = reader.readString(offsets[5]);
   object.timeDate = reader.readDateTime(offsets[6]);
-  object.waterAmount = reader.readLong(offsets[7]);
-  object.week = reader.readLong(offsets[8]);
+  object.valve = reader.readString(offsets[7]);
+  object.waterAmount = reader.readLong(offsets[8]);
+  object.week = reader.readLong(offsets[9]);
   return object;
 }
 
@@ -148,8 +156,10 @@ P _scheduleDeserializeProp<P>(
     case 6:
       return (reader.readDateTime(offset)) as P;
     case 7:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 8:
+      return (reader.readLong(offset)) as P;
+    case 9:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -901,6 +911,136 @@ extension ScheduleQueryFilter
     });
   }
 
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'valve',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'valve',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'valve',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'valve',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'valve',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'valve',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'valve',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'valve',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'valve',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterFilterCondition> valveIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'valve',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterFilterCondition> waterAmountEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -1100,6 +1240,18 @@ extension ScheduleQuerySortBy on QueryBuilder<Schedule, Schedule, QSortBy> {
     });
   }
 
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByValve() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'valve', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByValveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'valve', Sort.desc);
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterSortBy> sortByWaterAmount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'waterAmount', Sort.asc);
@@ -1223,6 +1375,18 @@ extension ScheduleQuerySortThenBy
     });
   }
 
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByValve() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'valve', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByValveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'valve', Sort.desc);
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QAfterSortBy> thenByWaterAmount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'waterAmount', Sort.asc);
@@ -1295,6 +1459,13 @@ extension ScheduleQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Schedule, Schedule, QDistinct> distinctByValve(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'valve', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Schedule, Schedule, QDistinct> distinctByWaterAmount() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'waterAmount');
@@ -1355,6 +1526,12 @@ extension ScheduleQueryProperty
   QueryBuilder<Schedule, DateTime, QQueryOperations> timeDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'timeDate');
+    });
+  }
+
+  QueryBuilder<Schedule, String, QQueryOperations> valveProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'valve');
     });
   }
 
