@@ -118,7 +118,6 @@ void createSingleSchedule(
     valve = 2;
   } else if (firstSchedule.valve == "Fertilizer") {
     valve = 3;
-    openMixer(mixerDuration, firstSchedule.timeDate, context);
   }
 
   if (DateTime.now().toUtc().isAfter(firstSchedule.timeDate)) {
@@ -134,6 +133,9 @@ void createSingleSchedule(
 
   if (isFirstScheduleSet == false) {
     if (DateTime.now().toUtc().isBefore(firstSchedule.timeDate)) {
+      if (firstSchedule.valve == "Fertilizer") {
+        openMixer(mixerDuration, firstSchedule.timeDate, context);
+      }
       scheduler.run(
           () => {
                 btInstance.sendData(
@@ -224,6 +226,10 @@ void createMultipleSchedules(
     if (durationsPerNode[0] == durationsPerNode[1]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -250,6 +256,10 @@ void createMultipleSchedules(
     } else {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -302,6 +312,10 @@ void createMultipleSchedules(
         print("Setting the Schedule");
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
           print("3 schedules with the same amount has been set ");
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -328,6 +342,10 @@ void createMultipleSchedules(
     } else if (durationsPerNode[0] == durationsPerNode[1]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -364,6 +382,10 @@ void createMultipleSchedules(
     } else if (durationsPerNode[1] == durationsPerNode[2]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -400,6 +422,10 @@ void createMultipleSchedules(
     } else {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -446,22 +472,16 @@ void createMultipleSchedules(
     }
   } else if (schedToSet.length == 4) {
     // IF 4 SCHEDULES HAVE THE SAME TIME
-
-    if (schedToSet[0].valve == "Fertilizer" ||
-        schedToSet[1].valve == "Fertilizer" ||
-        schedToSet[2].valve == "Fertilizer" ||
-        schedToSet[3].valve == "Fertilizer") {
-      if (isFirstScheduleSet == false) {
-        openMixer(mixerDuration, schedToSet[0].timeDate, context);
-      }
-    }
-
     if (durationsPerNode[0] == durationsPerNode[1] &&
         durationsPerNode[1] == durationsPerNode[2] &&
         durationsPerNode[2] == durationsPerNode[3] &&
         durationsPerNode[3] == durationsPerNode[4]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -488,6 +508,10 @@ void createMultipleSchedules(
     } else if (durationsPerNode[0] == durationsPerNode[1]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -534,6 +558,10 @@ void createMultipleSchedules(
     } else if (durationsPerNode[1] == durationsPerNode[2]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -580,6 +608,10 @@ void createMultipleSchedules(
     } else if (durationsPerNode[2] == durationsPerNode[3]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -627,6 +659,10 @@ void createMultipleSchedules(
         durationsPerNode[2] == durationsPerNode[3]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -664,6 +700,10 @@ void createMultipleSchedules(
         durationsPerNode[1] == durationsPerNode[2]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -701,6 +741,10 @@ void createMultipleSchedules(
         durationsPerNode[2] == durationsPerNode[3]) {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(
@@ -737,6 +781,10 @@ void createMultipleSchedules(
     } else {
       if (isFirstScheduleSet == false) {
         if (DateTime.now().toUtc().isBefore(schedToSet[0].timeDate)) {
+          if (schedToSet.contains("Fertilizer")) {
+            openMixer(mixerDuration, schedToSet[0].timeDate, context);
+          }
+
           scheduler.run(
               () => {
                     btInstance.sendData(

@@ -256,7 +256,7 @@ class _bluetoothConnectionState extends State<bluetoothConnection> {
               onChanged: (bool value) {
                 setState(() {
                   command = "$commandType,${getArdPin(8)},${getCommand(8)},";
-                  isNode4Open = value;
+                  isMixerOpen = value;
                   btInstance.sendData(command!, context);
                 });
               }),
